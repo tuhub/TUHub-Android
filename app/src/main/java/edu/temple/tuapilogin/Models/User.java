@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,6 +17,11 @@ public class User {
 
     public interface UserRequestListener {
         void onResponse(User user);
+        void onError(ANError error);
+    }
+
+    public interface CoursesRequestListener {
+        void onResponse(Term[] terms);
         void onError(ANError error);
     }
 
@@ -81,6 +87,36 @@ public class User {
                     @Override
                     public void onError(ANError anError) {
                         userRequestListener.onError(anError);
+                    }
+                });
+    }
+
+    public void retrieveCourses(final CoursesRequestListener coursesRequestListener) {
+        NetworkManager.SHARED.requestFromEndpoint(NetworkManager.Endpoint.COURSES,
+                tuID,
+                null,
+                credential,
+                new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray termsJSON = response.getJSONArray("terms");
+                            Term[] terms = new Term[termsJSON.length()];
+                            for (int i = 0; i < termsJSON.length(); i++) {
+                                Term term = Term.createTerm(termsJSON.getJSONObject(i));
+                                if (term != null)
+                                    terms[i] = term;
+                                User.this.terms = terms;
+                                coursesRequestListener.onResponse(terms);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        coursesRequestListener.onError(anError);
                     }
                 });
     }
