@@ -15,20 +15,19 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
 
+import edu.temple.tuapilogin.Models.User;
+
 public class MainActivity extends AppCompatActivity {
 
 
-    public String url1, url2, user, pass, tuId; //3 major strings for our application, the username, password and tuId
-
+    public String user, tuId; //3 major strings for our application, the username, password and tuId
+    User kUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        url1 ="https://prd-mobile.temple.edu/banner-mobileserver/api/2.0/grades/";
-        url2 = "https://prd-mobile.temple.edu/banner-mobileserver/api/2.0/security/getUserInfo";
         final TextView textView = (TextView) findViewById(R.id.textView);
         textView.setMovementMethod(new ScrollingMovementMethod());
 
@@ -41,64 +40,22 @@ public class MainActivity extends AppCompatActivity {
                 EditText pass1 = (EditText) findViewById(R.id.editText2);
 
                 user = user1.getText().toString();
-                pass = pass1.getText().toString();
+                String pass = pass1.getText().toString();
 
+                User.signInUser(user, pass, new User.UserRequestListener() {
+                    @Override
+                    public void onResponse(User user) {
+                        kUser = user;
+                        tuId = user.getTuID();
+                    }
 
-                AndroidNetworking.get(url2)
-                        .addHeaders("Authorization",
-                                "Basic " + Base64.encodeToString((user + ":" + pass).getBytes(), Base64.NO_WRAP))
-                        .build()
-                        .getAsString(new StringRequestListener() {
-                            @Override
-                            public void onResponse(String response) {
-                                // Respond to request
-                                Log.v(MainActivity.class.getSimpleName(), response);
-
-
-                                JSONObject obj = null; //Parses json data to get user's TUID from their username and password
-                                try {
-                                    obj = new JSONObject(response);
-                                    tuId = obj.getString("userId");
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            @Override
-                            public void onError(ANError anError) {
-                                // Handle error
-                                Log.v(MainActivity.class.getSimpleName(), anError.getErrorDetail());
-                                textView.setText("Unvalid Username/Password");
-                            }
-                        });
-
-
-
-                AndroidNetworking.get(url1 + tuId)
-                        .addHeaders("Authorization",
-                                "Basic " + Base64.encodeToString((user1.getText() + ":" + pass1.getText()).getBytes(), Base64.NO_WRAP))
-                        .build() // NEEDED TO FINALIZE REQUEST
-                        .getAsString(new StringRequestListener() {
-                            @Override
-                            public void onResponse(String response) {
-                                // Respond to request
-                                Log.v(MainActivity.class.getSimpleName(), response);
-                                textView.setText(response);
-                                EditText text1 = (EditText) findViewById(R.id.tu_username);
-                                text1.setText("");
-                                text1 = (EditText) findViewById(R.id.editText2);
-                                text1.setText("");
-                            }
-
-                            @Override
-                            public void onError(ANError anError) {
-                                // Handle error
-                                Log.v(MainActivity.class.getSimpleName(), anError.getErrorDetail());
-                                textView.setText("Unvalid Username/Password");
-                            }
-                        });
-
+                    @Override
+                    public void onError(ANError error) {
+                        // Handle error
+                        Log.v(MainActivity.class.getSimpleName(), error.getErrorDetail());
+                        textView.setText("Invalid Username/Password");
+                    }
+                });
 
             }
         });

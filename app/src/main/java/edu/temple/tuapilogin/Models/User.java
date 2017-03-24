@@ -1,0 +1,88 @@
+package edu.temple.tuapilogin.Models;
+
+import android.support.annotation.Nullable;
+
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * Created on 3/24/17.
+ */
+
+public class User {
+
+    public interface UserRequestListener {
+        void onResponse(User user);
+        void onError(ANError error);
+    }
+
+    @Nullable
+    static User CURRENT;
+
+    private String username;
+    private String tuID;
+    private Credential credential;
+
+    @Nullable
+    Term[] terms;
+
+    private User(String username, String tuID, Credential credential) {
+        this.username = username;
+        this.tuID = tuID;
+        this.credential = credential;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getTuID() {
+        return tuID;
+    }
+
+    public Credential getCredential() {
+        return credential;
+    }
+
+    static User createuser(JSONObject jsonObject, Credential credential) throws JSONException {
+        String username = jsonObject.getString("authId");
+        String tuID = jsonObject.getString("userId");
+
+        return new User(username, tuID, credential);
+    }
+
+
+    public static void signInUser(String username,
+                                  String password,
+                                  final UserRequestListener userRequestListener) {
+
+        final Credential credential = new Credential(username, password);
+        NetworkManager.SHARED.requestFromEndpoint(NetworkManager.Endpoint.USER_INFO,
+                null,
+                null, credential,
+                new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        User user = null;
+                        try {
+                            // Try to initialize the user with JSON
+                            user = User.createuser(response, credential);
+                            // TODO: Add persistence logic
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        User.CURRENT = user;
+                        userRequestListener.onResponse(user);
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        userRequestListener.onError(anError);
+                    }
+                });
+    }
+
+}
