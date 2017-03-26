@@ -2,9 +2,9 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "edu.temple.tuapilogin"
+        applicationId "edu.temple.tuhub"
         minSdkVersion 23
         targetSdkVersion 25
         versionCode 1
@@ -38,8 +38,9 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile 'com.amitshekhar.android:android-networking:1.0.0'
 
-    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.android.support:design:25.3.0'
+    compile 'com.amitshekhar.android:android-networking:1.0.0'
     testCompile 'junit:junit:4.12'
 }

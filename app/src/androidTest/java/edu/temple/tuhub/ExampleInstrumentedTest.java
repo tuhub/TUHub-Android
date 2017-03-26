@@ -1,4 +1,4 @@
-package edu.temple.tuapilogin;
+package edu.temple.tuhub;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("edu.temple.tuapilogin", appContext.getPackageName());
+        assertEquals("edu.temple.tuhub", appContext.getPackageName());
     }
 }
