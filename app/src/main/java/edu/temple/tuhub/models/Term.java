@@ -4,6 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,23 +30,31 @@ public class Term {
         this.courses = courses;
     }
 
-    static Term createTerm(JSONObject jsonObject) throws JSONException {
+    public static Term createTerm(JSONObject jsonObject) throws JSONException {
         String termID = jsonObject.getString("id");
         String name = jsonObject.getString("name");
         String startDateStr = jsonObject.getString("startDate");
         String endDateStr = jsonObject.getString("endDate");
 
-        // TODO: Parse string into date
-        Date startDate = null;
-        Date endDate = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate, endDate;
+        try {
+             startDate = sdf.parse(startDateStr);
+             endDate = sdf.parse(endDateStr);
+        } catch (ParseException e){
+             startDate = null;
+             endDate = null;
+            e.printStackTrace();
+        }
 
         JSONArray sectionJSON = jsonObject.getJSONArray("sections");
         ArrayList<Course> courses = new ArrayList<>();
         for (int i = 0; i < sectionJSON.length(); i++) {
             JSONObject courseJSON = sectionJSON.getJSONObject(i);
-            if (courseJSON == null)
+            if (courseJSON == null) {
                 break;
-            Course course = Course.createCourse(jsonObject, termID);
+            }
+            Course course = Course.createCourse(courseJSON, termID);
             if (course != null)
                 courses.add(course);
         }

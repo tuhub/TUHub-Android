@@ -19,4 +19,17 @@
     <string name="search_title">Search</string>
     <string name="noResults">No Results</string>
 
+    <!-- Calendar strings -->
+    <string name="sun">SUN</string>
+    <string name="mon">MON</string>
+    <string name="tue">TUE</string>
+    <string name="wed">WED</string>
+    <string name="thurs">THU</string>
+    <string name="fri">FRI</string>
+    <string name="sat">SAT</string>
+    <string name="current_date">Current Date</string>
+    <string name="username_key">username</string>
+    <string name="password_key">password</string>
+    <string name="user_id_key">userId</string>
+
 </resources>

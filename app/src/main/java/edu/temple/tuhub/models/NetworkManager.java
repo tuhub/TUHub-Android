@@ -2,6 +2,7 @@ package edu.temple.tuhub.models;
 
 import android.support.annotation.Nullable;
 import android.util.Base64;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +51,8 @@ public class NetworkManager {
         if (tuID != null) {
             url += ("/" + tuID);
         }
+
+        Log.d("url", url);
 
         // Base request
         ANRequest.GetRequestBuilder requestBuilder = AndroidNetworking.get(url);
