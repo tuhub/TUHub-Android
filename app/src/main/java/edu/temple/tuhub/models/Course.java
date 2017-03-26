@@ -1,4 +1,4 @@
-package edu.temple.tuapilogin.Models;
+package edu.temple.tuhub.models;
 
 import android.support.annotation.Nullable;
 
@@ -26,6 +26,12 @@ public class Course {
         void onError(ANError error);
     }
 
+    public interface GradeRequestListener {
+        void onResponse(String[] grades);
+
+        void onError(ANError error);
+    }
+
     private String name;
     private String title;
     private String description;
@@ -41,9 +47,9 @@ public class Course {
     @Nullable
     private List<Instructor> instructors;
 
-    // TODO: Add grades
-//    @Nullable
-//    private List<Grade> grades;
+
+    @Nullable
+    private List<Grade> grades;
 
     @Nullable
     private String[] roster;
@@ -154,6 +160,59 @@ public class Course {
 
                     }
                 });
+    }
+
+    public void retrieveGrades(final GradeRequestListener gradeRequestListener) {
+        if (User.CURRENT == null) {
+            return;
+        }
+        // Generate parameters
+        Map<String, String> params = new HashMap<>(2);
+        params.put("term", termID);
+        params.put("section", sectionID);
+
+        NetworkManager.SHARED.requestFromEndpoint(NetworkManager.Endpoint.GRADES,
+                User.CURRENT.getTuID(),
+                params,
+                User.CURRENT.getCredential(),
+                new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray terms = response.getJSONArray("terms");
+                            //first level
+                            for (int i = 0; i < terms.length(); i++) {
+                                JSONObject obj1 = terms.getJSONObject(i);
+                                //second level
+                                JSONArray sections = obj1.getJSONArray("sections");
+                                for (int j = 0; j < sections.length(); j++) {
+                                    JSONObject obj = sections.getJSONObject(j);
+                                    //third level
+                                    JSONArray gradesResponse = obj.getJSONArray("grades");
+                                    String[] grades = new String[gradesResponse.length()];
+                                    for (int k = 0; k < gradesResponse.length(); k++) {
+                                        JSONObject obj2 = gradesResponse.getJSONObject(k);
+                                        grades[k] = obj2.getString("name");
+                                        grades[k] = obj2.getString("updated");
+                                        grades[k] = obj2.getString("value");
+                                    }
+                                    gradeRequestListener.onResponse(grades);
+                                }
+                            }
+
+                        } catch (JSONException e) {
+                            // TODO: Handle error
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+
+                    }
+                });
+
     }
 
 }

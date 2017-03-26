@@ -1,4 +1,4 @@
-package edu.temple.tuapilogin.Models;
+package edu.temple.tuhub.models;
 
 import android.support.annotation.Nullable;
 
