@@ -20,16 +20,7 @@ public class Grade {
         this.updated=updated;
     }
 
-    @Nullable
-    public static Grade createGrade(JSONObject jsonObject) throws JSONException {
-        String name = jsonObject.getString("name");
-        String grade = jsonObject.getString("value");
-        String updated = jsonObject.getString("updated");
-
-        if (name != null && grade != null && updated != null)
-            return new Grade(name, grade, updated);
-        return null;
-    }
+    
 
 
 }
