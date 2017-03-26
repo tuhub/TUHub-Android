@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Build;
@@ -76,8 +77,8 @@ public class LoginActivity extends AppCompatActivity {
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String username = mUsernameView.getText().toString();
-        String password = mPasswordView.getText().toString();
+        final String username = mUsernameView.getText().toString();
+        final String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -112,7 +113,11 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(User user) {
                     showProgress(false);
+                    //TODO make user parcelable to just store the whole user object
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra(getResources().getString(R.string.username_key), username);
+                    intent.putExtra(getResources().getString(R.string.password_key), password);
+                    intent.putExtra(getResources().getString(R.string.user_id_key), user.getTuID());
                     startActivity(intent);
                 }
 

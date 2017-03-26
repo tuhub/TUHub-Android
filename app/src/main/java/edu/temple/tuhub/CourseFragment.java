@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,7 @@ import edu.temple.tuhub.models.Course;
  * Use the {@link CourseFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CourseFragment extends Fragment {
+public class CourseFragment extends Fragment implements CourseCalendarFragment.CalendarClickListener {
 
     public CourseFragment() {
         // Required empty public constructor
@@ -54,6 +55,12 @@ public class CourseFragment extends Fragment {
         viewPager.setAdapter(new ViewPagerAdapter(getFragmentManager()));
 
         return view;
+    }
+
+    @Override
+    public void showCourseDetails(Course course) {
+        //TODO implement loading the details fragment with the given course
+        Log.d("Course selected:", course.getTitle());
     }
 
     public static class ViewPagerAdapter extends FragmentPagerAdapter {

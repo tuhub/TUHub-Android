@@ -3,4 +3,8 @@
     <color name="colorPrimary">#990033</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#ffffff</color>
+    <color name="colorGray">#7D7D7D</color>
+    <color name="greyed_out">#c7c7c7</color>
+    <color name="today">#4b82ff</color>
+    <color name="selected_day">#fdefc3</color>
 </resources>
