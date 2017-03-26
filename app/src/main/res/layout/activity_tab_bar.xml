@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context="edu.temple.tuapilogin.TabBarActivity">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:name="edu.temple.TUHub-Android.DetailsFragment"
+        android:id="@+id/paneFragment"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/bottom_navigation_view"
+        android:layout_above="@+id/bottom_navigation_view"
+        android:layout_alignEnd="@+id/bottom_navigation_view" />
+
+    <android.support.design.widget.BottomNavigationView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/bottom_navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:itemBackground="@color/colorAccent"
+        app:itemIconTint="@color/selecteditems"
+        app:itemTextColor="@color/colorPrimary"
+        app:menu="@menu/menu_bottom_navigation"/>
+
+</RelativeLayout>

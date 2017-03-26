@@ -1,5 +1,7 @@
 package edu.temple.tuapilogin;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -40,13 +42,17 @@ public class MainActivity extends AppCompatActivity {
                 EditText pass1 = (EditText) findViewById(R.id.editText2);
 
                 user = user1.getText().toString();
-                String pass = pass1.getText().toString();
-
+                final String pass = pass1.getText().toString();
                 User.signInUser(user, pass, new User.UserRequestListener() {
                     @Override
                     public void onResponse(User user) {
                         kUser = user;
-                        tuId = user.getTuID();
+                        final String tuId = user.getTuID();
+                        Intent intent = new Intent(MainActivity.this, TabBarActivity.class);
+                        intent.putExtra("user", kUser.getUsername());
+                        intent.putExtra("tuId", tuId);
+                        intent.putExtra("password", pass);
+                        startActivity(intent);
                     }
 
                     @Override

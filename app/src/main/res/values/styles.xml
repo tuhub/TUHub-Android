@@ -6,6 +6,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlNormal">#c5c5c5</item>
+        <item name="colorControlActivated">#909090</item>
+        <item name="colorControlHighlight">#000000</item>
     </style>
+
+    <style name="TempleColors" parent="AppTheme"/>
 
 </resources>

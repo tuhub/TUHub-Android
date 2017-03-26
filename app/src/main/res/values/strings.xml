@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">TUAPI Login</string>
+    <string name="app_name">TUHub</string>
+    <string name="search_title">Search</string>
+    <string name="noResults">No Results</string>
 </resources>

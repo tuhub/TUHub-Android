@@ -64,6 +64,7 @@ public class User {
     public static void signInUser(String username,
                                   String password,
                                   final UserRequestListener userRequestListener) {
+        System.out.println("sign in");
 
         final Credential credential = new Credential(username, password);
         NetworkManager.SHARED.requestFromEndpoint(NetworkManager.Endpoint.USER_INFO,
