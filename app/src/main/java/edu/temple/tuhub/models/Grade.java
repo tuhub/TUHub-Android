@@ -1,4 +1,4 @@
-package edu.temple.tuapilogin.Models;
+package edu.temple.tuhub.models;
 
 /**
  * Created by laurenlezberg on 3/26/17.
