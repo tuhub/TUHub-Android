@@ -180,21 +180,18 @@ public class Course {
                     public void onResponse(JSONObject response) {
                         try {
                             JSONArray terms = response.getJSONArray("terms");
-                            //first level
+                            //first level - terms
                             for (int i = 0; i < terms.length(); i++) {
                                 JSONObject obj1 = terms.getJSONObject(i);
-                                //second level
+                                //second level - sections
                                 JSONArray sections = obj1.getJSONArray("sections");
                                 for (int j = 0; j < sections.length(); j++) {
                                     JSONObject obj = sections.getJSONObject(j);
-                                    //third level
+                                    //third level - grades
                                     JSONArray gradesResponse = obj.getJSONArray("grades");
                                     String[] grades = new String[gradesResponse.length()];
                                     for (int k = 0; k < gradesResponse.length(); k++) {
-                                        JSONObject obj2 = gradesResponse.getJSONObject(k);
-                                        grades[k] = obj2.getString("name");
-                                        grades[k] = obj2.getString("updated");
-                                        grades[k] = obj2.getString("value");
+                                        grades[k] = gradesResponse.getString(k);
                                     }
                                     gradeRequestListener.onResponse(grades);
                                 }

@@ -15,7 +15,17 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.StringRequestListener;
 
+import java.util.Date;
+
+import edu.temple.tuapilogin.Models.Course;
+import edu.temple.tuapilogin.Models.CourseMeeting;
+import edu.temple.tuapilogin.Models.Instructor;
 import edu.temple.tuapilogin.Models.User;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
