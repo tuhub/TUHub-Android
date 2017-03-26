@@ -188,6 +188,7 @@ public class Course {
                                 for (int j = 0; j < sections.length(); j++) {
                                     JSONObject obj = sections.getJSONObject(j);
                                     //third level - grades
+
                                     JSONArray gradesResponse = obj.getJSONArray("grades");
                                     String[] grades = new String[gradesResponse.length()];
                                     for (int k = 0; k < gradesResponse.length(); k++) {
