@@ -2,24 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/courses"
-        android:icon="@drawable/ic_courses"
-        android:title="Courses"/>
+        android:id="@+id/navigation_courses"
+        android:icon="@drawable/ic_school"
+        android:title="@string/title_courses" />
+
     <item
-        android:id="@+id/marketplace"
-        android:icon="@drawable/ic_marketplace"
-        android:title="Marketplace"/>
+        android:id="@+id/navigation_marketplace"
+        android:icon="@drawable/ic_shopping_basket"
+        android:title="@string/title_marketplace" />
+
     <item
-        android:id="@+id/maps"
-        android:icon="@drawable/ic_map_black_24px"
-        android:title="Maps"/>
+        android:id="@+id/navigation_maps"
+        android:icon="@drawable/ic_map"
+        android:title="@string/title_maps" />
+
     <item
-        android:id="@+id/news"
+        android:id="@+id/navigation_news"
         android:icon="@drawable/ic_newspaper"
-        android:title="News"/>
+        android:title="@string/title_news" />
+
     <item
-        android:id="@+id/account"
-        android:icon="@drawable/ic_account"
-        android:title="Account"/>
+        android:id="@+id/navigation_more"
+        android:icon="@drawable/ic_more_horiz"
+        android:title="@string/title_more" />
 
 </menu>

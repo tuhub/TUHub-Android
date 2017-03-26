@@ -213,4 +213,36 @@ public class Course {
 
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getSectionID() {
+        return description;
+    }
+
+    public String getTermID() {
+        return description;
+    }
+
+    public String getSectionNumber() {
+        return sectionNumber;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
 }
