@@ -15,7 +15,7 @@ import android.view.View;
 import edu.temple.tuhub.models.Course;
 import edu.temple.tuhub.models.Entry;
 
-public class MainActivity extends AppCompatActivity implements CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener, CourseFragment.courseSearchHandler, CoursesSearchAllFragment.searchAllResultsInterface{
+public class MainActivity extends AppCompatActivity implements CourseFragment.showCourseDetails, CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener, CourseFragment.courseSearchHandler, CoursesSearchAllFragment.searchAllResultsInterface{
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements CourseListFragmen
 
     CourseSearchAllDetail csad;
     CoursesSearchAllFragment csaf;
+    MyCourseSearchFragment mcsf;
     CourseFragment cf;
 
     @Override
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements CourseListFragmen
 
         csad = new CourseSearchAllDetail();
         csaf = new CoursesSearchAllFragment();
+        mcsf = new MyCourseSearchFragment();
 
         int selectedID = navigation.getSelectedItemId();
         View selectedView = navigation.findViewById(selectedID);
@@ -118,11 +120,15 @@ public class MainActivity extends AppCompatActivity implements CourseListFragmen
     }
 
     @Override
-    public void courseSearchHandler(String query) {
-        Bundle bundle =  new Bundle();
-        bundle.putString("query", query);
-        csaf.setArguments(bundle);
-        loadFragment(R.id.contentFragment, csaf, true,false);
+    public void courseSearchHandler(String query, boolean myCourses) {
+        if(myCourses){
+            loadFragment(R.id.contentFragment,mcsf,true,false);
+        }else {
+            Bundle bundle = new Bundle();
+            bundle.putString("query", query);
+            csaf.setArguments(bundle);
+            loadFragment(R.id.contentFragment, csaf, true, false);
+        }
     }
 }
 

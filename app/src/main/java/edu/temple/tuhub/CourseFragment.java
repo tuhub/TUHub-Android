@@ -167,7 +167,7 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
         sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                activity.courseSearchHandler(query);
+                activity.courseSearchHandler(query,false);
                 return false;
             }
 
@@ -183,9 +183,9 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
         // handle item selection
         switch (item.getItemId()) {
             case R.id.search:
-                // do s.th.
                 return true;
             case R.id.menu_your_courses:
+                activity.courseSearchHandler("", true);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -193,7 +193,10 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
     }
 
     public interface courseSearchHandler {
-        void courseSearchHandler(String query);
+        void courseSearchHandler(String query, boolean myCourses);
+    }
+    public interface showCourseDetails{
+        void showCourseDetails(Course course);
     }
 }
 
