@@ -3,16 +3,14 @@ package edu.temple.tuhub;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.List;
+import android.widget.ListView;
 
 import edu.temple.tuhub.models.Course;
+import edu.temple.tuhub.models.Term;
+import edu.temple.tuhub.models.User;
 
 /**
  * A fragment representing a list of Items.
@@ -22,12 +20,10 @@ import edu.temple.tuhub.models.Course;
  */
 public class CourseListFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
+    private static final String ARG_TERM_INDEX = "term-index";
     private OnListFragmentInteractionListener mListener;
-    List<Course> courses;
+    private Term mTerm;
+    private ListView mListView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -36,12 +32,11 @@ public class CourseListFragment extends Fragment {
     public CourseListFragment() {
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static CourseListFragment newInstance(int columnCount) {
+    public static CourseListFragment newInstance(int termIndex) {
         CourseListFragment fragment = new CourseListFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putInt(ARG_TERM_INDEX, termIndex);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,29 +46,19 @@ public class CourseListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            if (User.CURRENT != null)
+                mTerm = User.CURRENT.getTerms()[getArguments().getInt(ARG_TERM_INDEX)];
         }
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_course_list, container, false);
-
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MyCourseRecyclerViewAdapter(courses, mListener));
-        }
+        mListView = (ListView) view.findViewById(R.id.course_list);
+        mListView.setAdapter(new CourseListAdapter(getContext(), mTerm.getCourses()));
         return view;
     }
-
 
     @Override
     public void onAttach(Context context) {

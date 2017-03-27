@@ -26,7 +26,7 @@ public class User {
     }
 
     @Nullable
-    static User CURRENT;
+    public static User CURRENT;
 
     private String username;
     private String tuID;
@@ -53,7 +53,12 @@ public class User {
         return credential;
     }
 
-    static User createuser(JSONObject jsonObject, Credential credential) throws JSONException {
+    @Nullable
+    public Term[] getTerms() {
+        return terms;
+    }
+
+    static User createUser(JSONObject jsonObject, Credential credential) throws JSONException {
         String username = jsonObject.getString("authId");
         String tuID = jsonObject.getString("userId");
 
@@ -76,7 +81,7 @@ public class User {
                         User user = null;
                         try {
                             // Try to initialize the user with JSON
-                            user = User.createuser(response, credential);
+                            user = User.createUser(response, credential);
                             // TODO: Add persistence logic
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -107,9 +112,9 @@ public class User {
                                 Term term = Term.createTerm(termsJSON.getJSONObject(i));
                                 if (term != null)
                                     terms[i] = term;
-                                User.this.terms = terms;
-                                coursesRequestListener.onResponse(terms);
                             }
+                            User.this.terms = terms;
+                            coursesRequestListener.onResponse(terms);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

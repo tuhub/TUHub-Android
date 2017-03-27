@@ -51,9 +51,8 @@ public class Term {
         ArrayList<Course> courses = new ArrayList<>();
         for (int i = 0; i < sectionJSON.length(); i++) {
             JSONObject courseJSON = sectionJSON.getJSONObject(i);
-            if (courseJSON == null) {
+            if (courseJSON == null)
                 break;
-            }
             Course course = Course.createCourse(courseJSON, termID);
             if (course != null)
                 courses.add(course);
