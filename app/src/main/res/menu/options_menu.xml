@@ -6,4 +6,9 @@
         android:icon="@drawable/ic_search"
         app:showAsAction="ifRoom"
         android:actionViewClass="android.widget.SearchView" />
+    <item
+        android:id="@+id/menu_your_courses"
+        android:orderInCategory="2"
+        app:showAsAction="never"
+        android:title="My Courses"/>
 </menu>

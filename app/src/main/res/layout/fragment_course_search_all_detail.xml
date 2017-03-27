@@ -1,0 +1,229 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="edu.temple.tuhub.CourseSearchAllDetail"
+    android:weightSum="1">
+
+    <!-- TODO: Update blank fragment layout -->
+
+
+    <TextView
+        android:text="Course ID"
+        android:layout_width="195dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/crseIDSearchDetailText"
+        android:textColor="#000000"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/courseSearchDetailText"
+        android:layout_alignStart="@+id/courseSearchDetailText" />
+
+    <TextView
+        android:text="College"
+        android:layout_width="195dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/collegeSearchDetailText"
+        android:textColor="#000000"
+        android:layout_below="@+id/creditHrSearchDetailText"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="13dp" />
+
+    <TextView
+        android:text="Department"
+        android:layout_width="195dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/departmentSearchDetailText"
+        android:textColor="#000000"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/collegeSearchDetailText"
+        android:layout_alignStart="@+id/collegeSearchDetailText" />
+
+    <TextView
+        android:text="Division"
+        android:layout_width="195dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/divisionSearchDetailText"
+        android:textColor="#000000"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/departmentSearchDetailText"
+        android:layout_alignStart="@+id/departmentSearchDetailText" />
+
+    <TextView
+        android:text="Lecture Type"
+        android:layout_width="195dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/scheduleSearchDetailText"
+        android:textColor="#000000"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/divisionSearchDetailText"
+        android:layout_alignStart="@+id/divisionSearchDetailText" />
+
+    <TextView
+        android:text="Description"
+        android:layout_width="195dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/descriptionSearchDetailText"
+        android:textColor="#000000"
+        android:layout_below="@+id/scheduleSearchDetailText"
+        android:layout_alignStart="@+id/scheduleSearchDetailText"
+        android:layout_marginTop="13dp" />
+
+    <TextView
+        android:text="Credit Hours"
+        android:layout_width="195dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/creditHrSearchDetailText"
+        android:textColor="#000000"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/crseIDSearchDetailText"
+        android:layout_alignStart="@+id/collegeSearchDetailText" />
+
+
+    <View
+        android:background="#990033"
+        android:layout_width="400dp"
+        android:layout_height="1dp"
+        android:layout_below="@+id/courseSearchDetailText"
+        android:layout_marginTop="6dp"
+        android:layout_centerHorizontal="true" />
+    <View
+    android:background="#990033"
+    android:layout_width="400dp"
+    android:layout_height="1dp"
+    android:layout_below="@+id/crseIDSearchDetailText"
+    android:layout_marginTop="6dp"
+    android:layout_centerHorizontal="true" />
+    <View
+        android:background="#990033"
+        android:layout_width="400dp"
+        android:layout_height="1dp"
+        android:layout_below="@+id/creditHrSearchDetailText"
+        android:layout_marginTop="6dp"
+        android:layout_centerHorizontal="true" />
+    <View
+        android:background="#990033"
+        android:layout_width="400dp"
+        android:layout_height="1dp"
+        android:layout_below="@+id/collegeSearchDetailText"
+        android:layout_marginTop="6dp"
+        android:layout_centerHorizontal="true" />
+    <View
+        android:background="#990033"
+        android:layout_width="400dp"
+        android:layout_height="1dp"
+        android:layout_below="@+id/departmentSearchDetailText"
+        android:layout_marginTop="6dp"
+        android:layout_centerHorizontal="true" />
+    <View
+        android:background="#990033"
+        android:layout_width="400dp"
+        android:layout_height="1dp"
+        android:layout_below="@+id/divisionSearchDetailText"
+        android:layout_marginTop="6dp"
+        android:layout_centerHorizontal="true" />
+    <View
+        android:background="#990033"
+        android:layout_width="400dp"
+        android:layout_height="1dp"
+        android:layout_below="@+id/scheduleSearchDetailText"
+        android:layout_marginTop="6dp"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="creditHrResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchAllcredit"
+        android:layout_alignBaseline="@+id/creditHrSearchDetailText"
+        android:layout_alignBottom="@+id/creditHrSearchDetailText"
+        android:layout_alignStart="@+id/crseIdAllCourse" />
+
+    <TextView
+        android:text="collegeResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/collegeSearchAll"
+        android:layout_alignBaseline="@+id/collegeSearchDetailText"
+        android:layout_alignBottom="@+id/collegeSearchDetailText"
+        android:layout_alignStart="@+id/searchAllcredit" />
+
+    <TextView
+        android:text="departmentResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchAllDepartment"
+        android:layout_alignBaseline="@+id/departmentSearchDetailText"
+        android:layout_alignBottom="@+id/departmentSearchDetailText"
+        android:layout_alignStart="@+id/collegeSearchAll" />
+
+    <TextView
+        android:text="divisionResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchAllDivision"
+        android:layout_alignBaseline="@+id/divisionSearchDetailText"
+        android:layout_alignBottom="@+id/divisionSearchDetailText"
+        android:layout_alignStart="@+id/searchAllDepartment" />
+
+    <TextView
+        android:text="scheduleResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchAllSchedule"
+        android:layout_alignBaseline="@+id/scheduleSearchDetailText"
+        android:layout_alignBottom="@+id/scheduleSearchDetailText"
+        android:layout_alignStart="@+id/searchAllDivision" />
+
+    <TextView
+        android:text="Course"
+        android:layout_width="195dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/courseSearchDetailText"
+        android:textColor="#000000"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/creditHrSearchDetailText" />
+
+    <TextView
+        android:text="crseIdResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/crseIdAllCourse"
+        android:layout_alignBaseline="@+id/crseIDSearchDetailText"
+        android:layout_alignBottom="@+id/crseIDSearchDetailText"
+        android:layout_alignEnd="@+id/crseIDSearchDetailText"
+        android:layout_marginEnd="21dp" />
+
+    <TextView
+        android:text="courseResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchAllCourse"
+        android:layout_alignBaseline="@+id/courseSearchDetailText"
+        android:layout_alignBottom="@+id/courseSearchDetailText"
+        android:layout_alignStart="@+id/crseIdAllCourse" />
+    <ScrollView
+        android:id="@+id/descriptionScrollSearch"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/descriptionSearchDetailText"
+        android:scrollbars="vertical"
+        android:fillViewport="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" >
+
+    <TextView
+        android:text="descriptionResults"
+        android:id="@+id/searchAllDescription"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/descriptionSearchDetailText"
+        android:paddingLeft="5dp"
+        android:paddingRight="0dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+    </ScrollView>
+
+</RelativeLayout>
+
