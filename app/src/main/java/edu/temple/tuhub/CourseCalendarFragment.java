@@ -3,7 +3,6 @@ package edu.temple.tuhub;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,14 +11,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.androidnetworking.error.ANError;
-import com.androidnetworking.interfaces.JSONObjectRequestListener;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -27,9 +20,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import edu.temple.tuhub.models.Course;
 import edu.temple.tuhub.models.CourseMeeting;
-import edu.temple.tuhub.models.Credential;
-import edu.temple.tuhub.models.NetworkManager;
 import edu.temple.tuhub.models.Term;
+import edu.temple.tuhub.models.User;
 
 
 public class CourseCalendarFragment extends Fragment implements CalendarView.EventHandler {
@@ -41,8 +33,6 @@ public class CourseCalendarFragment extends Fragment implements CalendarView.Eve
 
     private CalendarClickListener mListener;
     private ArrayList<Term> allSemesters;
-    private final String termKey = "terms";
-
 
     public CourseCalendarFragment() {
         // Required empty public constructor
@@ -57,16 +47,6 @@ public class CourseCalendarFragment extends Fragment implements CalendarView.Eve
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-
-        }
-
-
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -75,7 +55,11 @@ public class CourseCalendarFragment extends Fragment implements CalendarView.Eve
 
         calendar.setEventHandler(CourseCalendarFragment.this);
 
-        getCourses();
+        if (User.CURRENT != null) {
+            allSemesters = new ArrayList<>(Arrays.asList(User.CURRENT.getTerms()));
+            onDayClick(new Date());
+        }
+
 
         return rootView;
     }
@@ -180,74 +164,6 @@ public class CourseCalendarFragment extends Fragment implements CalendarView.Eve
                     }
                 }
             }
-
-    }
-
-
-    //Retrieve all course information for the stored user
-    private void getCourses() {
-        //Get user credentials
-        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-        String username = sharedPreferences.getString(getActivity().getResources().getString(R.string.username_key), "");
-        String password = sharedPreferences.getString(getActivity().getResources().getString(R.string.password_key), "");
-        String userId = sharedPreferences.getString(getActivity().getResources().getString(R.string.user_id_key), "");
-        Credential credential = new Credential(username, password);
-
-        Log.d("userinfo", "b" + username + password + userId);
-
-        //Create listener that processes the course information when it is received
-        JSONObjectRequestListener requestListener = new JSONObjectRequestListener() {
-            @Override
-            public void onResponse(JSONObject courseInfo) {
-                Log.d("Responded", "getCourses: " + courseInfo.toString());
-                sortCoursesBySemester(courseInfo);
-                onDayClick(new Date());
-            }
-
-            @Override
-            public void onError(ANError anError) {
-                if (anError.getErrorCode() != 0) {
-                    // received error from server
-                    // error.getErrorCode() - the error code from server
-                    // error.getErrorBody() - the error body from server
-                    // error.getErrorDetail() - just an error detail
-                    String error = "onError errorCode : " + anError.getErrorCode() + "\n" +
-                            "onError errorBody : " + anError.getErrorBody() + "\n" +
-                            "onError errorDetail : " + anError.getErrorDetail();
-                    setError(error);
-                } else {
-                    // error.getErrorDetail() : connectionError, parseError, requestCancelledError
-                    String error = "onError errorDetail : " + anError.getErrorDetail();
-                    setError(error);
-                }
-
-            }
-        };
-
-        //Make the request
-        NetworkManager.SHARED.requestFromEndpoint(NetworkManager.Endpoint.COURSES, userId, null, credential, requestListener);
-
-    }
-
-    //Populate the list of semesters by parsing the full course information JSON data
-    private void sortCoursesBySemester(JSONObject courseInfo) {
-
-        allSemesters = new ArrayList<>();
-
-        try {
-            JSONArray terms = courseInfo.getJSONArray(termKey);
-
-            int i = 0;
-            while (i < terms.length()) {
-                Log.d("Adding term: ", terms.getJSONObject(i).toString());
-                allSemesters.add(Term.createTerm(terms.getJSONObject(i)));
-                i++;
-            }
-
-
-        } catch (JSONException e) {
-            setError("sortCoursesBySemester: " + e.toString());
-        }
 
     }
 

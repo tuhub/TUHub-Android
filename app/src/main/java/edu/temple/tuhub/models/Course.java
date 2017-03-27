@@ -47,9 +47,9 @@ public class Course {
     @Nullable
     private List<Instructor> instructors;
 
-    // TODO: Add grades
-//    @Nullable
-//    private List<Grade> grades;
+
+    @Nullable
+    private List<Grade> grades;
 
     @Nullable
     private String[] roster;
@@ -77,9 +77,7 @@ public class Course {
     }
 
     public static Course createCourse(JSONObject jsonObject, String termID) throws JSONException {
-        //courseName is not included in the JSON results
-        //String name = jsonObject.getString("courseName");
-        String name = "";
+        String name = jsonObject.getString("courseName");
         String title = jsonObject.getString("sectionTitle");
         String description = jsonObject.getString("courseDescription");
         String sectionID = jsonObject.getString("sectionId");
@@ -92,10 +90,10 @@ public class Course {
         Date endDate = null;
 
         // Get course meetings
-        JSONArray meetingPatternsJSON = jsonObject.getJSONArray("meetingPatterns");
+        JSONArray meetingsJSON = jsonObject.getJSONArray("meetingPatterns");
         ArrayList<CourseMeeting> meetings = new ArrayList<>();
-        for (int i = 0; i < meetingPatternsJSON.length(); i++) {
-            JSONObject meetingJSON = meetingPatternsJSON.getJSONObject(i);
+        for (int i = 0; i < meetingsJSON.length(); i++) {
+            JSONObject meetingJSON = meetingsJSON.getJSONObject(i);
             if (meetingJSON == null)
                 break;
             CourseMeeting meeting = CourseMeeting.createCourseMeeting(meetingJSON);

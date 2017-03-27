@@ -7,10 +7,10 @@ import android.support.design.widget.BottomNavigationView;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 
 import edu.temple.tuhub.models.Course;
 import edu.temple.tuhub.models.Entry;
@@ -63,16 +63,16 @@ public class MainActivity extends AppCompatActivity implements CourseListFragmen
             String id = receivedIntent.getStringExtra(getResources().getString(R.string.user_id_key));
 
             SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-            preferences.edit().putString(getResources().getString(R.string.username_key), username).commit();
-            preferences.edit().putString(getResources().getString(R.string.password_key), password).commit();
-            preferences.edit().putString(getResources().getString(R.string.user_id_key), id).commit();
+            preferences.edit().putString(getResources().getString(R.string.username_key), username).apply();
+            preferences.edit().putString(getResources().getString(R.string.password_key), password).apply();
+            preferences.edit().putString(getResources().getString(R.string.user_id_key), id).apply();
 
-        cf = new CourseFragment();
         csad = new CourseSearchAllDetail();
         csaf = new CoursesSearchAllFragment();
 
-        loadFragment(R.id.contentFragment, cf, false, true);
-
+        int selectedID = navigation.getSelectedItemId();
+        View selectedView = navigation.findViewById(selectedID);
+        selectedView.performClick();
     }
 
     private void loadFragment(int ID, Fragment fragment, boolean backStack, boolean clearBackStack) {
@@ -91,14 +91,15 @@ public class MainActivity extends AppCompatActivity implements CourseListFragmen
 
     @Override
     public void onListFragmentInteraction(Course item) {
+        // TODO: Do something
 
     }
 
     @Override
     public void showCourseDetails(Course course) {
-        CourseFragment cf = CourseFragment.newInstance();
-        loadFragment(R.id.contentFragment, cf, false, true);
-        cf.showCourseDetails(course);
+//        CourseFragment cf = CourseFragment.newInstance();
+//        loadFragment(R.id.contentFragment, cf, false, true);
+//        cf.showCourseDetails(course);
     }
 
     @Override

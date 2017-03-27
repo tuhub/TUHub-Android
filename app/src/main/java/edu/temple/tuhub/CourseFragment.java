@@ -7,8 +7,8 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 
 import android.support.annotation.Nullable;
+import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -19,7 +19,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.androidnetworking.error.ANError;
+
 import edu.temple.tuhub.models.Course;
+import edu.temple.tuhub.models.Term;
+import edu.temple.tuhub.models.User;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,6 +31,9 @@ import edu.temple.tuhub.models.Course;
  * create an instance of this fragment.
  */
 public class CourseFragment extends Fragment implements CourseCalendarFragment.CalendarClickListener {
+
+    private ViewPager mViewPager;
+    private static int NUM_ITEMS = 2;
 
     public CourseFragment() {
         // Required empty public constructor
@@ -41,31 +48,46 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
     // TODO: Rename and change types and number of parameters
     public static CourseFragment newInstance() {
         CourseFragment fragment = new CourseFragment();
-//        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
+
+        if (User.CURRENT != null) {
+            if (User.CURRENT.getTerms() == null) {
+                User.CURRENT.retrieveCourses(new User.CoursesRequestListener() {
+                    @Override
+                    public void onResponse(Term[] terms) {
+                        CourseFragment.this.getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mViewPager != null)
+                                    mViewPager.getAdapter().notifyDataSetChanged();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(ANError error) {
+                        // TODO: Handle error
+                        System.out.println(error.getErrorBody());
+                    }
+                });
+            }
         }
+
     }
-    ViewPager mPager;
-    MyAdapter mAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_course, container, false);
+        mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
+        mViewPager.setAdapter(new ViewPagerAdapter(getFragmentManager()));
 
-        mAdapter = new MyAdapter(getFragmentManager());
-
-        mPager = (ViewPager) view.findViewById(R.id.view_pager);
-        mPager.setAdapter(mAdapter);
         return view;
     }
 
@@ -75,33 +97,36 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
         Log.d("Course selected:", course.getTitle());
     }
 
-    public class MyAdapter extends FragmentPagerAdapter {
-        private int NUM_ITEMS = 2;
-        private CourseCalendarFragment courseCalendarFragment;
-        private CourseListFragment courseListFragment;
+    public class ViewPagerAdapter extends FragmentStatePagerAdapter {
+        private Fragment[] fragments = new Fragment[NUM_ITEMS];
 
-        public MyAdapter(FragmentManager fm) {
-            super(fm);
-            courseCalendarFragment = new CourseCalendarFragment();
-            courseListFragment = new CourseListFragment();
+        public ViewPagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
         }
 
         // Returns total number of pages
         @Override
         public int getCount() {
-            return NUM_ITEMS;
+            if (User.CURRENT != null && User.CURRENT.getTerms() != null)
+                return NUM_ITEMS;
+            return 0;
         }
 
         @Override
         public Fragment getItem(int position) {
             switch (position) {
-                case 0: // Fragment # 0 - This will show FirstFragment
-                    return courseCalendarFragment;
-                case 1: // Fragment # 0 - This will show FirstFragment different title
-                    return courseListFragment;
+                case 0:
+                    if (fragments[position] == null)
+                        fragments[position] = CourseCalendarFragment.newInstance();
+                    break;
+                case 1:
+                    if (fragments[position] == null)
+                        fragments[position] = CourseListPagerFragment.newInstance();
+                    break;
                 default:
                     return null;
             }
+            return fragments[position];
         }
 
         // Returns the page title for the top indicator
