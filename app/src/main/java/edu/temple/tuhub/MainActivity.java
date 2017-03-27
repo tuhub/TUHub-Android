@@ -4,17 +4,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
 import edu.temple.tuhub.models.Course;
+import edu.temple.tuhub.models.Entry;
 
-public class MainActivity extends AppCompatActivity implements CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener{
+public class MainActivity extends AppCompatActivity implements CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener, CourseFragment.courseSearchHandler, CoursesSearchAllFragment.searchAllResultsInterface{
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -23,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements CourseListFragmen
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_courses:
-                    loadFragment(R.id.content, CourseFragment.newInstance(), false, true);
+                    loadFragment(R.id.contentFragment, CourseFragment.newInstance(), false, true);
                     return true;
                 case R.id.navigation_marketplace:
                     // TODO: Load fragment
@@ -42,6 +43,10 @@ public class MainActivity extends AppCompatActivity implements CourseListFragmen
         }
 
     };
+
+    CourseSearchAllDetail csad;
+    CoursesSearchAllFragment csaf;
+    CourseFragment cf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +67,16 @@ public class MainActivity extends AppCompatActivity implements CourseListFragmen
             preferences.edit().putString(getResources().getString(R.string.password_key), password).commit();
             preferences.edit().putString(getResources().getString(R.string.user_id_key), id).commit();
 
-        navigation.setSelectedItemId(R.id.navigation_courses);
+        cf = new CourseFragment();
+        csad = new CourseSearchAllDetail();
+        csaf = new CoursesSearchAllFragment();
 
-
+        loadFragment(R.id.contentFragment, cf, false, true);
 
     }
 
     private void loadFragment(int ID, Fragment fragment, boolean backStack, boolean clearBackStack) {
-        FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction().replace(ID, fragment);
         if(clearBackStack){
             fm.popBackStack();
@@ -90,7 +97,31 @@ public class MainActivity extends AppCompatActivity implements CourseListFragmen
     @Override
     public void showCourseDetails(Course course) {
         CourseFragment cf = CourseFragment.newInstance();
-        loadFragment(R.id.content, cf, false, true);
+        loadFragment(R.id.contentFragment, cf, false, true);
         cf.showCourseDetails(course);
     }
+
+    @Override
+    public void searchAllResultsInterface(Entry courseDetails) {
+        Bundle bundle = new Bundle();
+        bundle.putString("course", courseDetails.getCourse());
+        bundle.putString("crseId", courseDetails.getCrseId());
+        bundle.putString("description", courseDetails.getDescription());
+        bundle.putString("creditHr", courseDetails.getCreditHr());
+        bundle.putString("college", courseDetails.getCollege());
+        bundle.putString("division", courseDetails.getDivision());
+        bundle.putString("department", courseDetails.getDepartment());
+        bundle.putString("schedule", courseDetails.getSchedule());
+        csad.setArguments(bundle);
+        loadFragment(R.id.contentFragment, csad, true, false);
+    }
+
+    @Override
+    public void courseSearchHandler(String query) {
+        Bundle bundle =  new Bundle();
+        bundle.putString("query", query);
+        csaf.setArguments(bundle);
+        loadFragment(R.id.contentFragment, csaf, true,false);
+    }
 }
+

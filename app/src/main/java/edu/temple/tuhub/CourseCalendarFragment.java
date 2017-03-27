@@ -1,7 +1,7 @@
 package edu.temple.tuhub;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;

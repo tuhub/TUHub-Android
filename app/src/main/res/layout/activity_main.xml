@@ -9,9 +9,9 @@
     tools:context="edu.temple.tuhub.MainActivity">
 
     <FrameLayout
-        android:id="@+id/content"
+        android:id="@+id/contentFragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="fill_parent"
         android:layout_weight="1">
 
     </FrameLayout>
