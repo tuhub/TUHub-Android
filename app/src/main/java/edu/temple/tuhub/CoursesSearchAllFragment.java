@@ -135,7 +135,11 @@ public class CoursesSearchAllFragment extends Fragment {
                 loadResults(courses);
                } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(getActivity(),getString(R.string.noResults),Toast.LENGTH_SHORT).show();
+                try {
+                    Toast.makeText(getActivity(), getString(R.string.noResults), Toast.LENGTH_SHORT).show();
+                } catch(IllegalStateException e2){
+                    e2.printStackTrace();
+                }
             }
             // Toast.makeText(getActivity(),getString(R.string.invalidAddress),Toast.LENGTH_SHORT).show();
             return false;
