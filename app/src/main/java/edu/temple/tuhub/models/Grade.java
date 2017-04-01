@@ -10,9 +10,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Grade {
-    private String name;
-    private String grade;
-    private String updated;
+    public String name;
+    public String grade;
+    public String updated;
 
     private Grade(String name, String grade, String updated){
         this.name=name;
@@ -20,7 +20,17 @@ public class Grade {
         this.updated=updated;
     }
 
-    
+    @Nullable
+    public static Grade createGrade(JSONObject jsonObject) throws JSONException {
+        String name = jsonObject.getString("name");
+        String grade = jsonObject.getString("value");
+        String updated = jsonObject.getString("updated");
+
+        if (name != null && grade != null && updated != null)
+            return new Grade(name, grade, updated);
+        return null;
+
+    }
 
 
 }

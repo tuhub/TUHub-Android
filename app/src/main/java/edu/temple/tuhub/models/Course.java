@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.util.Log;
+
 /**
  * Created on 3/24/17.
  */
@@ -23,11 +25,13 @@ public class Course {
 
     public interface RosterRequestListener {
         void onResponse(String[] roster);
+
         void onError(ANError error);
     }
 
     public interface GradeRequestListener {
         void onResponse(String[] grades);
+
         void onError(ANError error);
     }
 
@@ -48,7 +52,7 @@ public class Course {
 
 
     @Nullable
-    private List<Grade> grades;
+    private Grade courseGrade;
 
     @Nullable
     private String[] roster;
@@ -161,7 +165,7 @@ public class Course {
                 });
     }
 
-    public void retrieveGrades(final GradeRequestListener gradeRequestListener) {
+    public void retrieveGrades() {
         if (User.CURRENT == null) {
             return;
         }
@@ -188,11 +192,15 @@ public class Course {
                                     JSONObject obj = sections.getJSONObject(j);
                                     //third level - grades
                                     JSONArray gradesResponse = obj.getJSONArray("grades");
-                                    String[] grades = new String[gradesResponse.length()];
                                     for (int k = 0; k < gradesResponse.length(); k++) {
-                                        grades[k] = gradesResponse.getString(k);
+                                        JSONObject grades = gradesResponse.getJSONObject(k);
+                                        String value = grades.getString("value");
+                                        //create Grade object for related course
+                                        courseGrade = Grade.createGrade(grades);
+                                        Log.d("grades: ", courseGrade.grade);
+                                        Log.d("grade value: " , value);
+                                        //gradeValue=grades.getString("value");
                                     }
-                                    gradeRequestListener.onResponse(grades);
                                 }
                             }
 
@@ -257,5 +265,8 @@ public class Course {
     public String[] getRoster() {
         return roster;
     }
+
+    @Nullable
+    public Grade getGrade(){return courseGrade;}
 
 }
