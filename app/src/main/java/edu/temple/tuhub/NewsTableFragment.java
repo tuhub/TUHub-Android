@@ -28,7 +28,6 @@ import java.util.ArrayList;
 
 public class NewsTableFragment extends Fragment {
     ListView newslist;
-    Context appcontext;
     GetNewsDataThread news;
     ArrayList<Newsitem> newsitems;
     boolean buttonstate=true;
@@ -62,7 +61,7 @@ public class NewsTableFragment extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             newsitems=(ArrayList<Newsitem>) msg.obj;
-            arraynews=new ArrayNewsAdapter(appcontext,R.layout.newsitem,newsitems);
+            arraynews=new ArrayNewsAdapter(getActivity().getApplicationContext(),R.layout.newsitem,newsitems);
             newslist.setAdapter(arraynews);
         }
     };
@@ -85,7 +84,6 @@ public class NewsTableFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
-        appcontext=context;
         super.onAttach(context);
     }
 
@@ -138,7 +136,7 @@ public class NewsTableFragment extends Fragment {
         }
         else
         {
-            arraynews=new ArrayNewsAdapter(appcontext,R.layout.newsitem,newsitems);
+            arraynews=new ArrayNewsAdapter(getActivity().getApplicationContext(),R.layout.newsitem,newsitems);
             newslist.setAdapter(arraynews);
         }
     }
