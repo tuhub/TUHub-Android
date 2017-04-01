@@ -5,7 +5,9 @@ import android.util.Base64;
 import android.util.Log;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANRequest;
@@ -64,7 +66,7 @@ public class NetworkManager {
 
         // Add parameters if present
         if (parameters != null) {
-            requestBuilder.addPathParameter(parameters);
+            requestBuilder.addQueryParameter(parameters);
         }
 
         // Make the request
@@ -94,7 +96,7 @@ public class NetworkManager {
 
         // Add parameters if present
         if (parameters != null) {
-            requestBuilder.addPathParameter(parameters);
+            requestBuilder.addQueryParameter(parameters);
         }
 
         // Make the request

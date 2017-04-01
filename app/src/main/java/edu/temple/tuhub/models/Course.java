@@ -148,7 +148,8 @@ public class Course {
                             JSONArray rosterJSON = response.getJSONArray("activeStudents");
                             String[] roster = new String[rosterJSON.length()];
                             for (int i = 0; i < rosterJSON.length(); i++) {
-                                roster[i] = rosterJSON.getString(i);
+                                JSONObject student = rosterJSON.getJSONObject(i);
+                                roster[i] = student.getString("name");
                             }
                             rosterRequestListener.onResponse(roster);
                         } catch (JSONException e) {
@@ -160,7 +161,7 @@ public class Course {
 
                     @Override
                     public void onError(ANError anError) {
-
+                        Log.e("Course", anError.getErrorBody());
                     }
                 });
     }
