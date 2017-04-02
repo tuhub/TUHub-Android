@@ -54,7 +54,7 @@ public class NetworkManager {
             url += ("/" + tuID);
         }
 
-        Log.d("url", url);
+        //Log.d("url", url);
 
         // Base request
         ANRequest.GetRequestBuilder requestBuilder = AndroidNetworking.get(url);

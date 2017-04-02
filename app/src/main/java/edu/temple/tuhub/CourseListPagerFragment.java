@@ -59,7 +59,7 @@ public class CourseListPagerFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_course_list_pager, container, false);
 
         mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
-        mViewPager.setAdapter(new ViewPagerAdapter(getFragmentManager()));
+        mViewPager.setAdapter(new ViewPagerAdapter(getChildFragmentManager()));
 
         return view;
     }

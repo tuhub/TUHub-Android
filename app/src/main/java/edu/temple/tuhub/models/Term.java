@@ -53,6 +53,7 @@ public class Term {
             JSONObject courseJSON = sectionJSON.getJSONObject(i);
             if (courseJSON == null)
                 break;
+            System.out.println(termID);
             Course course = Course.createCourse(courseJSON, termID);
             if (course != null)
                 courses.add(course);

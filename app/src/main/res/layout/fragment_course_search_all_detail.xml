@@ -19,15 +19,14 @@
         android:layout_alignStart="@+id/courseSearchDetailText" />
 
     <TextView
-        android:text="College"
+        android:id="@+id/collegeSearchDetailText"
         android:layout_width="195dp"
         android:layout_height="wrap_content"
-        android:id="@+id/collegeSearchDetailText"
-        android:textColor="#000000"
-        android:layout_below="@+id/creditHrSearchDetailText"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="21dp"
-        android:layout_marginTop="13dp" />
+        android:layout_alignStart="@+id/creditHrSearchDetailText"
+        android:layout_below="@+id/view2"
+        android:paddingTop="2dp"
+        android:text="College"
+        android:textColor="#000000"/>
 
     <TextView
         android:text="Department"
@@ -70,14 +69,14 @@
         android:layout_marginTop="13dp" />
 
     <TextView
-        android:text="Credit Hours"
+        android:id="@+id/creditHrSearchDetailText"
         android:layout_width="195dp"
         android:layout_height="wrap_content"
-        android:id="@+id/creditHrSearchDetailText"
-        android:textColor="#000000"
-        android:layout_marginTop="13dp"
-        android:layout_below="@+id/crseIDSearchDetailText"
-        android:layout_alignStart="@+id/collegeSearchDetailText" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/view"
+        android:paddingTop="2dp"
+        android:text="Credit Hours"
+        android:textColor="#000000"/>
 
 
     <View
@@ -88,19 +87,21 @@
         android:layout_marginTop="6dp"
         android:layout_centerHorizontal="true" />
     <View
-    android:background="#990033"
-    android:layout_width="400dp"
-    android:layout_height="1dp"
-    android:layout_below="@+id/crseIDSearchDetailText"
-    android:layout_marginTop="6dp"
-    android:layout_centerHorizontal="true" />
+        android:background="#990033"
+        android:layout_width="400dp"
+        android:layout_height="1dp"
+        android:layout_below="@+id/crseIDSearchDetailText"
+        android:layout_marginTop="6dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/view"/>
     <View
         android:background="#990033"
         android:layout_width="400dp"
         android:layout_height="1dp"
         android:layout_below="@+id/creditHrSearchDetailText"
         android:layout_marginTop="6dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:id="@+id/view2"/>
     <View
         android:background="#990033"
         android:layout_width="400dp"
@@ -181,9 +182,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/courseSearchDetailText"
         android:textColor="#000000"
-        android:layout_marginTop="10dp"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/creditHrSearchDetailText" />
+        android:layout_alignParentStart="true"/>
 
     <TextView
         android:text="crseIdResult"

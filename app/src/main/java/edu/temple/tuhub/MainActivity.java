@@ -12,9 +12,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.androidnetworking.error.ANError;
+
+import java.io.Serializable;
+
 import edu.temple.tuhub.models.Course;
 import edu.temple.tuhub.models.Entry;
+import edu.temple.tuhub.models.Grade;
 import edu.temple.tuhub.models.Newsitem;
+
+import static edu.temple.tuhub.models.Grade.retrieveGrades;
 
 public class MainActivity extends AppCompatActivity implements NewsTableFragment.newsshow, NewsTableFragment.filterbutton, FilterMenuFrag.selectorinterface, CourseFragment.showCourseDetails, CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener, CourseFragment.courseSearchHandler, CoursesSearchAllFragment.searchAllResultsInterface{
     static Fragment[] fraghold = new Fragment[2];//For TUNews
@@ -23,6 +30,15 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
     FragmentManager manage ;//For TUNews
     FragmentTransaction transact;//For TUNews
 
+    CourseFragment cf;
+    CourseSearchAllDetail csad;
+    CoursesSearchAllFragment csaf;
+    MyCourseSearchFragment mcsf;
+    CourseDetailsFragment cdf;
+    static String gradeName;
+    static Grade g;
+
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -30,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_courses:
-                    loadFragment(R.id.contentFragment, CourseFragment.newInstance(), false, true);
+                    loadFragment(R.id.contentFragment, cf, false, true);
                     return true;
                 case R.id.navigation_marketplace:
                     // TODO: Load fragment
@@ -50,10 +66,6 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
 
     };
 
-    CourseSearchAllDetail csad;
-    CoursesSearchAllFragment csaf;
-    MyCourseSearchFragment mcsf;
-    CourseFragment cf;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,10 +89,14 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         csad = new CourseSearchAllDetail();
         csaf = new CoursesSearchAllFragment();
         mcsf = new MyCourseSearchFragment();
+        cdf = new CourseDetailsFragment();
+        cf = new CourseFragment();
 
-        int selectedID = navigation.getSelectedItemId();
-        View selectedView = navigation.findViewById(selectedID);
-        selectedView.performClick();
+        if(savedInstanceState==null) {
+            int selectedID = navigation.getSelectedItemId();
+            View selectedView = navigation.findViewById(selectedID);
+            selectedView.performClick();
+        }
 
         if(fraghold[1] == null)//For TUNews
 
@@ -113,9 +129,23 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
 
     @Override
     public void showCourseDetails(Course course) {
-//        CourseFragment cf = CourseFragment.newInstance();
-//        loadFragment(R.id.contentFragment, cf, false, true);
-//        cf.showCourseDetails(course);
+        Bundle bundle = new Bundle();
+        bundle.putString("name", course.getName());
+        bundle.putString("fullname",course.getTitle());
+        bundle.putString("date", course.getStartDate()+" to "+course.getEndDate());
+        bundle.putSerializable("course", (Serializable) course);
+
+        //TODO grades
+        /*bundle.putString("gradeType", String.valueOf(course.getGrades(0)));
+        bundle.putString("gradeName", String.valueOf(course.getGrades(1)));
+        bundle.putString("gradeUpdated", String.valueOf(course.getGrades(2)));*/
+        bundle.putSerializable("meetings", (Serializable) course.getMeetings());
+        bundle.putSerializable("faculty", (Serializable) course.getInstructors());
+        bundle.putStringArray("roster", course.getRoster());
+
+        cdf.setArguments(bundle);
+        loadFragment(R.id.contentFragment, cdf, true, false);
+
     }
 
     @Override

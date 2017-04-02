@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 
 import android.support.annotation.Nullable;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
@@ -86,7 +87,7 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_course, container, false);
         mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
-        mViewPager.setAdapter(new ViewPagerAdapter(getFragmentManager()));
+        mViewPager.setAdapter(new ViewPagerAdapter(getChildFragmentManager()));
 
         return view;
     }
@@ -95,6 +96,7 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
     public void showCourseDetails(Course course) {
         //TODO implement loading the details fragment with the given course
         Log.d("Course selected:", course.getTitle());
+        activity2.showCourseDetails(course);
     }
 
     public class ViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -144,6 +146,7 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
     }
 
     courseSearchHandler activity;
+    showCourseDetails activity2;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -155,6 +158,14 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
     public void onAttach(Activity c) {
         super.onAttach(c);
         activity = (courseSearchHandler) c;
+        activity2 = (showCourseDetails) c;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        activity = null;
+        activity2 = null;
     }
 
     @Override

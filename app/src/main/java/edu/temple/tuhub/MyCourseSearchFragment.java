@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,11 @@ import android.widget.TextView;
 import com.androidnetworking.error.ANError;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import edu.temple.tuhub.models.Course;
@@ -66,15 +70,16 @@ public class MyCourseSearchFragment extends Fragment {
 
             @Override
             public void onResponse(Term[] terms) {
+                final List<Course> tempCourses = new ArrayList<Course>();
                 for(int i = 0; i<terms.length; i++)
                 {
                     for(int k = 0; k<terms[i].getCourses().size(); k++)
                     {
-
                         Map<String, String> datum = new HashMap<String, String>(2);
                         datum.put("First Line", (terms[i].getCourses().get(k).getTitle()));
                         datum.put("Second Line", (terms[i].getCourses().get(k).getName()));
-                        if(filter.equals("")||terms[i].getCourses().get(k).getTitle().contains(filter)){
+                        if(filter.equals("")||terms[i].getCourses().get(k).getTitle().toLowerCase().contains(filter.toLowerCase())){
+                            tempCourses.add(terms[i].getCourses().get(k));
                         data.add(datum);}
                         SimpleAdapter adapter = new SimpleAdapter(getActivity().getApplicationContext(), data, android.R.layout.simple_list_item_2,
                                 new String[]{"First Line", "Second Line"},
@@ -95,7 +100,7 @@ public class MyCourseSearchFragment extends Fragment {
                             public void onItemClick(AdapterView<?> parent, View view,
                                                     int position, long id) {
 
-                                //activity.searchAllResultsInterface(((Entry)tempCourses.get(position)));
+                                activity.showCourseDetails(tempCourses.get(position));
                             }
                         });
                         adapter.notifyDataSetChanged();

@@ -4,11 +4,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
  * Created on 3/24/17.
  */
 
-public class CourseMeeting {
+public class CourseMeeting implements Serializable {
 
     private static final String startTimeKey = "sisStartTimeWTz";
     private static final String endTimeKey = "sisEndTimeWTz";

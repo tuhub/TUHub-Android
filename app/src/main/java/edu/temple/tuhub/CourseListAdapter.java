@@ -1,6 +1,7 @@
 package edu.temple.tuhub;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +44,8 @@ public class CourseListAdapter extends ArrayAdapter<Course> {
         // Populate the data into the template view using the data object
         text1.setText(course.getName());
         text2.setText(course.getTitle());
+        text1.setTextColor(Color.BLACK);
+        text2.setTextColor(Color.DKGRAY);
         // Return the completed view to render on screen
         return convertView;
     }

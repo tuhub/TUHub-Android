@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import android.util.Log;
  * Created on 3/24/17.
  */
 
-public class Course {
+public class Course implements Serializable {
 
     public interface RosterRequestListener {
         void onResponse(String[] roster);
@@ -43,8 +44,8 @@ public class Course {
     private String sectionID;
     private String termID;
     private String sectionNumber;
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
 
     @Nullable
     private List<CourseMeeting> meetings;
@@ -64,8 +65,8 @@ public class Course {
                   String description,
                   String sectionID,
                   String sectionNumber,
-                  Date startDate,
-                  Date endDate,
+                  String startDate,
+                  String endDate,
                   String termID,
                   List<CourseMeeting> meetings,
                   List<Instructor> instructors) {
@@ -79,6 +80,7 @@ public class Course {
         this.startDate = startDate;
         this.endDate = endDate;
         this.meetings = meetings;
+        this.instructors = instructors;
     }
 
     public static Course createCourse(JSONObject jsonObject, String termID) throws JSONException {
@@ -91,8 +93,8 @@ public class Course {
         String endDateStr = jsonObject.getString("lastMeetingDate");
 
         // TODO: Parse string into date
-        Date startDate = null;
-        Date endDate = null;
+        String startDate = formatDate(startDateStr);
+        String endDate = formatDate(endDateStr);
 
         // Get course meetings
         JSONArray meetingsJSON = jsonObject.getJSONArray("meetingPatterns");
@@ -193,11 +195,11 @@ public class Course {
         return sectionNumber;
     }
 
-    public Date getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public Date getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 

@@ -35,18 +35,21 @@
     <!-- TUNews Strings -->
     <string name="temple">TU News</string>
     <string name="filter">Filter</string>
-    <string name = "OK">OK</string>
-    <string name ="ArtandCulture">Art &amp; Culture</string>
-    <string name ="Athletics">Athletics</string>
-    <string name ="CampusNews">Campus News</string>
-    <string name ="CommunityEngagement">Community Engagement</string>
-    <string name ="GlobalTemple">Global Temple</string>
-    <string name ="Research">Research</string>
-    <string name ="StaffFaculty">Staff &amp; Faculty</string>
-    <string name ="StudentSuccess">Student Success</string>
-    <string name ="Sustainability">Sustainability</string>
-    <string name ="Temple2020">Temple 20/20</string>
-    <string name ="ComputerLabs">Computer Labs</string>
-    <string name ="SystemStatus">System Status</string>
+    <string name="OK">OK</string>
+    <string name="ArtandCulture">Art &amp; Culture</string>
+    <string name="Athletics">Athletics</string>
+    <string name="CampusNews">Campus News</string>
+    <string name="CommunityEngagement">Community Engagement</string>
+    <string name="GlobalTemple">Global Temple</string>
+    <string name="Research">Research</string>
+    <string name="StaffFaculty">Staff &amp; Faculty</string>
+    <string name="StudentSuccess">Student Success</string>
+    <string name="Sustainability">Sustainability</string>
+    <string name="Temple2020">Temple 20/20</string>
+    <string name="ComputerLabs">Computer Labs</string>
+    <string name="SystemStatus">System Status</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

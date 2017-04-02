@@ -5,11 +5,13 @@ import android.support.annotation.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
  * Created by connorcrawford on 3/24/17.
  */
 
-public class Instructor {
+public class Instructor implements Serializable{
 
     private String instructorID;
     private String firstName;
@@ -39,5 +41,19 @@ public class Instructor {
         return null;
     }
 
+    public String getInstructorID() {
+        return instructorID;
+    }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getFormattedName() {
+        return formattedName;
+    }
 }

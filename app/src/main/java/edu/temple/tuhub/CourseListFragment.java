@@ -1,14 +1,17 @@
 package edu.temple.tuhub;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import edu.temple.tuhub.models.Course;
+import edu.temple.tuhub.models.Entry;
 import edu.temple.tuhub.models.Term;
 import edu.temple.tuhub.models.User;
 
@@ -24,6 +27,8 @@ public class CourseListFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private Term mTerm;
     private ListView mListView;
+
+    CourseFragment.showCourseDetails activity;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -56,13 +61,20 @@ public class CourseListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_course_list, container, false);
         mListView = (ListView) view.findViewById(R.id.course_list);
-        mListView.setAdapter(new CourseListAdapter(getContext(), mTerm.getCourses()));
+        mListView.setAdapter(new CourseListAdapter(getActivity().getApplicationContext(), mTerm.getCourses()));
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+               activity.showCourseDetails(mTerm.getCourses().get(i));
+            }
+        });
         return view;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        activity = (CourseFragment.showCourseDetails) context;
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
         } else {
@@ -75,7 +87,9 @@ public class CourseListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        activity = null;
     }
+
 
     /**
      * This interface must be implemented by activities that contain this
