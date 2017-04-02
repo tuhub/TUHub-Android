@@ -9,6 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -151,6 +153,7 @@ public class Course {
                                 JSONObject student = rosterJSON.getJSONObject(i);
                                 roster[i] = student.getString("name");
                             }
+                            Course.this.roster = roster;
                             rosterRequestListener.onResponse(roster);
                         } catch (JSONException e) {
                             // TODO: Handle error
@@ -164,60 +167,6 @@ public class Course {
                         Log.e("Course", anError.getErrorBody());
                     }
                 });
-    }
-
-    public void retrieveGrades() {
-        if (User.CURRENT == null) {
-            return;
-        }
-        // Generate parameters
-        Map<String, String> params = new HashMap<>(2);
-        params.put("term", termID);
-        params.put("section", sectionID);
-
-        NetworkManager.SHARED.requestFromEndpoint(NetworkManager.Endpoint.GRADES,
-                User.CURRENT.getTuID(),
-                params,
-                User.CURRENT.getCredential(),
-                new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray terms = response.getJSONArray("terms");
-                            //first level - terms
-                            for (int i = 0; i < terms.length(); i++) {
-                                JSONObject obj1 = terms.getJSONObject(i);
-                                //second level - sections
-                                JSONArray sections = obj1.getJSONArray("sections");
-                                for (int j = 0; j < sections.length(); j++) {
-                                    JSONObject obj = sections.getJSONObject(j);
-                                    //third level - grades
-                                    JSONArray gradesResponse = obj.getJSONArray("grades");
-                                    for (int k = 0; k < gradesResponse.length(); k++) {
-                                        JSONObject grades = gradesResponse.getJSONObject(k);
-                                        String value = grades.getString("value");
-                                        //create Grade object for related course
-                                        courseGrade = Grade.createGrade(grades);
-                                        Log.d("grades: ", courseGrade.grade);
-                                        Log.d("grade value: " , value);
-                                        //gradeValue=grades.getString("value");
-                                    }
-                                }
-                            }
-
-                        } catch (JSONException e) {
-                            // TODO: Handle error
-                            e.printStackTrace();
-                        }
-
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-
-                    }
-                });
-
     }
 
     public String getName() {
@@ -269,5 +218,21 @@ public class Course {
 
     @Nullable
     public Grade getGrade(){return courseGrade;}
+
+    private static String formatDate(String date){
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat newFormat = new SimpleDateFormat("MMMM dd, yyyy");
+        Date formatedDate;
+        try {
+            formatedDate = simpleDateFormat.parse(date);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return date;
+        }
+        return newFormat.format(formatedDate);
+
+    }
 
 }

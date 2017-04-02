@@ -1,6 +1,7 @@
 package edu.temple.tuhub.models;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
@@ -8,6 +9,9 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created on 3/24/17.
@@ -24,6 +28,12 @@ public class User {
         void onResponse(Term[] terms);
         void onError(ANError error);
     }
+
+    public interface GradesRequestListener {
+        void onResponse(Term[] terms);
+        void onError(ANError error);
+    }
+
 
     @Nullable
     public static User CURRENT;
@@ -95,6 +105,40 @@ public class User {
                         userRequestListener.onError(anError);
                     }
                 });
+    }
+
+    private void retrieveGrades(GradesRequestListener gradesRequestListener) {
+        NetworkManager.SHARED.requestFromEndpoint(NetworkManager.Endpoint.GRADES,
+                tuID,
+                null,
+                credential,
+                new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray termsJSON = response.getJSONArray("terms");
+                            Term[] terms = new Term[termsJSON.length()];
+
+                            for (int i = 0; i < termsJSON.length(); i++) {
+                                Term term = Term.createTerm(termsJSON.getJSONObject(i));
+                                if (term != null)
+                                    terms[i] = term;
+                            }
+
+
+                        } catch (JSONException e) {
+                            // TODO: Handle error
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+
+                    }
+                });
+
     }
 
     public void retrieveCourses(final CoursesRequestListener coursesRequestListener) {
