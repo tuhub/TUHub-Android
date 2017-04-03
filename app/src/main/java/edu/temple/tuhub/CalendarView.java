@@ -141,7 +141,9 @@ public class CalendarView extends LinearLayout {
             {
                 //Reset background color of all cells, then set selected cell color
                 for(int i = 0; i < view.getAdapter().getCount(); i++){
-                    view.getChildAt(i).setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                    //poor way to handle this.. probably needs a seperate layout for horizontal phones as layout doesn't display properly
+                    if(view.getChildAt(i)!=null){
+                    view.getChildAt(i).setBackgroundColor(getResources().getColor(R.color.colorAccent));}
                 }
                 cell.setBackgroundColor(getResources().getColor(R.color.selected_day));
 

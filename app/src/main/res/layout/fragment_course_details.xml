@@ -4,9 +4,6 @@
                 android:layout_height="match_parent"
                 tools:context="edu.temple.tuhub.CourseDetailsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
-
     <TextView
         android:id="@+id/courseName"
         android:layout_width="wrap_content"
@@ -121,6 +118,7 @@
         android:text="Roster"
         android:textColor="@android:color/black"
         android:textSize="16dp"/>
+
 
     <ListView
         android:id="@+id/rosterList"

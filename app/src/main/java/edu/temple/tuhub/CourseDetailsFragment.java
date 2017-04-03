@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -24,6 +25,7 @@ import java.util.Map;
 import edu.temple.tuhub.models.Course;
 import edu.temple.tuhub.models.CourseMeeting;
 import edu.temple.tuhub.models.Entry;
+import edu.temple.tuhub.models.Grade;
 import edu.temple.tuhub.models.Instructor;
 
 import static android.widget.AdapterView.*;
@@ -75,7 +77,7 @@ public class CourseDetailsFragment extends Fragment {
         getCourseData(data);
         setCourseData(v);
         loadRoster(course);
-
+        loadGrades(course);
         return v;
     }
 
@@ -163,34 +165,49 @@ public class CourseDetailsFragment extends Fragment {
             });
 
         }
-        public void loadGrades(Course c){
-        //Grade listview
-        List<Map<String, String>> gradeData = new ArrayList<Map<String, String>>();
-        Map<String, String> datum = new HashMap<>(2);
-        datum.put("First Line", grade);
-        datum.put("Second Line", gradeDetails);
-        gradeData.add(datum);
-        SimpleAdapter gradeAdapter = new SimpleAdapter(getActivity().getApplicationContext(), gradeData, android.R.layout.simple_list_item_2,
-                new String[]{"First Line", "Second Line"},
-                new int[]{android.R.id.text1, android.R.id.text2}) {
+        public void loadGrades(Course c) {
+            //Grade listview
+            List<Grade> g = c.getGrades();
+            if (g != null && g.size() > 0) {
+                List<Map<String, String>> gradeData = new ArrayList<Map<String, String>>();
+                Map<String, String> datum = new HashMap<>(2);
+                datum.put("First Line", g.get(0).getGrade());
+                datum.put("Second Line", g.get(0).getName() + " Updated on: " + g.get(0).getUpdated());
+                gradeData.add(datum);
+                SimpleAdapter gradeAdapter = new SimpleAdapter(getActivity().getApplicationContext(), gradeData, android.R.layout.simple_list_item_2,
+                        new String[]{"First Line", "Second Line"},
+                        new int[]{android.R.id.text1, android.R.id.text2}) {
 
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-                text1.setTextColor(Color.BLACK);
-                TextView text2 = (TextView) view.findViewById(android.R.id.text2);
-                text2.setTextColor(Color.DKGRAY);
-                return view;
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        View view = super.getView(position, convertView, parent);
+                        TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+                        text1.setTextColor(Color.BLACK);
+                        TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+                        text2.setTextColor(Color.DKGRAY);
+                        return view;
+                    }
+                };
+                gradeList.setAdapter(gradeAdapter);
+                gradeList.setOnItemClickListener(new OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    }
+                });
+                gradeAdapter.notifyDataSetChanged();
             }
-        };
-        gradeList.setAdapter(gradeAdapter);
-        gradeList.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            else
+            {
+                String[] noResults = new String[1];
+                noResults[0] = "No grades found.";
+               gradeList.setAdapter(new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, noResults) {
+                   @Override
+                   public View getView(int position, View convertView, ViewGroup parent) {
+                       TextView textView = (TextView) super.getView(position, convertView, parent);
+                       textView.setTextColor(Color.DKGRAY);
+                       return textView;
+                   }
+               });
             }
-        });
-        gradeAdapter.notifyDataSetChanged();
-
         }
     }
 
