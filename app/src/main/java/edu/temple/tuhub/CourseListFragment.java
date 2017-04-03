@@ -72,9 +72,14 @@ public class CourseListFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Activity c) {
+        super.onAttach(c);
+        activity = (CourseFragment.showCourseDetails) c;
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        activity = (CourseFragment.showCourseDetails) context;
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
         } else {

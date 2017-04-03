@@ -102,10 +102,11 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
 
     private void loadFragment(int ID, Fragment fragment, boolean backStack, boolean clearBackStack) {
         FragmentManager fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction().replace(ID, fragment);
+        FragmentTransaction ft = fm.beginTransaction().detach(cf).replace(ID, fragment).attach(fragment);
         if(clearBackStack){
-            fm.popBackStack();
-            fm.popBackStack();
+             fm.popBackStack();
+             fm.popBackStack();
+
         }
         if (backStack) {
             ft.addToBackStack(null);

@@ -20,6 +20,8 @@ import edu.temple.tuhub.models.User;
  */
 public class CourseListPagerFragment extends Fragment {
 
+
+
     private static final String ARG_CURRENT_PAGE = "current-page";
 
     private int mCurrentPage = 0;

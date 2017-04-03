@@ -144,19 +144,24 @@ public class CourseDetailsFragment extends Fragment {
                 }
             });
         }
-        public void loadRoster(Course c){
+        public void loadRoster(final Course c){
             c.retrieveRoster(new Course.RosterRequestListener() {
                 @Override
                 public void onResponse(String[] roster) {
                     //Roster listview
-                    rosterList.setAdapter(new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, roster) {
-                        @Override
-                        public View getView(int position, View convertView, ViewGroup parent) {
-                            TextView textView = (TextView) super.getView(position, convertView, parent);
-                            textView.setTextColor(Color.BLACK);
-                            return textView;
-                        }
-                    });
+                    if(isAdded()) {
+                        rosterList.setAdapter(new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, roster) {
+                            @Override
+                            public View getView(int position, View convertView, ViewGroup parent) {
+                                TextView textView = (TextView) super.getView(position, convertView, parent);
+                                textView.setTextColor(Color.BLACK);
+                                return textView;
+                            }
+                        });
+                    }
+                    else{
+                        loadRoster(c);
+                    }
                 }
 
                 @Override
