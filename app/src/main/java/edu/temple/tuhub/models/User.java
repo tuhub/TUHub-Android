@@ -10,7 +10,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,7 +33,7 @@ public class User {
     }
 
     public interface GradesRequestListener {
-        void onResponse(Term[] terms);
+        void onResponse();
         void onError(ANError error);
     }
 
@@ -107,7 +110,12 @@ public class User {
                 });
     }
 
-    private void retrieveGrades(GradesRequestListener gradesRequestListener) {
+    /**
+     * Retrieves the user's grades and inserts them into their corresponding courses
+     * @param courseTerms The array of terms containing the courses to insert grades into
+     * @param gradesRequestListener The request listener that is called when the grades are retrieved
+     */
+    private void retrieveGrades(final Term[] courseTerms, final GradesRequestListener gradesRequestListener) {
         NetworkManager.SHARED.requestFromEndpoint(NetworkManager.Endpoint.GRADES,
                 tuID,
                 null,
@@ -120,14 +128,46 @@ public class User {
                             Term[] terms = new Term[termsJSON.length()];
 
                             for (int i = 0; i < termsJSON.length(); i++) {
-                                Term term = Term.createTerm(termsJSON.getJSONObject(i));
-                                if (term != null)
-                                    terms[i] = term;
+                                JSONObject termJSON = termsJSON.getJSONObject(i);
+                                JSONArray coursesJSON = termJSON.getJSONArray("sections");
+                                for (int j = 0; j < coursesJSON.length(); j++) {
+                                    JSONObject courseJSON = coursesJSON.getJSONObject(j);
+
+                                    // Find the corresponding course
+                                    Course course = null;
+                                    for (Term t: courseTerms) {
+                                        if (t.getTermID().equals(termJSON.getString("id"))) {
+                                            for (Course c: t.getCourses()) {
+                                                if (c.getSectionID().equals(courseJSON.getString("sectionId"))) {
+                                                    course = c;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    // Unable to find the corresponding course, skip grade creation
+                                    if (course == null)
+                                        continue;
+
+                                    // Create the grade objects
+                                    JSONArray gradesJSON = courseJSON.getJSONArray("grades");
+                                    List<Grade> grades = new ArrayList<>(0);
+                                    for (int k = 0; k < gradesJSON.length(); k++) {
+                                        Grade grade = Grade.createGrade(gradesJSON.getJSONObject(k));
+                                        if (grade != null)
+                                            grades.add(grade);
+                                    }
+
+                                    // Set the course's grades to the created grades
+                                    course.grades = grades;
+                                }
                             }
 
-
+                            gradesRequestListener.onResponse();
                         } catch (JSONException e) {
                             // TODO: Handle error
+                            e.printStackTrace();
+                        } catch (ParseException e) {
                             e.printStackTrace();
                         }
 
@@ -135,7 +175,7 @@ public class User {
 
                     @Override
                     public void onError(ANError anError) {
-
+                        gradesRequestListener.onError(anError);
                     }
                 });
 
@@ -151,14 +191,25 @@ public class User {
                     public void onResponse(JSONObject response) {
                         try {
                             JSONArray termsJSON = response.getJSONArray("terms");
-                            Term[] terms = new Term[termsJSON.length()];
+                            final Term[] terms = new Term[termsJSON.length()];
                             for (int i = 0; i < termsJSON.length(); i++) {
                                 Term term = Term.createTerm(termsJSON.getJSONObject(i));
                                 if (term != null)
                                     terms[i] = term;
                             }
-                            User.this.terms = terms;
-                            coursesRequestListener.onResponse(terms);
+
+                            retrieveGrades(terms, new GradesRequestListener() {
+                                @Override
+                                public void onResponse() {
+                                    User.this.terms = terms;
+                                    coursesRequestListener.onResponse(terms);
+                                }
+
+                                @Override
+                                public void onError(ANError error) {
+
+                                }
+                            });
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

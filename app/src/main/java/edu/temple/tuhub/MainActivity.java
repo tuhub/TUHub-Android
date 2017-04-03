@@ -12,16 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.androidnetworking.error.ANError;
-
 import java.io.Serializable;
 
 import edu.temple.tuhub.models.Course;
 import edu.temple.tuhub.models.Entry;
 import edu.temple.tuhub.models.Grade;
 import edu.temple.tuhub.models.Newsitem;
-
-import static edu.temple.tuhub.models.Grade.retrieveGrades;
 
 public class MainActivity extends AppCompatActivity implements NewsTableFragment.newsshow, NewsTableFragment.filterbutton, FilterMenuFrag.selectorinterface, CourseFragment.showCourseDetails, CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener, CourseFragment.courseSearchHandler, CoursesSearchAllFragment.searchAllResultsInterface{
     static Fragment[] fraghold = new Fragment[2];//For TUNews
@@ -35,9 +31,6 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
     CoursesSearchAllFragment csaf;
     MyCourseSearchFragment mcsf;
     CourseDetailsFragment cdf;
-    static String gradeName;
-    static Grade g;
-
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {

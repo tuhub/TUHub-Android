@@ -53,9 +53,8 @@ public class Course implements Serializable {
     @Nullable
     private List<Instructor> instructors;
 
-
     @Nullable
-    private Grade courseGrade;
+    protected List<Grade> grades;
 
     @Nullable
     private String[] roster;
@@ -85,9 +84,9 @@ public class Course implements Serializable {
 
     public static Course createCourse(JSONObject jsonObject, String termID) throws JSONException {
         String name = jsonObject.getString("courseName");
+        String sectionID = jsonObject.getString("sectionId");
         String title = jsonObject.getString("sectionTitle");
         String description = jsonObject.getString("courseDescription");
-        String sectionID = jsonObject.getString("sectionId");
         String sectionNumber = jsonObject.getString("courseSectionNumber");
         String startDateStr = jsonObject.getString("firstMeetingDate");
         String endDateStr = jsonObject.getString("lastMeetingDate");
@@ -219,7 +218,9 @@ public class Course implements Serializable {
     }
 
     @Nullable
-    public Grade getGrade(){return courseGrade;}
+    public List<Grade> getGrades() {
+        return grades;
+    }
 
     private static String formatDate(String date){
 

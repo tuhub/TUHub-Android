@@ -13,85 +13,35 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Grade {
     public String name;
     public String grade;
-    public String updated;
+    public Date updated;
 
-    public Grade(String name, String grade, String updated){
+    public Grade(String name, String grade, Date updated){
         this.name=name;
         this.grade=grade;
         this.updated=updated;
     }
 
     @Nullable
-    public String[] createGrade(JSONObject jsonObject, String[] gradeString) throws JSONException {
-
+    public static Grade createGrade(JSONObject jsonObject) throws JSONException, ParseException {
         String name = jsonObject.getString("name");
         String grade = jsonObject.getString("value");
-        String updated = jsonObject.getString("updated");
-        System.out.println(name+ " "+grade+" "+updated);
-        gradeString[0] = name;
-        gradeString[1] = grade;
-        gradeString[2] = updated;
-        return gradeString;
+        String updatedStr = jsonObject.getString("updated");
 
-    }
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        Date updated = sdf.parse(updatedStr);
 
-    public static void retrieveGrades(final Course.GradeRequestListener gradeRequestListener, String term, String section) {
-        if (User.CURRENT == null) {
-            return;
-        }
-        // Generate parameters
-        Map<String, String> params = new HashMap<>(2);
-        params.put("term", term);
-        params.put("section", section);
-        NetworkManager.SHARED.requestFromEndpoint(NetworkManager.Endpoint.GRADES,
-                User.CURRENT.getTuID(),
-                params,
-                User.CURRENT.getCredential(),
-                new JSONObjectRequestListener() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        String[] gradeString = new String[3];
-                        try {
-                            JSONArray terms = response.getJSONArray("terms");
-                            //first level - terms
-                            for (int i = 0; i < terms.length(); i++) {
-                                JSONObject obj1 = terms.getJSONObject(i);
-                                //second level - sections
-                                JSONArray sections = obj1.getJSONArray("sections");
-                                for (int j = 0; j < sections.length(); j++) {
-                                    JSONObject obj = sections.getJSONObject(j);
-                                    //third level - grades
-                                    JSONArray gradesResponse = obj.getJSONArray("grades");
-
-                                    for (int k = 0; k < gradesResponse.length(); k++) {
-                                        JSONObject grades = gradesResponse.getJSONObject(k);
-                                        //create Grade object for related course
-
-                                        gradeString[0] = grades.getString("name");
-                                        gradeString[1] = grades.getString("value");
-                                        gradeString[2] = grades.getString("updated");
-                                    }
-                                }
-                            }
-                           gradeRequestListener.onResponse(gradeString);
-                        } catch (JSONException e) {
-                            // TODO: Handle error
-                            e.printStackTrace();
-                        }
-
-                    }
-
-                    @Override
-                    public void onError(ANError anError) {
-                    }
-                });
+        if (name != null && grade != null && updated != null)
+            return new Grade(name, grade, updated);
+        return null;
     }
 
     public String getName() {
@@ -102,19 +52,8 @@ public class Grade {
         return grade;
     }
 
-    public String getUpdated() {
+    public Date getUpdated() {
         return updated;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setGrade(String grade) {
-        this.grade = grade;
-    }
-
-    public void setUpdated(String updated) {
-        this.updated = updated;
-    }
 }
