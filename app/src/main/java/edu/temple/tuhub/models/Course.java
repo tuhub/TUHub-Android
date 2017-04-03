@@ -91,7 +91,6 @@ public class Course implements Serializable {
         String startDateStr = jsonObject.getString("firstMeetingDate");
         String endDateStr = jsonObject.getString("lastMeetingDate");
 
-        // TODO: Parse string into date
         String startDate = formatDate(startDateStr);
         String endDate = formatDate(endDateStr);
 
