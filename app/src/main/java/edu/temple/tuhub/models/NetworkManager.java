@@ -25,7 +25,8 @@ public class NetworkManager {
         COURSES("https://prd-mobile.temple.edu/banner-mobileserver/api/2.0/courses/overview"),
         COURSE_ROSTER("https://prd-mobile.temple.edu/banner-mobileserver/api/2.0/courses/roster"),
         NEWS("https://prd-mobile.temple.edu/banner-mobileserver/rest/1.2/feed"),
-        COURSE_SEARCH("https://prd-mobile.temple.edu/CourseSearch/searchCatalog.jsp");
+        COURSE_SEARCH("https://prd-mobile.temple.edu/CourseSearch/searchCatalog.jsp"),
+        MARKETPLACE("http://tuhubapi-env.us-east-1.elasticbeanstalk.com");
 
         private final String url;
 
