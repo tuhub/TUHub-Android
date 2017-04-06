@@ -104,6 +104,36 @@ public class NetworkManager {
         requestBuilder.build().getAsJSONArray(jsonArrayRequestListener);
     }
 
+    public void requestFromUrl(String url,
+                                    @Nullable String tuID,
+                                    @Nullable Map<String, String> parameters,
+                                    @Nullable Credential credential,
+                                    JSONObjectRequestListener jsonObjectRequestListener) {
+
+        // Add TU ID to path if present
+        if (tuID != null) {
+            url += ("/" + tuID);
+        }
+
+        //Log.d("url", url);
+
+        // Base request
+        ANRequest.GetRequestBuilder requestBuilder = AndroidNetworking.get(url);
+
+        // Add basic auth header if credentials are present
+        if (credential != null) {
+            requestBuilder.addHeaders(NetworkManager.generateBasicAuthHeader(credential));
+        }
+
+        // Add parameters if present
+        if (parameters != null) {
+            requestBuilder.addQueryParameter(parameters);
+        }
+
+        // Make the request
+        requestBuilder.build().getAsJSONObject(jsonObjectRequestListener);
+    }
+
     static Map<String, String> generateBasicAuthHeader(Credential credential) {
         Map<String, String> map = new HashMap<>(1);
         map.put("Authorization", "Basic "

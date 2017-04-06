@@ -1,7 +1,12 @@
 package edu.temple.tuhub.models.marketplace;
 
+import android.util.Log;
+
+import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.temple.tuhub.models.NetworkManager;
@@ -11,12 +16,23 @@ import edu.temple.tuhub.models.NetworkManager;
  */
 
 public class Product {
-    private final String INSERT = "/insert_product.jsp?";
-    private final String TITLE_KEY = "title";
-    private final String DESCRIPTION_KEY = "description";
-    private final String PRICE_KEY = "price";
-    private final String IS_ACTIVE_KEY = "isActive";
-    private final String OWNER_ID_KEY = "ownerId";
+    public static final String INSERT_URL = "/insert_product.jsp?";
+    public static final String SELECT_BY_OWNER_URL = "/find_products_by_user_id.jsp?";
+    public static final String LIMIT_KEY = "limit";
+    public static final String OFFSET_KEY = "offset";
+    public static final String TITLE_KEY = "title";
+    public static final String PRODUCT_ID_KEY = "productId";
+    public static final String DESCRIPTION_KEY = "description";
+    public static final String PRICE_KEY = "price";
+    public static final String IS_ACTIVE_KEY = "isActive";
+    public static final String OWNER_ID_KEY = "ownerId";
+    public static final String USER_ID_KEY = "userId";
+    public static final String PIC_FILE_NAME_KEY = "picFileName";
+    public static final String DATE_POSTED_KEY = "datePosted";
+    public static final String PRODUCT_LIST_KEY = "productList";
+    public static final String ERROR_KEY = "error";
+    public static final String TRUE = "true";
+    public static final String FALSE = "false";
 
     private String productId = "";
     private String title="";
@@ -32,6 +48,22 @@ public class Product {
 
     }
 
+    public Product(JSONObject object){
+        try{
+            this.productId = object.getString(PRODUCT_ID_KEY);
+            this.title = object.getString(TITLE_KEY);
+            this.description = object.getString(DESCRIPTION_KEY);
+            this.price = object.getString(PRICE_KEY);
+            this.isActive = object.getString(IS_ACTIVE_KEY);
+            this.ownerId = object.getString(OWNER_ID_KEY);
+            this.datePosted = object.getString(DATE_POSTED_KEY);
+            this.picFileName = object.getString(PIC_FILE_NAME_KEY);
+
+        } catch (JSONException e){
+            this.error = e.toString();
+        }
+    }
+
     public Product(String productId, String title, String description, String price, String isActive, String ownerId, String datePosted, String picFileName) {
         this.productId = productId;
         this.title = title;
@@ -43,14 +75,112 @@ public class Product {
         this.picFileName = picFileName;
     }
 
+    public void insert(final ProductRequestListener productRequestListener){
+        String insertUrl = createInsertUrl();
+        Log.d("insertUrl", insertUrl);
+        NetworkManager.SHARED.requestFromUrl(insertUrl,
+                null,
+                null,
+                null,
+                new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.d("product", response.toString());
+                            String error = response.getString(ERROR_KEY);
+                            String ownerId = response.getString(OWNER_ID_KEY);
+                            if(error.length() == 0) {
 
+                                getPicFolderAfterInsert(ownerId, new ProductRequestListener() {
+                                    @Override
+                                    public void onResponse(Product newestProduct) {
+                                        productRequestListener.onResponse(newestProduct);
+                                    }
+
+                                    @Override
+                                    public void onError(ANError error) {
+                                        Log.d("Product Insert Error", error.toString());
+                                        productRequestListener.onError(error);
+                                    }
+                                });
+                            } else {
+                                Product product = new Product(response);
+                                product.setError(error);
+                                productRequestListener.onResponse(product);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        productRequestListener.onError(anError);
+                    }
+                });
+    }
+
+    public void getPicFolderAfterInsert(String ownerId, final ProductRequestListener productRequestListener){
+
+        String selectUrl = Product.createSelectByOwnerIdUrl(ownerId, 1, 0);
+        Log.d("selectUrl", selectUrl);
+
+        NetworkManager.SHARED.requestFromUrl(selectUrl,
+                null,
+                null,
+                null,
+                new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("newest product", response.toString());
+
+                        try {
+                            JSONArray resultArray = response.getJSONArray(PRODUCT_LIST_KEY);
+                            JSONObject productJSON = resultArray.getJSONObject(0);
+                            Product newestProduct = new Product(productJSON);
+
+                            productRequestListener.onResponse(newestProduct);
+                        } catch(JSONException e){
+                            Log.d("product error", e.toString());
+                            ANError error = new ANError();
+                            error.setErrorBody(e.toString());
+                            productRequestListener.onError(error);
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        productRequestListener.onError(anError);
+                    }
+                });
+    }
+
+    public static String createSelectByOwnerIdUrl(String ownerId, int limit, int offset){
+        StringBuffer selectUrl = new StringBuffer(NetworkManager.Endpoint.MARKETPLACE.toString());
+        selectUrl.append(SELECT_BY_OWNER_URL);
+        selectUrl.append(USER_ID_KEY);
+        selectUrl.append("=");
+        selectUrl.append(ownerId);
+        selectUrl.append("&");
+        selectUrl.append(LIMIT_KEY);
+        selectUrl.append("=");
+        selectUrl.append(String.valueOf(limit));
+        selectUrl.append("&");
+        selectUrl.append(OFFSET_KEY);
+        selectUrl.append("=");
+        selectUrl.append(String.valueOf(offset));
+
+        return selectUrl.toString();
+    }
 
     /*
     Create the url for the insert API call. Checks to see which arguments are not null and appends their values to the GET url
      */
     public String createInsertUrl(){
-       UrlBuffer buffer = new UrlBuffer(INSERT);
-        buffer.append("?");
+        UrlBuffer buffer = new UrlBuffer(NetworkManager.Endpoint.MARKETPLACE.toString());
+        buffer.append(INSERT_URL);
+        buffer.append("&");
 
         if(title != null){
             buffer.urlArgAppend(TITLE_KEY, title);
@@ -150,6 +280,11 @@ public class Product {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public interface ProductRequestListener {
+        void onResponse(Product product);
+        void onError(ANError error);
     }
 
     public class UrlBuffer{
