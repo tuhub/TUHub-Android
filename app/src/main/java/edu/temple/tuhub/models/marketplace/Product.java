@@ -27,7 +27,7 @@ public class Product {
     public static final String IS_ACTIVE_KEY = "isActive";
     public static final String OWNER_ID_KEY = "ownerId";
     public static final String USER_ID_KEY = "userId";
-    public static final String PIC_FILE_NAME_KEY = "picFileName";
+    public static final String PIC_FOLDER_NAME_KEY = "picFolder";
     public static final String DATE_POSTED_KEY = "datePosted";
     public static final String PRODUCT_LIST_KEY = "productList";
     public static final String ERROR_KEY = "error";
@@ -57,7 +57,7 @@ public class Product {
             this.isActive = object.getString(IS_ACTIVE_KEY);
             this.ownerId = object.getString(OWNER_ID_KEY);
             this.datePosted = object.getString(DATE_POSTED_KEY);
-            this.picFileName = object.getString(PIC_FILE_NAME_KEY);
+            this.picFileName = object.getString(PIC_FOLDER_NAME_KEY);
 
         } catch (JSONException e){
             this.error = e.toString();

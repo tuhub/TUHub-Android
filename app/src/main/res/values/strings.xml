@@ -51,5 +51,18 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="product_title">Product Title</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="insert_product">Insert Product</string>
+    <string name="price">Price</string>
+    <string name="add_product">Add Product</string>
+    <string name="add_image">Add Image</string>
+    <string name="submit">Submit</string>
+    <string name="take_picture">Take Picture</string>
+    <string name="error_field_too_long">Max Length: 2000 characters. Currently:</string>
+    <string name="error_invalid_dollar_amount">Invalid dollar amount.</string>
+    <string name="close">Close</string>
+    <string name="error_too_many_pics">You may only upload up to 10 images for a listing.</string>
 
 </resources>

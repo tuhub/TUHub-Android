@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.ANRequest;
 import com.androidnetworking.interfaces.JSONArrayRequestListener;
@@ -141,6 +142,8 @@ public class NetworkManager {
                 .getBytes(), Base64.NO_WRAP));
         return map;
     }
+
+
 
 
 }
