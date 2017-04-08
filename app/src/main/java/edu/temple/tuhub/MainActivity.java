@@ -20,7 +20,7 @@ import edu.temple.tuhub.models.Grade;
 import edu.temple.tuhub.models.Newsitem;
 
 public class MainActivity extends AppCompatActivity implements NewsTableFragment.newsshow, NewsTableFragment.filterbutton, FilterMenuFrag.selectorinterface, CourseFragment.showCourseDetails, CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener, CourseFragment.courseSearchHandler, CoursesSearchAllFragment.searchAllResultsInterface{
-    static Fragment[] fraghold = new Fragment[2];//For TUNews
+    static Fragment[] fraghold = new Fragment[3];//For TUNews and some TUmarketplace
     FilterMenuFrag tufilter;//For TUNews
 
     FragmentManager manage ;//For TUNews
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
                     loadFragment(R.id.contentFragment, cf, false, true);
                     return true;
                 case R.id.navigation_marketplace:
-                    // TODO: Load fragment
+                    loadFragment(R.id.contentFragment, fraghold[2], false, true);
                     return true;
                 case R.id.navigation_maps:
                     // TODO: Load fragment
@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         {
             fraghold[0]= new NewsFragment();
             fraghold[1] = new NewsTableFragment();
+            fraghold[2] = new MarketTableFragment();
 
         }
     }
@@ -201,6 +202,11 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
             manage.executePendingTransactions();
 
         }
+       /* else if(getFragmentManager().findFragmentById(android.R.id.content) instanceof ) //TODO for when we display the marketfrag that showcases the data in the market item
+        {
+
+
+        }*/
         else
         {
             super.onBackPressed();
