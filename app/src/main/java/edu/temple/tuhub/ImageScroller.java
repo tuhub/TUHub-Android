@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +24,9 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
@@ -85,6 +88,8 @@ public class ImageScroller extends LinearLayout {
             @Override
             public void onClick(View v) {
                 fragment.submitListing();
+               // submitButton.setEnabled(false);
+                //addImageButton.setVisibility(INVISIBLE);
             }
         });
     }
@@ -130,6 +135,13 @@ public class ImageScroller extends LinearLayout {
             Uri selectedImage = data.getData();
             addImagePreview(selectedImage, true);
         }
+    }
+
+    /** Called by attached fragment to notify that the database insert failed **/
+    //TODO this isn't working for some reason
+    public void submitFailed(){
+        submitButton.setEnabled(true);
+        addImageButton.setVisibility(View.VISIBLE);
     }
 
     /*
@@ -248,6 +260,19 @@ public class ImageScroller extends LinearLayout {
         }
     }
 
+    public void finalizeListing(){
+        progress.setVisibility(View.INVISIBLE);
+        submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.submitted));
+        Toast.makeText(fragment.obtainActivity(),
+                fragment.obtainActivity().getResources().getString(R.string.listing_published),
+                Toast.LENGTH_SHORT)
+                .show();
+
+        for(int i = 0; i<imageContainer.getChildCount(); i++){
+            ((UserImagePreview)imageContainer.getChildAt(i)).removeDeleteButton();
+        }
+    }
+
     /** S3 Utils **/
 
 
@@ -300,16 +325,33 @@ public class ImageScroller extends LinearLayout {
             AmazonS3 s3 = new AmazonS3Client(credentialsProvider);
             TransferUtility transferUtility = new TransferUtility(s3, fragment.obtainActivity().getApplicationContext());
             TransferObserver observer = transferUtility.upload(BUCKET_NAME, picFileName + "/" + String.valueOf(i), imageFile);
-            //TODO use observer to notify when upload finished and remove the following code
-            //TODO possibly keep the post editable to serve as update listing screen?
-            progress.setVisibility(View.INVISIBLE);
-            Toast.makeText(fragment.obtainActivity(),
-                    fragment.obtainActivity().getResources().getString(R.string.listing_published),
-                    Toast.LENGTH_SHORT)
-                    .show();
-            submitButton.setClickable(false);
-            submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.submitted));
-            addImageButton.setVisibility(INVISIBLE);
+
+            observer.setTransferListener(new TransferListener() {
+                @Override
+                public void onStateChanged(int id, TransferState state) {
+                    //do something
+                }
+
+                @Override
+                public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                    int percentage = (int)(bytesCurrent/bytesTotal * 100);
+
+                    if(percentage == 100){
+                        finalizeListing();
+                    } else {
+                        submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.submitting)
+                                + " " + String.valueOf(percentage) + "%");
+                    }
+                }
+
+                @Override
+                public void onError(int id, Exception ex) {
+
+                    submitButton.setEnabled(true);
+                    addImageButton.setVisibility(VISIBLE);
+                    Toast.makeText(fragment.obtainActivity(), "Image Upload Error: " + ex.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
 
         }
     }

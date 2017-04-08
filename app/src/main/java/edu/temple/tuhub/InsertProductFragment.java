@@ -160,9 +160,12 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
                     titleInput.setText(error.toString());
                     error.printStackTrace();
 
+                    imageScroller.submitFailed();
                     imageScroller.setProgressBarVisible(false);
                 }
             });
+        } else {
+            imageScroller.submitFailed();
         }
     }
 

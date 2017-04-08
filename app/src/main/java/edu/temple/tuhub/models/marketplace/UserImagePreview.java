@@ -57,4 +57,9 @@ public class UserImagePreview extends LinearLayout {
         userImage.setRotation(degrees);
     }
 
+    public void removeDeleteButton(){
+        deleteButton.setVisibility(View.INVISIBLE);
+        deleteButton.setClickable(false);
+    }
+
 }
