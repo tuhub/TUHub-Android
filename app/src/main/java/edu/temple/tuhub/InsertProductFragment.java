@@ -3,6 +3,7 @@ package edu.temple.tuhub;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -43,6 +44,7 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
 
     private OnFragmentInteractionListener mListener;
     private int requestCode;
+    private String username;
 
     public InsertProductFragment() {
         // Required empty public constructor
@@ -89,6 +91,10 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
         imageScroller.verifyStoragePermissions(getActivity());
         imageScroller.setImageScrollerFragment(InsertProductFragment.this);
         imageScroller.setCredentialsProvider();
+        if(username == null) {
+            SharedPreferences pref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            username = pref.getString(getResources().getString(R.string.username_key), "");
+        }
 
         return v;
     }

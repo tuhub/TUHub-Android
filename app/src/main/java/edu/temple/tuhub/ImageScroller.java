@@ -262,7 +262,9 @@ public class ImageScroller extends LinearLayout {
 
     public void finalizeListing(){
         progress.setVisibility(View.INVISIBLE);
+        addImageButton.setVisibility(View.INVISIBLE);
         submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.submitted));
+        submitButton.setClickable(false);
         Toast.makeText(fragment.obtainActivity(),
                 fragment.obtainActivity().getResources().getString(R.string.listing_published),
                 Toast.LENGTH_SHORT)
@@ -353,6 +355,9 @@ public class ImageScroller extends LinearLayout {
                 }
             });
 
+        }
+        if(imageContainer.getChildCount() == 0){
+            finalizeListing();
         }
     }
 
