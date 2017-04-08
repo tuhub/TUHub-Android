@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="190dp"
+    android:layout_height="180dp"
+    android:id="@+id/marketplaceitem">
+
+
+    <TextView
+        android:id="@+id/marketdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text=""
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="11sp"
+        />
+
+    <!--120 chars max-->
+    <TextView
+        android:id="@+id/markettitle"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_below="@+id/marketdate"
+        android:text=""
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="13sp"
+        />
+
+    <TextView
+        android:id="@+id/marketprice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/markettitle"
+        android:text=""
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="12sp"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/marketprice"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/marketimage"/>
+
+</RelativeLayout>

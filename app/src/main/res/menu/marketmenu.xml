@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/marketsearch"
+        android:title="@string/search_title"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="always"
+        android:orderInCategory="1"
+        app:actionViewClass="android.support.v7.widget.SearchView" />
+    <item
+        android:id="@+id/NewListing"
+        android:icon="@drawable/iconplus"
+        android:orderInCategory="2"
+        android:title="@string/newlisting"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/Productbutt"
+        android:orderInCategory="2"
+        app:showAsAction="never"
+        android:title="@string/Products"/>
+    <item
+        android:id="@+id/Jobbutt"
+        android:orderInCategory="2"
+        app:showAsAction="never"
+        android:title="@string/Jobs"/>
+    <item
+        android:id="@+id/Personalsbutt"
+        android:orderInCategory="2"
+        app:showAsAction="never"
+        android:title="@string/Personals"/>
+   <!-- <item
+        android:id="@+id/YourListings"
+        android:orderInCategory="2"
+        app:showAsAction="never"
+        android:title="@string/Personals"/> -->
+
+
+</menu>
