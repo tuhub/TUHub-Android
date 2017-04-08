@@ -142,8 +142,7 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
             product.setTitle(titleInput.getText().toString());
             product.setDescription(descriptionInput.getText().toString());
             product.setPrice(priceInput.getText().toString());
-            //TODO GET USER ID FROM SHARED PREFS
-            product.setOwnerId("tue94788");
+            product.setOwnerId(username);
             product.setIsActive(Product.TRUE);
 
             imageScroller.setProgressBarVisible(true);
