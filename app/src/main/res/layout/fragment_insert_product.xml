@@ -60,40 +60,13 @@
         android:inputType="numberDecimal"
        />
 
-    <HorizontalScrollView
-        android:id="@+id/insert_product_image_scroll"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-        <LinearLayout
-            android:id="@+id/insert_product_image_container"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-        </LinearLayout>
-
-    </HorizontalScrollView>
+            <edu.temple.tuhub.ImageScroller
+                android:id="@+id/insert_product_image_scroller"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
 
-                <Button
-                    android:id="@+id/insert_product_add_image_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add_image" />
 
-
-    <Button
-        android:id="@+id/insert_product_submit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/submit" />
-
-    <ProgressBar
-        android:id="@+id/insert_product_progress"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
         </LinearLayout>
     </ScrollView>
