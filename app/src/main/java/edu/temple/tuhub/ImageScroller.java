@@ -34,7 +34,9 @@ import com.amazonaws.services.s3.AmazonS3Client;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -184,6 +186,7 @@ public class ImageScroller extends LinearLayout {
             UserImagePreview imagePreview = new UserImagePreview(fragment.obtainActivity());
             imagePreview.setImageBitmap(bmp);
             imagePreview.rotateImage(90);
+            imagePreview.setTag(bmp);
             imagePreview.getUserImage().setOnClickListener(new DisplayFullImageOnClickListener(bmp, fromCamera));
             imageContainer.addView(imagePreview);
         }
@@ -335,40 +338,66 @@ public class ImageScroller extends LinearLayout {
     public void loadImagesToS3(String picFileName){
         for(int i = 0; i < imageContainer.getChildCount(); i++){
             UserImagePreview img = (UserImagePreview)imageContainer.getChildAt(i);
-            Uri uri = ((Uri)img.getTag());
+            File imageFile = null;
+
+            if(img.getTag() instanceof Uri) {
+                Uri uri = ((Uri) img.getTag());
+                imageFile = new File(uriToFilePath(uri));
+            } else if(img.getTag() instanceof Bitmap){
+                try {
+                    Bitmap bitmap = (Bitmap)img.getTag();
+                    String fileName = "imageScrollerTempFile" + String.valueOf(i);
+                    imageFile = File.createTempFile(fileName, ".png", fragment.obtainActivity().getCacheDir());
+                    FileOutputStream outputStream = new FileOutputStream(imageFile);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                    outputStream.close();
+
+                } catch (IOException e) {
+                    // Error while creating file
+                    Log.d("ERROR CREATING FILE", e.toString());
+                }
+
+
+            }
 
             progress.setVisibility(View.VISIBLE);
-            File imageFile = new File(uriToFilePath(uri));
-            AmazonS3 s3 = new AmazonS3Client(credentialsProvider);
-            TransferUtility transferUtility = new TransferUtility(s3, fragment.obtainActivity().getApplicationContext());
-            TransferObserver observer = transferUtility.upload(BUCKET_NAME, picFileName + "/" + String.valueOf(i), imageFile);
 
-            observer.setTransferListener(new TransferListener() {
-                @Override
-                public void onStateChanged(int id, TransferState state) {
-                    //do something
-                }
+            if(imageFile != null) {
+                AmazonS3 s3 = new AmazonS3Client(credentialsProvider);
+                TransferUtility transferUtility = new TransferUtility(s3, fragment.obtainActivity().getApplicationContext());
+                TransferObserver observer = transferUtility.upload(BUCKET_NAME, picFileName + "/" + String.valueOf(i), imageFile);
 
-                @Override
-                public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                    int percentage = (int)(bytesCurrent/bytesTotal * 100);
-
-                    if(percentage == 100){
-                        finalizeListing();
-                    } else {
-                        submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.submitting)
-                                + " " + String.valueOf(percentage) + "%");
+                observer.setTransferListener(new TransferListener() {
+                    @Override
+                    public void onStateChanged(int id, TransferState state) {
+                        //do something
                     }
-                }
 
-                @Override
-                public void onError(int id, Exception ex) {
+                    @Override
+                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                        int percentage = (int) (bytesCurrent / bytesTotal * 100);
 
-                    submitButton.setEnabled(true);
-                    addImageButton.setVisibility(VISIBLE);
-                    Toast.makeText(fragment.obtainActivity(), "Image Upload Error: " + ex.toString(), Toast.LENGTH_SHORT).show();
-                }
-            });
+                        if (percentage == 100) {
+                            finalizeListing();
+                        } else {
+                            submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.submitting)
+                                    + " " + String.valueOf(percentage) + "%");
+                        }
+                    }
+
+                    @Override
+                    public void onError(int id, Exception ex) {
+
+                        submitButton.setEnabled(true);
+                        addImageButton.setVisibility(VISIBLE);
+                        Toast.makeText(fragment.obtainActivity(), "Image Upload Error: " + ex.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                Toast.makeText(fragment.obtainActivity(),
+                        fragment.obtainActivity().getResources().getString(R.string.image_upload_error),
+                        Toast.LENGTH_SHORT).show();
+            }
 
         }
         if(imageContainer.getChildCount() == 0){

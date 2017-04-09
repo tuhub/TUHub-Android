@@ -72,6 +72,7 @@
     <string name="submitted">Submitted</string>
     <string name="submitting">Submitting</string>
     <string name="listing_published">Listing Published</string>
+    <string name="image_upload_error">Error uploading image</string>
 
 
 </resources>
