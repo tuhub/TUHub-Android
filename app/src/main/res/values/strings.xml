@@ -69,6 +69,9 @@
     <string name="Personals">Personals</string>
     <string name= "newlisting">New Listing</string>
     <string name="hourlyrate">Hourly Rate</string>
+    <string name="submitted">Submitted</string>
+    <string name="submitting">Submitting</string>
+    <string name="listing_published">Listing Published</string>
 
 
 </resources>
