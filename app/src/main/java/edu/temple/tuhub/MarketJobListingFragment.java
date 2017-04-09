@@ -1,42 +1,47 @@
 package edu.temple.tuhub;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import com.androidnetworking.error.ANError;
 
 import edu.temple.tuhub.imagepicker.ImagePicker;
 
 import java.sql.Date;
 
 import edu.temple.tuhub.models.User;
+import edu.temple.tuhub.models.marketplace.Job;
 
 import static android.support.v4.content.ContextCompat.checkSelfPermission;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MarketJobListingFragment extends Fragment {
-    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1894334154;
-    private String title = "";
-    private String description = "";
-    private int pay = 0;
-    private boolean isActive = true;
-    private String ownerId = User.CURRENT.getTuID();
-    private Date startDate = Date.valueOf("00-00-9999");
-    private int hoursPerWeek = 0;
-    private String location = "";
-    private String insertAPI = "http://tuhubapi-env.us-east-1.elasticbeanstalk.com/insert_job.jsp?title=" + title + "&description=" + description + "&pay=" + pay + "&isActive=" + isActive + "&ownerId=" + ownerId + "&startDate=" + startDate + "&hoursPerWeek=" + hoursPerWeek + "&location=" + location;
-    private int currentPicID = 1;
+public class MarketJobListingFragment extends Fragment implements ImageScroller.ImageScrollerFragment{
+    private ImageScroller imageScroller;
+    private String username;
+    private int requestCode;
+    AutoCompleteTextView titleInput;
+    AutoCompleteTextView descriptionInput;
+    AutoCompleteTextView payInput;
+    AutoCompleteTextView hoursInput;
+
     Button imgBtn;
     Button cancelBtn;
     Button okayBtn;
@@ -50,53 +55,117 @@ public class MarketJobListingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.fragment_market_job_listing, container, false);
-        ImagePicker.setMinQuality(128, 128);
-        //imgList = (LinearLayout) v.findViewById(R.id.imgLinearLayout);
-        //imgBtn = (Button) v.findViewById(R.id.imgBtn);
-        /*imgBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-                    }
-                }
-                ImagePicker.pickImage(MarketJobListingFragment.this, "Select Image");
-            }
-        });
+        View v = inflater.inflate(R.layout.fragment_market_job_listing, container, false);
+
+        imageScroller = (ImageScroller) v.findViewById(R.id.insert_job_image_scroller);
+        imageScroller.verifyStoragePermissions(getActivity());
+        imageScroller.setImageScrollerFragment(MarketJobListingFragment.this);
+        imageScroller.setCredentialsProvider();
+        if(username == null) {
+            SharedPreferences pref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            username = pref.getString(getResources().getString(R.string.username_key), "");
+        }
+        titleInput = (AutoCompleteTextView) v.findViewById(R.id.editTitle);
+        descriptionInput = (AutoCompleteTextView) v.findViewById(R.id.editDescription);
+        payInput = (AutoCompleteTextView) v.findViewById(R.id.editPay);
+        hoursInput = (AutoCompleteTextView) v.findViewById((R.id.editHoursPerWeek));
         return v;
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Bitmap bitmap = ImagePicker.getImageFromResult(getActivity(), requestCode, resultCode, data);
-        if (bitmap != null) {
-            System.out.println("image set");
-            ImageView imageView = new ImageView(getActivity().getApplicationContext());
-            //imageView.setId(((id) currentPicID));
-            imageView.setPadding(2, 2, 2, 2);
-            imageView.setImageBitmap(bitmap);
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            imgList.addView(imageView);
+    public void sendSelectImageIntent(Intent intent, int requestCode) {
+        this.requestCode = requestCode;
+        startActivityForResult(intent, requestCode);
+    }
 
-            //imgList.;
-        }
-        /*InputStream is = ImagePicker.getInputStreamFromResult(getActivity(), requestCode, resultCode, data);
-        if (is != null) {
-            textView.setText("Got input stream!");
-            try {
-                is.close();
-            } catch (IOException ex) {
-                // ignore
-            }
+    @Override
+    public Activity obtainActivity(){
+        return getActivity();
+    }
+
+    @Override
+    public void submitListing() {
+        if (validateUserInput()) {
+            Job job = new Job();
+            job.setTitle(titleInput.getText().toString());
+            job.setDescription(descriptionInput.getText().toString());
+            job.setPay(payInput.getText().toString());
+            job.setHoursPerWeek (hoursInput.getText().toString());
+            job.setOwnerId(username);
+            job.setIsActive(Job.TRUE);
+
+            imageScroller.setProgressBarVisible(true);
+
+            job.insert(new Job.JobRequestListener() {
+                @Override
+                public void onResponse(Job job) {
+                    Log.d("final job", job.toString());
+                    if (job.getError().length() != 0) {
+                        titleInput.setText(job.getError());
+
+                    } else {
+
+                        imageScroller.loadImagesToS3(job.getPicFileName());
+                    }
+                }
+
+                @Override
+                public void onError(ANError error) {
+                    titleInput.setText(error.toString());
+                    error.printStackTrace();
+
+                    imageScroller.submitFailed();
+                    imageScroller.setProgressBarVisible(false);
+                }
+            });
         } else {
-            textView.setText("Failed to get input stream!");
+            imageScroller.submitFailed();
         }
+    }
+
+    /*
+    Validates the user input and creates a job
+    object out of it. Uses the Marketplace API to insert the new job. Once inserted,
+     the response returns the folder name for the job's images.
+     loadImagesToS3() is called with the given folder name.
+     */
+    private boolean validateUserInput(){
+        String title = titleInput.getText().toString();
+        String description = descriptionInput.getText().toString();
+        String pay = payInput.getText().toString();
+        String hours = hoursInput.getText().toString();
+
+        boolean valid = true;
+        if(title == null || title.length() == 0){
+            titleInput.setError(getActivity().getString(R.string.error_field_required));
+            valid = false;
+        }
+        if(description.length() > 2000){
+            descriptionInput.setError(getActivity().getString(R.string.error_field_too_long) + String.valueOf(description.length()));
+            valid = false;
+        }
+        if(pay.length()> 2000){
+            descriptionInput.setError(getActivity().getString(R.string.error_field_too_long) + String.valueOf(description.length()));
+            valid = false;
+        }
+
+        if(hours.length()> 2000){
+            descriptionInput.setError(getActivity().getString(R.string.error_field_too_long) + String.valueOf(description.length()));
+            valid = false;
+        }
+        return valid;
+    }
+
+
+
+    /*
+    Handles result of image choosing intent - i.e. what to do if it is a picture
+    from the camera or from the gallery
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-    }*/
-        return v;
+
+        imageScroller.onActivityResult(requestCode, resultCode, data);
     }
 }
