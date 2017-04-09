@@ -1,8 +1,12 @@
 package edu.temple.tuhub;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,6 +38,7 @@ public class MarketTableFragment extends Fragment {
     GetMarketDataThread mark;//TODO needs to be changed
     ArrayList<Marketitem> Marketitems;
     TextView whichone;
+    newListingInterface activity;
 
     int selected=0;
     //http://tuhubapi-env.us-east-1.elasticbeanstalk.com/select_all_products.jsp?activeOnly=true
@@ -89,6 +94,12 @@ public class MarketTableFragment extends Fragment {
 
         }
     };
+
+    @Override
+    public void onAttach(Activity c) {
+        super.onAttach(c);
+        activity = (newListingInterface) c;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -196,6 +207,7 @@ public class MarketTableFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        activity = null;
     }
 
     @Override
@@ -255,6 +267,18 @@ public class MarketTableFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {//is used do an action if the button we want exists.
         switch (item.getItemId()) {
+            case R.id.NewListing:
+                String[] ListingType = {"Product", "Job", "Personal"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Select New Listing Type")
+                        .setItems(ListingType, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                activity.newListing(which);
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
             case R.id.Productbutt:
                 finallink = baselink;
                 finallink= finallink+marketfeeds[0];
@@ -282,10 +306,28 @@ public class MarketTableFragment extends Fragment {
         }
     }
 
+
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        String[] ListingType = {"Product", "Job", "Personal"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Select New Listing Type")
+                .setItems(ListingType, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // The 'which' argument contains the index position
+                        // of the selected item
+                    }
+                });
+        return builder.create();
+    }
+
     public interface marketshow
     {
         public void showmarket(Marketitem t);// for possibly showing the market item
 
+    }
+
+    public interface newListingInterface{
+        public void newListing(int i);
     }
 
 

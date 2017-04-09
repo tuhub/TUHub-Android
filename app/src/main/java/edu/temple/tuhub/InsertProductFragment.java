@@ -1,12 +1,16 @@
 package edu.temple.tuhub;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v13.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +23,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import edu.temple.tuhub.models.marketplace.Product;
 
+import static android.content.ContentValues.TAG;
+import static android.support.v4.content.PermissionChecker.checkSelfPermission;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -212,12 +218,40 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(data!=null) {
+  if(isStoragePermissionGranted()) {
+          imageScroller.onActivityResult(requestCode, resultCode, data);
+      }
+  }
 
 
-        if(requestCode == this.requestCode && resultCode == Activity.RESULT_OK){
-            imageScroller.onActivityResult(requestCode, resultCode, data);
+    }
+    public  boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(getActivity().getApplicationContext(),android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v(TAG,"Permission is granted");
+                return true;
+            } else {
+
+                Log.v(TAG,"Permission is revoked");
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
         }
+        else { //permission is automatically granted on sdk<23 upon installation
+            Log.v(TAG,"Permission is granted");
+            return true;
+        }
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
+            Log.v(TAG,"Permission: "+permissions[0]+ "was "+grantResults[0]);
+            //resume tasks needing this permission
+        }
     }
 
 

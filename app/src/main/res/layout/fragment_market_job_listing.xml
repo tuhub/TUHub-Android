@@ -1,0 +1,174 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="edu.temple.tuhub.MarketJobListingFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textInputLayout6">
+
+        <AutoCompleteTextView
+            android:id="@+id/editTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="21dp"
+            android:ems="10"
+            android:hint="Listing Title"
+            android:inputType="textPersonName"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/textInputLayout6"
+    android:id="@+id/textInputLayout7">
+
+    <AutoCompleteTextView
+        android:id="@+id/editDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textInputLayout6"
+        android:ems="10"
+        android:hint="Description"
+        android:inputType="text"/>
+</android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textInputLayout7"
+        android:id="@+id/textInputLayout8">
+
+        <AutoCompleteTextView
+            android:id="@+id/editPay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textInputLayout8"
+            android:ems="10"
+            android:hint="Pay"
+            android:inputType="numberDecimal"/>
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textInputLayout8"
+        android:id="@+id/textInputLayout9">
+
+        <AutoCompleteTextView
+            android:id="@+id/editHoursPerWeek"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textInputLayout9"
+            android:ems="10"
+            android:hint="Hours Per Week"
+            android:inputType="numberDecimal"/>
+    </android.support.design.widget.TextInputLayout>
+
+
+
+    <!--
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/imgBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editDate"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="19dp"
+        android:background="#990033"
+        android:padding="5dp"
+        android:text="Upload Image"
+        android:textColor="#FFFFFF"/>
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollImgs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal"
+        android:scrollbars="horizontal"
+        android:layout_below="@+id/imgBtn"
+        android:layout_above="@+id/cancelBtn">
+
+        <LinearLayout
+            android:id="@+id/imgLinearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:orientation="horizontal">
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <Button
+        android:id="@+id/cancelBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorGray"
+        android:padding="5dp"
+        android:text="Cancel"
+        android:textColor="#ffffff"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/okayBtn"/>
+
+    <Button
+        android:id="@+id/okayBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/cancelBtn"
+        android:layout_alignBottom="@+id/cancelBtn"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="14dp"
+        android:background="#990033"
+        android:padding="5dp"
+        android:text="Post Listing"
+        android:textColor="#ffffff"
+        android:layout_alignStart="@+id/imgBtn"/>
+
+    <AutoCompleteTextView
+        android:id="@+id/editDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Job Description"
+        android:inputType="textLongMessage"
+        android:layout_below="@+id/textInputLayout"
+        android:layout_toEndOf="@+id/textInputLayout5"/>
+
+    <AutoCompleteTextView
+        android:id="@+id/editPay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Pay"
+        android:inputType="numberDecimal"
+        android:layout_below="@+id/textInputLayout"
+        android:layout_toStartOf="@+id/imgBtn"
+        android:layout_marginTop="25dp"/>
+
+    <AutoCompleteTextView
+        android:id="@+id/editDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Start Date"
+        android:inputType="date"
+        android:layout_below="@+id/editText4"
+        android:layout_toEndOf="@+id/textInputLayout5">
+    </AutoCompleteTextView>
+    -->
+
+</RelativeLayout>

@@ -81,6 +81,7 @@ public class MyCourseSearchFragment extends Fragment {
                         if(filter.equals("")||terms[i].getCourses().get(k).getTitle().toLowerCase().contains(filter.toLowerCase())){
                             tempCourses.add(terms[i].getCourses().get(k));
                         data.add(datum);}
+                        if(getActivity()!=null){
                         SimpleAdapter adapter = new SimpleAdapter(getActivity().getApplicationContext(), data, android.R.layout.simple_list_item_2,
                                 new String[]{"First Line", "Second Line"},
                                 new int[]{android.R.id.text1, android.R.id.text2}) {
@@ -105,7 +106,7 @@ public class MyCourseSearchFragment extends Fragment {
                         });
                         adapter.notifyDataSetChanged();
 
-                }
+                }}
                 }
             }
 

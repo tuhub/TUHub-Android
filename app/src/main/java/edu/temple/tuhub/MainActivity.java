@@ -19,7 +19,7 @@ import edu.temple.tuhub.models.Entry;
 import edu.temple.tuhub.models.Grade;
 import edu.temple.tuhub.models.Newsitem;
 
-public class MainActivity extends AppCompatActivity implements NewsTableFragment.newsshow, NewsTableFragment.filterbutton, FilterMenuFrag.selectorinterface, CourseFragment.showCourseDetails, CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener, CourseFragment.courseSearchHandler, CoursesSearchAllFragment.searchAllResultsInterface{
+public class MainActivity extends AppCompatActivity implements NewsTableFragment.newsshow, NewsTableFragment.filterbutton, FilterMenuFrag.selectorinterface, CourseFragment.showCourseDetails, CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener, CourseFragment.courseSearchHandler, CoursesSearchAllFragment.searchAllResultsInterface, MarketTableFragment.newListingInterface{
     static Fragment[] fraghold = new Fragment[3];//For TUNews and some TUmarketplace
     FilterMenuFrag tufilter;//For TUNews
 
@@ -238,6 +238,19 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         transact.remove(getFragmentManager().findFragmentById(android.R.id.content)).commit();
         manage.executePendingTransactions();
         ((NewsTableFragment)fraghold[1]).loadnews();
+    }
+
+    @Override
+    public void newListing(int i) {
+        if(i==0){
+            loadFragment(R.id.contentFragment, new InsertProductFragment(), true, false);
+        }
+        else if(i==1){
+            //load job fragment
+        }
+        else if(i==2){
+            loadFragment(R.id.contentFragment, new MarketPersonalListingFragment(), true, false);
+        }
     }
 }
 

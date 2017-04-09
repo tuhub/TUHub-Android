@@ -40,6 +40,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import edu.temple.tuhub.models.marketplace.UserImagePreview;
 
+import static android.R.attr.bitmap;
+
 /**
  * Created by Ben on 4/8/2017.
  */
@@ -129,11 +131,17 @@ public class ImageScroller extends LinearLayout {
         //Detects request codes
         if(requestCode==SELECT_FILE && resultCode == Activity.RESULT_OK) {
             Uri selectedImage = data.getData();
-            addImagePreview(selectedImage, false);
+            addImagePreview(selectedImage, null, false);
 
-        } else if(requestCode==REQUEST_CAMERA && resultCode == Activity.RESULT_OK){
-            Uri selectedImage = data.getData();
-            addImagePreview(selectedImage, true);
+        } else if(requestCode==REQUEST_CAMERA && resultCode == Activity.RESULT_OK && data!=null){
+            if(data.getExtras().get("data") instanceof Bitmap) {
+                Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
+                addImagePreview(null, selectedImage, true);
+            }
+            else{
+                Uri selectedImage = data.getData();
+                addImagePreview(selectedImage, null, true);
+            }
         }
     }
 
@@ -150,27 +158,34 @@ public class ImageScroller extends LinearLayout {
     Adds a DisplayFullImageOnClickListener to the imagePreview object.
     Adds the imagePreview object to the layout
      */
-    public void addImagePreview(Uri imageUri, final boolean fromCamera){
+    public void addImagePreview(Uri imageUri, Bitmap bmp, final boolean fromCamera){
 
         Bitmap bitmap;
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(fragment.obtainActivity().getContentResolver(), imageUri);
-            UserImagePreview imagePreview = new UserImagePreview(fragment.obtainActivity());
-            imagePreview.setImageBitmap(bitmap);
-            imagePreview.setTag(imageUri);
-            if(fromCamera){
-                imagePreview.rotateImage(90);
+        if(!fromCamera || imageUri != null) {
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(fragment.obtainActivity().getContentResolver(), imageUri);
+                UserImagePreview imagePreview = new UserImagePreview(fragment.obtainActivity());
+                imagePreview.setImageBitmap(bitmap);
+                imagePreview.setTag(imageUri);
+                if(fromCamera){
+                    imagePreview.rotateImage(90);
+                }
+                imagePreview.getUserImage().setOnClickListener(new DisplayFullImageOnClickListener(bitmap, fromCamera));
+                imageContainer.addView(imagePreview);
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
-
-            imagePreview.getUserImage().setOnClickListener(new DisplayFullImageOnClickListener(bitmap, fromCamera));
-
+        }
+        else{
+            UserImagePreview imagePreview = new UserImagePreview(fragment.obtainActivity());
+            imagePreview.setImageBitmap(bmp);
+            imagePreview.rotateImage(90);
+            imagePreview.getUserImage().setOnClickListener(new DisplayFullImageOnClickListener(bmp, fromCamera));
             imageContainer.addView(imagePreview);
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
 
