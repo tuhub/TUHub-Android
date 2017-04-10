@@ -65,9 +65,9 @@ public class MarketJobListingFragment extends Fragment implements ImageScroller.
             SharedPreferences pref = getActivity().getPreferences(Context.MODE_PRIVATE);
             username = pref.getString(getResources().getString(R.string.username_key), "");
         }
-        titleInput = (AutoCompleteTextView) v.findViewById(R.id.editTitle);
-        descriptionInput = (AutoCompleteTextView) v.findViewById(R.id.editDescription);
-        payInput = (AutoCompleteTextView) v.findViewById(R.id.editPay);
+        titleInput = (AutoCompleteTextView) v.findViewById(R.id.editJobTitle);
+        descriptionInput = (AutoCompleteTextView) v.findViewById(R.id.editJobDescription);
+        payInput = (AutoCompleteTextView) v.findViewById(R.id.editJobPay);
         hoursInput = (AutoCompleteTextView) v.findViewById((R.id.editHoursPerWeek));
         return v;
     }

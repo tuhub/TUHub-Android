@@ -23,6 +23,8 @@ public class Job {
     public static final String TITLE_KEY = "title";
     public static final String JOB_ID_KEY = "jobId";
     public static final String DESCRIPTION_KEY = "description";
+    public static final String START_DATE_KEY = "startDate";
+    public static final String LOCATION_KEY = "LOCATION";
     public static final String PAY_KEY = "location";
     public static final String HOURS_KEY = "hours_per_week";
     public static final String IS_ACTIVE_KEY = "isActive";
@@ -40,6 +42,8 @@ public class Job {
     private String description="";
     private String pay = "";
     private String hoursPerWeek="";
+    private String startDate="";
+    private String location = "";
     private String isActive = "";
     private String ownerId = "";
     private String datePosted = "";
@@ -67,12 +71,14 @@ public class Job {
         }
     }
 
-    public Job(String jobId, String title, String description, String pay, String hours, String isActive, String ownerId, String datePosted, String picFileName) {
+    public Job(String jobId, String title, String description, String pay, String startDate, String location, String hours, String isActive, String ownerId, String datePosted, String picFileName) {
         this.jobId = jobId;
         this.title = title;
         this.description = description;
         this.pay = pay;
         this.hoursPerWeek = hours;
+        this.startDate = startDate;
+        this.location = location;
         this.isActive = isActive;
         this.ownerId = ownerId;
         this.datePosted = datePosted;
@@ -193,6 +199,9 @@ public class Job {
         if( description != null){
             buffer.urlArgAppend(DESCRIPTION_KEY, description);
         }
+        if(pay != null) {
+            buffer.urlArgAppend(PAY_KEY, pay);
+        }
 
         if(isActive != null){
             buffer.urlArgAppend(IS_ACTIVE_KEY, isActive);
@@ -201,11 +210,15 @@ public class Job {
         if(ownerId != null){
             buffer.urlArgAppend(OWNER_ID_KEY, ownerId);
         }
-        if(pay != null) {
-            buffer.urlArgAppend(PAY_KEY, pay);
+        if(startDate != null){
+            buffer.urlArgAppend(START_DATE_KEY, startDate);
         }
+
         if(hoursPerWeek!=null){
             buffer.urlArgAppend(HOURS_KEY, hoursPerWeek);
+        }
+        if(location != null){
+            buffer.urlArgAppend(LOCATION_KEY, location);
         }
 
         return buffer.toString();
@@ -214,6 +227,14 @@ public class Job {
     public boolean isEmpty(){
         String allFields = jobId + title + description + pay + hoursPerWeek + isActive + ownerId + datePosted + picFileName + error;
         return (allFields.length() == 0);
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public String getLocation() {
+        return location;
     }
 
     public String getJobId() {
