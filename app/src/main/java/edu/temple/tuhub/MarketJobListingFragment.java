@@ -41,6 +41,8 @@ public class MarketJobListingFragment extends Fragment implements ImageScroller.
     AutoCompleteTextView descriptionInput;
     AutoCompleteTextView payInput;
     AutoCompleteTextView hoursInput;
+    AutoCompleteTextView startDateInput;
+    AutoCompleteTextView locationInput;
 
     Button imgBtn;
     Button cancelBtn;
@@ -69,6 +71,8 @@ public class MarketJobListingFragment extends Fragment implements ImageScroller.
         descriptionInput = (AutoCompleteTextView) v.findViewById(R.id.editJobDescription);
         payInput = (AutoCompleteTextView) v.findViewById(R.id.editJobPay);
         hoursInput = (AutoCompleteTextView) v.findViewById((R.id.editHoursPerWeek));
+        startDateInput = (AutoCompleteTextView) v.findViewById(R.id.editJobStartDate);
+        locationInput = (AutoCompleteTextView) v.findViewById(R.id.editJobLocation);
         return v;
     }
 
@@ -91,6 +95,9 @@ public class MarketJobListingFragment extends Fragment implements ImageScroller.
             job.setDescription(descriptionInput.getText().toString());
             job.setPay(payInput.getText().toString());
             job.setHoursPerWeek (hoursInput.getText().toString());
+            job.setStartDate(startDateInput.getText().toString());
+            System.out.println(startDateInput.getText().toString());
+            job.setLocation(locationInput.getText().toString());
             job.setOwnerId(username);
             job.setIsActive(Job.TRUE);
 

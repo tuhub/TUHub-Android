@@ -9,6 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+
 import edu.temple.tuhub.models.NetworkManager;
 
 /**
@@ -24,9 +26,9 @@ public class Job {
     public static final String JOB_ID_KEY = "jobId";
     public static final String DESCRIPTION_KEY = "description";
     public static final String START_DATE_KEY = "startDate";
-    public static final String LOCATION_KEY = "LOCATION";
-    public static final String PAY_KEY = "location";
-    public static final String HOURS_KEY = "hours_per_week";
+    public static final String LOCATION_KEY = "location";
+    public static final String PAY_KEY = "pay";
+    public static final String HOURS_KEY = "hoursPerWeek";
     public static final String IS_ACTIVE_KEY = "isActive";
     public static final String OWNER_ID_KEY = "ownerId";
     public static final String USER_ID_KEY = "userId";
@@ -61,6 +63,8 @@ public class Job {
             this.description = object.getString(DESCRIPTION_KEY);
             this.hoursPerWeek = object.getString(HOURS_KEY);
             this.pay = object.getString(PAY_KEY);
+            this.startDate = formatDate(object.getString(START_DATE_KEY));
+            this.location = object.getString(LOCATION_KEY);
             this.isActive = object.getString(IS_ACTIVE_KEY);
             this.ownerId = object.getString(OWNER_ID_KEY);
             this.datePosted = object.getString(DATE_POSTED_KEY);
@@ -75,14 +79,19 @@ public class Job {
         this.jobId = jobId;
         this.title = title;
         this.description = description;
-        this.pay = pay;
+        this.pay = pay.replaceAll("$","");
         this.hoursPerWeek = hours;
-        this.startDate = startDate;
+        this.startDate = formatDate(startDate);
         this.location = location;
         this.isActive = isActive;
         this.ownerId = ownerId;
         this.datePosted = datePosted;
         this.picFileName = picFileName;
+    }
+    public String formatDate(String startDate){
+       String newDate = startDate.substring(0,startDate.indexOf('/'))+ "-" + startDate.substring(startDate.indexOf('/')+1,startDate.lastIndexOf('/'))+"-20"+startDate.substring(startDate.lastIndexOf('/')+1, startDate.length());
+
+        return newDate;
     }
 
     public void insert(final Job.JobRequestListener jobRequestListener){
@@ -235,6 +244,14 @@ public class Job {
 
     public String getLocation() {
         return location;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = formatDate(startDate);
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public String getJobId() {
