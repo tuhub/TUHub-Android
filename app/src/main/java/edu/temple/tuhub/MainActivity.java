@@ -112,6 +112,12 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         final FragmentManager fm = getFragmentManager();
 
         FragmentTransaction ft = fm.beginTransaction().detach(cf).replace(ID, fragment).attach(fragment);
+        if(fraghold[2]!=null){
+        if(fraghold[2].equals(fragment)){
+            if(cf!=null) {
+                getFragmentManager().beginTransaction().remove(cf).commit();
+            }
+        }}
 
         if(clearBackStack){
              fm.popBackStack();
