@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_courses:
-                    loadFragment(R.id.contentFragment, cf, false, true);
+                    loadFragment(R.id.contentFragment, cf.newInstance(), false, true);
                     return true;
                 case R.id.navigation_marketplace:
                     loadFragment(R.id.contentFragment, fraghold[2], false, true);
@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getFragmentManager().addOnBackStackChangedListener(backStackChangedListener);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -101,11 +102,18 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getFragmentManager().removeOnBackStackChangedListener(backStackChangedListener);
+    }
+
     private void loadFragment(int ID, Fragment fragment, boolean backStack, boolean clearBackStack) {
-        FragmentManager fm = getFragmentManager();
+        final FragmentManager fm = getFragmentManager();
+
         FragmentTransaction ft = fm.beginTransaction().detach(cf).replace(ID, fragment).attach(fragment);
+
         if(clearBackStack){
-             fm.popBackStack();
              fm.popBackStack();
 
         }
@@ -113,8 +121,19 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
             ft.addToBackStack(null);
         }
         ft.commit();
+
         fm.executePendingTransactions();
     }
+    private FragmentManager.OnBackStackChangedListener backStackChangedListener = new FragmentManager.OnBackStackChangedListener() {
+        @Override
+        public void onBackStackChanged() {
+            if(getFragmentManager().getBackStackEntryCount()==0) {
+                if(cf!=null) {
+                    getFragmentManager().beginTransaction().remove(cf).commit();
+                }
+            }
+        }
+    };
 
     @Override
     public void onListFragmentInteraction(Course item) {
@@ -129,11 +148,6 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         bundle.putString("fullname",course.getTitle());
         bundle.putString("date", course.getStartDate()+" to "+course.getEndDate());
         bundle.putSerializable("course", (Serializable) course);
-
-        //TODO grades
-        /*bundle.putString("gradeType", String.valueOf(course.getGrades(0)));
-        bundle.putString("gradeName", String.valueOf(course.getGrades(1)));
-        bundle.putString("gradeUpdated", String.valueOf(course.getGrades(2)));*/
         bundle.putSerializable("meetings", (Serializable) course.getMeetings());
         bundle.putSerializable("faculty", (Serializable) course.getInstructors());
         bundle.putStringArray("roster", course.getRoster());
@@ -246,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
             loadFragment(R.id.contentFragment, new InsertProductFragment(), true, false);
         }
         else if(i==1){
-            //load job fragment
+            loadFragment(R.id.contentFragment, new MarketJobListingFragment(), true, false);
         }
         else if(i==2){
             loadFragment(R.id.contentFragment, new MarketPersonalListingFragment(), true, false);
