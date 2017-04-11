@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 
 import com.androidnetworking.error.ANError;
 
-import edu.temple.tuhub.imagepicker.ImagePicker;
 
 import java.sql.Date;
 

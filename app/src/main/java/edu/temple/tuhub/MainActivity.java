@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
     CoursesSearchAllFragment csaf;
     MyCourseSearchFragment mcsf;
     CourseDetailsFragment cdf;
+    MapsFragment mf;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
                     loadFragment(R.id.contentFragment, fraghold[2], false, true);
                     return true;
                 case R.id.navigation_maps:
-                    // TODO: Load fragment
+                    loadFragment(R.id.contentFragment, mf, false, true);
                     return true;
                 case R.id.navigation_news:
                     loadFragment(R.id.contentFragment, fraghold[1], false, true);
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         mcsf = new MyCourseSearchFragment();
         cdf = new CourseDetailsFragment();
         cf = new CourseFragment();
+        mf = new MapsFragment();
 
         if(savedInstanceState==null) {
             int selectedID = navigation.getSelectedItemId();
