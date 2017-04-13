@@ -1,0 +1,41 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="edu.temple.tuhub.CourseDetailsFragment">
+
+
+    <TextView
+        android:id="@+id/locationtv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/imageView"
+        android:text="Location: " />
+
+    <TextView
+        android:id="@+id/inputLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView"
+        android:layout_toEndOf="@+id/inputtitle" />
+
+    <TextView
+        android:id="@+id/descriptiontv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/locationtv"
+        android:layout_marginTop="19dp"
+        android:text="Description: " />
+
+    <TextView
+        android:id="@+id/inputDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/locationtv"
+        android:layout_centerVertical="true" />
+
+
+</RelativeLayout>
