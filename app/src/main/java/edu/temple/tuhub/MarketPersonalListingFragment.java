@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
 
@@ -92,8 +93,7 @@ public class MarketPersonalListingFragment extends Fragment implements ImageScro
             personal.setLocation(locationInput.getText().toString());
             personal.setOwnerId(username);
             personal.setIsActive(Personal.TRUE);
-
-            imageScroller.setProgressBarVisible(true);
+            Toast.makeText(getActivity(), getString(R.string.submitting), Toast.LENGTH_SHORT).show();
 
             personal.insert(new Personal.PersonalRequestListener() {
                 @Override
@@ -114,7 +114,7 @@ public class MarketPersonalListingFragment extends Fragment implements ImageScro
                     error.printStackTrace();
 
                     imageScroller.submitFailed();
-                    imageScroller.setProgressBarVisible(false);
+                    Toast.makeText(getActivity(), getString(R.string.error_publishing), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {

@@ -3,4 +3,7 @@
     <declare-styleable name="CalendarView">
         <attr name="dateFormat" format="string"/>
     </declare-styleable>
+    <declare-styleable name="CustomPagerTabStrip">
+        <attr name="indicatorColor" format="reference|color" />
+    </declare-styleable>
 </resources>

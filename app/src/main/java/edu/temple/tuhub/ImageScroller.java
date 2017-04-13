@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -54,10 +55,7 @@ public class ImageScroller extends LinearLayout {
     LinearLayout imageContainer;
 
     @BindView(R.id.add_image_button)
-    Button addImageButton;
-
-    @BindView(R.id.image_scroller_progress)
-    ProgressBar progress;
+    FloatingActionButton addImageButton;
 
     @BindView(R.id.image_scroller_submit)
     Button submitButton;
@@ -83,8 +81,6 @@ public class ImageScroller extends LinearLayout {
         View rootView =  inflater.inflate(R.layout.image_scroller, this);
 
         ButterKnife.bind(this, rootView);
-
-        progress.setVisibility(INVISIBLE);
 
         addImageButton.setOnClickListener(new AddImageOnClickListener());
 
@@ -269,17 +265,8 @@ public class ImageScroller extends LinearLayout {
         }
     }
 
-    //Toggle ProgressBar visibility
-    public void setProgressBarVisible(boolean isVisible){
-        if(isVisible){
-            progress.setVisibility(View.VISIBLE);
-        } else {
-            progress.setVisibility(View.INVISIBLE);
-        }
-    }
 
     public void finalizeListing(){
-        progress.setVisibility(View.INVISIBLE);
         addImageButton.setVisibility(View.INVISIBLE);
         submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.submitted));
         submitButton.setClickable(false);
@@ -359,8 +346,6 @@ public class ImageScroller extends LinearLayout {
 
 
             }
-
-            progress.setVisibility(View.VISIBLE);
 
             if(imageFile != null) {
                 AmazonS3 s3 = new AmazonS3Client(credentialsProvider);

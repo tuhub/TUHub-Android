@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -61,7 +62,7 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
                 User.CURRENT.retrieveCourses(new User.CoursesRequestListener() {
                     @Override
                     public void onResponse(Term[] terms) {
-
+                        if(getActivity()!=null){
                         CourseFragment.this.getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -69,7 +70,7 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
                                     mViewPager.getAdapter().notifyDataSetChanged();
                             }
                         });
-                    }
+                    }}
 
                     @Override
                     public void onError(ANError error) {

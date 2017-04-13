@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -6,88 +6,95 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-
-
-
-    <TextView
-        android:id="@+id/personalTitle"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerInParent="false"
-        android:text="New Personal Listing"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="30dp"/>
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/textInputLayout6"
-        android:layout_below="@+id/personalTitle"
-        android:layout_alignParentStart="true">
-
-        <AutoCompleteTextView
-            android:id="@+id/editTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Listing Title"
-            android:inputType="textPersonName"
-            android:layout_below="@+id/personalTitle"
-            android:layout_alignParentStart="true"/>
-
-    </android.support.design.widget.TextInputLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textInputLayout6"
-        android:id="@+id/textInputLayout7">
-
-        <AutoCompleteTextView
-            android:id="@+id/editDescription"
+        <TextView
+            android:id="@+id/personalTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/textInputLayout6"
-            android:layout_marginTop="14dp"
-            android:ems="10"
-            android:hint="Description"
-            android:inputType="text"/>
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="false"
+            android:text="New Personal Listing"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="30dp"/>
 
-    </android.support.design.widget.TextInputLayout>
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textInputLayout7"
-        android:id="@+id/textInputLayout8">
-        <AutoCompleteTextView
-            android:id="@+id/editLocation"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayout6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:ems="10"
-            android:hint="Location"
-            android:inputType="text"
-            android:layout_below="@+id/textInputLayout7"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/personalTitle">
+
+            <AutoCompleteTextView
+                android:id="@+id/editTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/personalTitle"
+                android:ems="10"
+                android:hint="Listing Title"
+                android:inputType="textPersonName"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayout7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textInputLayout6">
+
+            <AutoCompleteTextView
+                android:id="@+id/editDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/textInputLayout6"
+                android:layout_marginTop="14dp"
+                android:ems="10"
+                android:hint="Description"
+                android:inputType="text"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayout8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textInputLayout7">
+
+            <AutoCompleteTextView
+                android:id="@+id/editLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/textInputLayout7"
+                android:layout_marginTop="14dp"
+                android:ems="10"
+                android:hint="Location"
+                android:inputType="text"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <edu.temple.tuhub.ImageScroller
+            android:id="@+id/insert_personal_image_scroller"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"/>
 
-    </android.support.design.widget.TextInputLayout>
-
-
-    <edu.temple.tuhub.ImageScroller
-        android:id="@+id/insert_personal_image_scroller"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"/>
+    </LinearLayout>
 
 
 
 
 
 
-</RelativeLayout>
+</ScrollView>

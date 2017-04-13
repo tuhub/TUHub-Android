@@ -18,6 +18,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
 
@@ -99,8 +100,7 @@ public class MarketJobListingFragment extends Fragment implements ImageScroller.
             job.setLocation(locationInput.getText().toString());
             job.setOwnerId(username);
             job.setIsActive(Job.TRUE);
-
-            imageScroller.setProgressBarVisible(true);
+            Toast.makeText(getActivity(), getString(R.string.submitting), Toast.LENGTH_SHORT).show();
 
             job.insert(new Job.JobRequestListener() {
                 @Override
@@ -121,7 +121,7 @@ public class MarketJobListingFragment extends Fragment implements ImageScroller.
                     error.printStackTrace();
 
                     imageScroller.submitFailed();
-                    imageScroller.setProgressBarVisible(false);
+                    Toast.makeText(getActivity(), getString(R.string.error_publishing), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {

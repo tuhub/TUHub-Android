@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
 
@@ -150,9 +151,7 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
             product.setPrice(priceInput.getText().toString());
             product.setOwnerId(username);
             product.setIsActive(Product.TRUE);
-
-            imageScroller.setProgressBarVisible(true);
-
+            Toast.makeText(getActivity(), getString(R.string.submitting), Toast.LENGTH_SHORT).show();
             product.insert(new Product.ProductRequestListener() {
                 @Override
                 public void onResponse(Product product) {
@@ -170,9 +169,8 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
                 public void onError(ANError error) {
                     titleInput.setText(error.toString());
                     error.printStackTrace();
-
                     imageScroller.submitFailed();
-                    imageScroller.setProgressBarVisible(false);
+                    Toast.makeText(getActivity(), getString(R.string.error_publishing), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {

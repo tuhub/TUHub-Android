@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <HorizontalScrollView
@@ -19,22 +20,25 @@
     </HorizontalScrollView>
 
 
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_image_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/add_image" />
+        android:layout_gravity="right"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
+        android:clickable="true"
+        app:backgroundTint="@color/colorPrimary"
+        app:fabSize="mini"
+        app:rippleColor="@color/colorAccent"
+        app:srcCompat="@drawable/ic_camera"/>
 
     <Button
         android:id="@+id/image_scroller_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/submit" />
-
-    <ProgressBar
-        android:id="@+id/image_scroller_progress"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:background="@color/colorPrimary"
+        android:text="@string/submit"
+        android:textColor="@color/colorAccent"/>
 
 </LinearLayout>

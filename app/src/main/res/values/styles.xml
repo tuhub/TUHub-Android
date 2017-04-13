@@ -12,5 +12,9 @@
     </style>
 
     <style name="TempleColors" parent="AppTheme"/>
+    <style name="Pager">
+        <item name="android:textColor">#ffffff</item>
+        <item name="indicatorColor">@color/colorPrimary</item>
+    </style>
 
 </resources>
