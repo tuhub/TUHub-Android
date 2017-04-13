@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 
 import com.androidnetworking.error.ANError;
 
-import edu.temple.tuhub.imagepicker.ImagePicker;
 
 import java.sql.Date;
 
@@ -41,6 +40,8 @@ public class MarketJobListingFragment extends Fragment implements ImageScroller.
     AutoCompleteTextView descriptionInput;
     AutoCompleteTextView payInput;
     AutoCompleteTextView hoursInput;
+    AutoCompleteTextView startDateInput;
+    AutoCompleteTextView locationInput;
 
     Button imgBtn;
     Button cancelBtn;
@@ -65,10 +66,12 @@ public class MarketJobListingFragment extends Fragment implements ImageScroller.
             SharedPreferences pref = getActivity().getPreferences(Context.MODE_PRIVATE);
             username = pref.getString(getResources().getString(R.string.username_key), "");
         }
-        titleInput = (AutoCompleteTextView) v.findViewById(R.id.editTitle);
-        descriptionInput = (AutoCompleteTextView) v.findViewById(R.id.editDescription);
-        payInput = (AutoCompleteTextView) v.findViewById(R.id.editPay);
+        titleInput = (AutoCompleteTextView) v.findViewById(R.id.editJobTitle);
+        descriptionInput = (AutoCompleteTextView) v.findViewById(R.id.editJobDescription);
+        payInput = (AutoCompleteTextView) v.findViewById(R.id.editJobPay);
         hoursInput = (AutoCompleteTextView) v.findViewById((R.id.editHoursPerWeek));
+        startDateInput = (AutoCompleteTextView) v.findViewById(R.id.editJobStartDate);
+        locationInput = (AutoCompleteTextView) v.findViewById(R.id.editJobLocation);
         return v;
     }
 
@@ -91,6 +94,9 @@ public class MarketJobListingFragment extends Fragment implements ImageScroller.
             job.setDescription(descriptionInput.getText().toString());
             job.setPay(payInput.getText().toString());
             job.setHoursPerWeek (hoursInput.getText().toString());
+            job.setStartDate(startDateInput.getText().toString());
+            System.out.println(startDateInput.getText().toString());
+            job.setLocation(locationInput.getText().toString());
             job.setOwnerId(username);
             job.setIsActive(Job.TRUE);
 

@@ -9,6 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+
 import edu.temple.tuhub.models.NetworkManager;
 
 /**
@@ -23,8 +25,10 @@ public class Job {
     public static final String TITLE_KEY = "title";
     public static final String JOB_ID_KEY = "jobId";
     public static final String DESCRIPTION_KEY = "description";
-    public static final String PAY_KEY = "location";
-    public static final String HOURS_KEY = "hours_per_week";
+    public static final String START_DATE_KEY = "startDate";
+    public static final String LOCATION_KEY = "location";
+    public static final String PAY_KEY = "pay";
+    public static final String HOURS_KEY = "hoursPerWeek";
     public static final String IS_ACTIVE_KEY = "isActive";
     public static final String OWNER_ID_KEY = "ownerId";
     public static final String USER_ID_KEY = "userId";
@@ -40,6 +44,8 @@ public class Job {
     private String description="";
     private String pay = "";
     private String hoursPerWeek="";
+    private String startDate="";
+    private String location = "";
     private String isActive = "";
     private String ownerId = "";
     private String datePosted = "";
@@ -57,6 +63,8 @@ public class Job {
             this.description = object.getString(DESCRIPTION_KEY);
             this.hoursPerWeek = object.getString(HOURS_KEY);
             this.pay = object.getString(PAY_KEY);
+            this.startDate = formatDate(object.getString(START_DATE_KEY));
+            this.location = object.getString(LOCATION_KEY);
             this.isActive = object.getString(IS_ACTIVE_KEY);
             this.ownerId = object.getString(OWNER_ID_KEY);
             this.datePosted = object.getString(DATE_POSTED_KEY);
@@ -67,16 +75,23 @@ public class Job {
         }
     }
 
-    public Job(String jobId, String title, String description, String pay, String hours, String isActive, String ownerId, String datePosted, String picFileName) {
+    public Job(String jobId, String title, String description, String pay, String startDate, String location, String hours, String isActive, String ownerId, String datePosted, String picFileName) {
         this.jobId = jobId;
         this.title = title;
         this.description = description;
-        this.pay = pay;
+        this.pay = pay.replaceAll("$","");
         this.hoursPerWeek = hours;
+        this.startDate = formatDate(startDate);
+        this.location = location;
         this.isActive = isActive;
         this.ownerId = ownerId;
         this.datePosted = datePosted;
         this.picFileName = picFileName;
+    }
+    public String formatDate(String startDate){
+       String newDate = startDate.substring(0,startDate.indexOf('/'))+ "-" + startDate.substring(startDate.indexOf('/')+1,startDate.lastIndexOf('/'))+"-20"+startDate.substring(startDate.lastIndexOf('/')+1, startDate.length());
+
+        return newDate;
     }
 
     public void insert(final Job.JobRequestListener jobRequestListener){
@@ -193,6 +208,9 @@ public class Job {
         if( description != null){
             buffer.urlArgAppend(DESCRIPTION_KEY, description);
         }
+        if(pay != null) {
+            buffer.urlArgAppend(PAY_KEY, pay);
+        }
 
         if(isActive != null){
             buffer.urlArgAppend(IS_ACTIVE_KEY, isActive);
@@ -201,11 +219,15 @@ public class Job {
         if(ownerId != null){
             buffer.urlArgAppend(OWNER_ID_KEY, ownerId);
         }
-        if(pay != null) {
-            buffer.urlArgAppend(PAY_KEY, pay);
+        if(startDate != null){
+            buffer.urlArgAppend(START_DATE_KEY, startDate);
         }
+
         if(hoursPerWeek!=null){
             buffer.urlArgAppend(HOURS_KEY, hoursPerWeek);
+        }
+        if(location != null){
+            buffer.urlArgAppend(LOCATION_KEY, location);
         }
 
         return buffer.toString();
@@ -214,6 +236,22 @@ public class Job {
     public boolean isEmpty(){
         String allFields = jobId + title + description + pay + hoursPerWeek + isActive + ownerId + datePosted + picFileName + error;
         return (allFields.length() == 0);
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = formatDate(startDate);
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public String getJobId() {

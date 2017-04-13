@@ -61,6 +61,7 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
                 User.CURRENT.retrieveCourses(new User.CoursesRequestListener() {
                     @Override
                     public void onResponse(Term[] terms) {
+
                         CourseFragment.this.getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

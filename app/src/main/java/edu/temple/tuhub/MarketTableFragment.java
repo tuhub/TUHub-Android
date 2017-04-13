@@ -74,7 +74,10 @@ public class MarketTableFragment extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             Marketitems=(ArrayList<Marketitem>) msg.obj;
-            arraymarket=new MarketAdapter(getActivity().getApplicationContext(),R.layout.marketperitem,Marketitems);
+
+            if(getActivity()!=null) {
+                arraymarket = new MarketAdapter(getActivity().getApplicationContext(), R.layout.marketperitem, Marketitems);
+            }
             marketgrid.setAdapter(arraymarket);
         }
     };
