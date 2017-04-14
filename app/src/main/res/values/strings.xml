@@ -18,6 +18,11 @@
     <string name="title_more">More</string>
     <string name="search_title">Search</string>
     <string name="noResults">No Results</string>
+    <string name="remember_me">Remember Me</string>
+    <string name="remember_me_message">Login credentials may be exposed if you have rooted your device.</string>
+    <string name="are_you_sure">Are You Sure?</string>
+    <string name="cancel">Cancel</string>
+    <string name="okay">Okay</string>
 
     <!-- Calendar strings -->
     <string name="sun">SUN</string>

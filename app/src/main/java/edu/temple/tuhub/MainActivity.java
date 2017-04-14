@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.io.Serializable;
 
@@ -70,17 +71,6 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        //Retrieve login info and store in SharedPreferences
-            Intent receivedIntent = getIntent();
-            String username = receivedIntent.getStringExtra(getResources().getString(R.string.username_key));
-            String password = receivedIntent.getStringExtra(getResources().getString(R.string.password_key));
-            String id = receivedIntent.getStringExtra(getResources().getString(R.string.user_id_key));
-
-            SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-            preferences.edit().putString(getResources().getString(R.string.username_key), username).apply();
-            preferences.edit().putString(getResources().getString(R.string.password_key), password).apply();
-            preferences.edit().putString(getResources().getString(R.string.user_id_key), id).apply();
 
         csad = new CourseSearchAllDetail();
         csaf = new CoursesSearchAllFragment();

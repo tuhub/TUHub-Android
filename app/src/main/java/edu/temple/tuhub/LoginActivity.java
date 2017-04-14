@@ -3,7 +3,12 @@ package edu.temple.tuhub;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Build;
@@ -15,11 +20,14 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
 
+import butterknife.ButterKnife;
 import edu.temple.tuhub.models.User;
 
 /**
@@ -32,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private CheckBox rememberMe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +48,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.email);
+        rememberMe = (CheckBox)findViewById(R.id.login_checkbox);
+        rememberMe.setOnClickListener(new RememberMeOnClickListener());
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -62,6 +73,49 @@ public class LoginActivity extends AppCompatActivity {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+        String password = preferences.getString(getResources().getString(R.string.password_key), "");
+        if(password.length() != 0){
+            mPasswordView.setText(password);
+            String username = preferences.getString(getResources().getString(R.string.username_key), "");
+            mUsernameView.setText(username);
+            attemptLogin();
+        }
+    }
+
+    private class RememberMeOnClickListener implements OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            final CheckBox checkBox = (CheckBox)v;
+            if(checkBox.isChecked()){
+               // Toast.makeText(LoginActivity.this, "Are you sure?", Toast.LENGTH_SHORT).show();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                builder.setMessage(R.string.remember_me_message);
+                builder.setTitle(R.string.are_you_sure);
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        checkBox.toggle();
+                        dialog.dismiss();
+                    }
+                });
+                builder.setPositiveButton(R.string.okay, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog dialog = builder.show();
+                Button positive = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                Button negative = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                positive.setTextColor(Color.BLACK);
+                negative.setTextColor(Color.BLACK);
+            }
+        }
     }
 
     /**
@@ -108,15 +162,24 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
+            final boolean isRemembered = rememberMe.isChecked();
             User.signInUser(username, password, new User.UserRequestListener() {
                 @Override
                 public void onResponse(User user) {
                     showProgress(false);
-                    //TODO make user parcelable to just store the whole user object
+
+                    SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString(getResources().getString(R.string.username_key), username);
+                    editor.putString(getResources().getString(R.string.user_id_key), user.getTuID());
+                    if(isRemembered) {
+                        editor.putString(getResources().getString(R.string.password_key), password);
+                    } else {
+                        editor.putString(getResources().getString(R.string.password_key), "");
+                    }
+                    editor.apply();
+
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra(getResources().getString(R.string.username_key), username);
-                    intent.putExtra(getResources().getString(R.string.password_key), password);
-                    intent.putExtra(getResources().getString(R.string.user_id_key), user.getTuID());
                     startActivity(intent);
                 }
 
