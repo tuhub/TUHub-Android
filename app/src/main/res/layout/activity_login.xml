@@ -63,6 +63,20 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/remember_me"/>
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/login_checkbox"/>
+            </LinearLayout>
+
             <Button
                 android:id="@+id/email_sign_in_button"
                 style="?android:textAppearanceSmall"
