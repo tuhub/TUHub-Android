@@ -17,9 +17,10 @@ import java.io.Serializable;
 import edu.temple.tuhub.models.Course;
 import edu.temple.tuhub.models.Entry;
 import edu.temple.tuhub.models.Grade;
+import edu.temple.tuhub.models.Marketitem;
 import edu.temple.tuhub.models.Newsitem;
 
-public class MainActivity extends AppCompatActivity implements NewsTableFragment.newsshow, NewsTableFragment.filterbutton, FilterMenuFrag.selectorinterface, CourseFragment.showCourseDetails, CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener, CourseFragment.courseSearchHandler, CoursesSearchAllFragment.searchAllResultsInterface, MarketTableFragment.newListingInterface{
+public class MainActivity extends AppCompatActivity implements NewsTableFragment.newsshow, NewsTableFragment.filterbutton, FilterMenuFrag.selectorinterface, CourseFragment.showCourseDetails, CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener, CourseFragment.courseSearchHandler, CoursesSearchAllFragment.searchAllResultsInterface, MarketTableFragment.newListingInterface, MarketTableFragment.marketshow{
     static Fragment[] fraghold = new Fragment[3];//For TUNews and some TUmarketplace
     FilterMenuFrag tufilter;//For TUNews
 
@@ -226,7 +227,8 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         }
        /* else if(getFragmentManager().findFragmentById(android.R.id.content) instanceof ) //TODO for when we display the marketfrag that showcases the data in the market item
         {
-
+            manage=getFragmentManager();
+            transact=manage.beginTransaction();
 
         }*/
         else
@@ -273,6 +275,13 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         else if(i==2){
             loadFragment(R.id.contentFragment, new MarketPersonalListingFragment(), true, false);
         }
+    }
+
+    @Override
+    public void showmarket(Marketitem t) {/// gives the clicked marketitem
+        //should probally assign the market item to a variable inside the shower class
+        //should replace the marketfragment here with the fragment that shows the market information
+        // on back pressed it should go back to the market fragment! (implement line 228-233)
     }
 }
 

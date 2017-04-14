@@ -145,7 +145,7 @@ public class MarketTableFragment extends Fragment {
         marketgrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //((MarketTableFragment.marketshow)getActivity()).showmarket());// TODO needs something heree to show te market item
+                ((MarketTableFragment.marketshow)getActivity()).showmarket(Marketitems.get(position));
 
             }
 
