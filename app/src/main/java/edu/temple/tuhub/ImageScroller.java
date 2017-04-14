@@ -2,6 +2,7 @@ package edu.temple.tuhub;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -10,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
@@ -221,7 +223,6 @@ public class ImageScroller extends LinearLayout {
                 });
                 builder.show();
             } else {
-                //TODO get neutral button to show up
                 android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(fragment.obtainActivity());
                 builder.setMessage(fragment.obtainActivity().getResources().getString(R.string.error_too_many_pics));
                 builder.setNeutralButton("Okay", new DialogInterface.OnClickListener() {
@@ -231,7 +232,11 @@ public class ImageScroller extends LinearLayout {
                     }
                 });
 
-                builder.show();
+                AlertDialog dialog = builder.show();
+                Button positive = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                Button negative = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                positive.setTextColor(Color.BLACK);
+                negative.setTextColor(Color.BLACK);
             }
         }
 
