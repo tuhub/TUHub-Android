@@ -89,8 +89,12 @@ public class Job {
         this.picFileName = picFileName;
     }
     public String formatDate(String startDate){
-       String newDate = startDate.substring(0,startDate.indexOf('/'))+ "-" + startDate.substring(startDate.indexOf('/')+1,startDate.lastIndexOf('/'))+"-20"+startDate.substring(startDate.lastIndexOf('/')+1, startDate.length());
-
+        String newDate;
+        if(startDate != null && startDate.length()!=0) {
+            newDate = startDate.substring(0, startDate.indexOf('/')) + "-" + startDate.substring(startDate.indexOf('/') + 1, startDate.lastIndexOf('/')) + "-20" + startDate.substring(startDate.lastIndexOf('/') + 1, startDate.length());
+        } else {
+            newDate = "";
+        }
         return newDate;
     }
 

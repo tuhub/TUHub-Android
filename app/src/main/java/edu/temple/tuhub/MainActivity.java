@@ -1,6 +1,8 @@
 package edu.temple.tuhub;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -10,19 +12,28 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.androidnetworking.error.ANError;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 import edu.temple.tuhub.models.Course;
 import edu.temple.tuhub.models.Entry;
 import edu.temple.tuhub.models.Marketitem;
 import edu.temple.tuhub.models.Newsitem;
+import edu.temple.tuhub.models.User;
 
 public class MainActivity extends AppCompatActivity implements NewsTableFragment.newsshow, NewsTableFragment.filterbutton, FilterMenuFrag.selectorinterface, CourseFragment.showCourseDetails, CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener, CourseFragment.courseSearchHandler, CoursesSearchAllFragment.searchAllResultsInterface, MarketTableFragment.newListingInterface, MarketTableFragment.marketshow{
+
     static Fragment[] fraghold = new Fragment[3];//For TUNews and some TUmarketplace
     FilterMenuFrag tufilter;//For TUNews
 
@@ -46,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             String username;
             if(preferences == null) {
-                SharedPreferences preferences = getApplication().getSharedPreferences(getString(R.string.userInfo), Context.MODE_PRIVATE);
+                preferences = getApplication().getSharedPreferences(getString(R.string.userInfo), Context.MODE_PRIVATE);
             }
 
             switch (item.getItemId()) {
@@ -61,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
                 case R.id.navigation_marketplace:
                     username = preferences.getString(getResources().getString(R.string.username_key), "");
                     if(username.length() != 0) {
-                        loadFragment(R.id.contentFragment, fraghold[2], false, true);
+                        loadMarketplace();
                     } else {
                         loadFragment(R.id.contentFragment, pf.newInstance(), false, true);
                     }
@@ -178,6 +189,116 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
 
         fm.executePendingTransactions();
     }
+
+    /*
+   Checks to see if the user is registered in the marketplace,
+   if not, displayAddPhoneNumberDialog() is called
+    */
+    private void loadMarketplace(){
+        final String username = preferences.getString(getString(R.string.username_key), "");
+        boolean registeredForMarketplace = preferences.getBoolean(username + getString(R.string.in_marketplace_key), false);
+        if(registeredForMarketplace) {
+            loadFragment(R.id.contentFragment, fraghold[2], false, true);
+        } else {
+            loadFragment(R.id.contentFragment, LoadingFragment.newInstance(), false, true);
+            User.isInMarketplace(username, new User.MarketplaceRequestListener() {
+                @Override
+                public void onResponse(boolean isInMarketplace) {
+                    if(isInMarketplace){
+                        loadFragment(R.id.contentFragment, fraghold[2], false, true);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putBoolean(username + getString(R.string.in_marketplace_key), true);
+                        editor.apply();
+                    } else {
+                        displayAddPhoneNumberDialog(username);
+                    }
+                }
+
+                @Override
+                public void onError(ANError error) {
+                    Toast.makeText(MainActivity.this, "Error checking if user is registered in marketplace", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
+    }
+
+    /*
+    Displays dialog for user to add phone number the first time they are registered for the marketplace
+    After the user responds, the user's information is stored in the marketplace using storeUserInMarket()
+     */
+    public void displayAddPhoneNumberDialog(final String username){
+        final String tuid = preferences.getString(getString(R.string.user_id_key), "");
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.add_phone_dialog, null);
+        final EditText phoneInput = (EditText)dialogView.findViewById(R.id.phone_numer_input);
+        builder.setView(dialogView);
+        builder.setPositiveButton(R.string.add_phone_number, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        builder.setNegativeButton(R.string.no_thanks, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                storeUserInMarket(username, tuid, null);
+                dialog.dismiss();
+            }
+        });
+
+        builder.setCancelable(false);
+
+        final AlertDialog alert = builder.show();
+        alert.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String number = phoneInput.getText().toString();
+
+                if(number.length() != 10){
+                    phoneInput.setError(getString(R.string.invalid_length));
+                } else {
+                    try {
+                        Double.parseDouble(number);
+                        storeUserInMarket(username, tuid, number);
+                        alert.dismiss();
+                    } catch (NumberFormatException e) {
+                        phoneInput.setError(getString(R.string.phone_number_error));
+                    }
+                }
+            }
+        });
+
+
+
+    }
+
+    /*
+    Inserts the user data into the marketplace db. Once the data is stored, the marketplace fragment is loaded
+     */
+    public void storeUserInMarket(final String username, String tuid, String phoneNumber){
+        User.addToMarketplace(username, tuid, phoneNumber, new User.MarketplaceRequestListener() {
+            @Override
+            public void onResponse(boolean isInMarketplace) {
+                if(isInMarketplace){
+                    loadFragment(R.id.contentFragment, fraghold[2], false, true);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putBoolean(username + getString(R.string.in_marketplace_key), true);
+                    editor.apply();
+                } else {
+                    Toast.makeText(MainActivity.this, "MainActivity: storeUserInMarket returned false ", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onError(ANError error) {
+                Log.d("STORING", error.getErrorBody());
+                Toast.makeText(MainActivity.this, "Error: User was not registered in marketplace", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private FragmentManager.OnBackStackChangedListener backStackChangedListener = new FragmentManager.OnBackStackChangedListener() {
         @Override
         public void onBackStackChanged() {

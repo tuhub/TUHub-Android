@@ -64,7 +64,7 @@ public class MarketJobListingFragment extends Fragment implements ImageScroller.
         imageScroller.setImageScrollerFragment(MarketJobListingFragment.this);
         imageScroller.setCredentialsProvider();
         if(username == null) {
-            SharedPreferences pref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences pref = getActivity().getApplication().getSharedPreferences(getString(R.string.userInfo), Context.MODE_PRIVATE);
             username = pref.getString(getResources().getString(R.string.username_key), "");
         }
         titleInput = (AutoCompleteTextView) v.findViewById(R.id.editJobTitle);
@@ -96,7 +96,7 @@ public class MarketJobListingFragment extends Fragment implements ImageScroller.
             job.setPay(payInput.getText().toString());
             job.setHoursPerWeek (hoursInput.getText().toString());
             job.setStartDate(startDateInput.getText().toString());
-            System.out.println(startDateInput.getText().toString());
+            Log.d("START DATE", startDateInput.getText().toString());
             job.setLocation(locationInput.getText().toString());
             job.setOwnerId(username);
             job.setIsActive(Job.TRUE);
