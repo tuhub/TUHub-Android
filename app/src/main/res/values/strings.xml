@@ -84,6 +84,15 @@
     <string name="listing_published">Listing Published</string>
     <string name="image_upload_error">Error uploading image</string>
     <string name="error_publishing">Error Publishing</string>
+    <string name="loading">Loading...</string>
+    <string name="in_marketplace_key">isInMarketplace</string>
+    <string name="add_phone_title">Add a Phone Number?</string>
+    <string name="add_phone_body">If you post listings on the marketplace, some users may want to contact you by phone. If you would rather not provide your phone number, users will still be able to respond to your listings via your Temple email address.</string>
+    <string name="add_phone_number">Add Number</string>
+    <string name="no_thanks">No Thanks</string>
+    <string name="phone_number">Phone Number (numbers only)</string>
+    <string name="phone_number_error">Please enter numbers only</string>
+    <string name="invalid_length">Invalid Length</string>
 
 
 </resources>

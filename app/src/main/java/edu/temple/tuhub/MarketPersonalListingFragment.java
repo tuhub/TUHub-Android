@@ -64,7 +64,7 @@ public class MarketPersonalListingFragment extends Fragment implements ImageScro
         imageScroller.setImageScrollerFragment(MarketPersonalListingFragment.this);
         imageScroller.setCredentialsProvider();
         if(username == null) {
-            SharedPreferences pref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences pref = getActivity().getApplication().getSharedPreferences(getString(R.string.userInfo), Context.MODE_PRIVATE);
             username = pref.getString(getResources().getString(R.string.username_key), "");
         }
         titleInput = (AutoCompleteTextView) v.findViewById(R.id.editTitle);

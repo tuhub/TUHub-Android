@@ -99,7 +99,7 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
         imageScroller.setImageScrollerFragment(InsertProductFragment.this);
         imageScroller.setCredentialsProvider();
         if(username == null) {
-            SharedPreferences pref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences pref = getActivity().getApplication().getSharedPreferences(getString(R.string.userInfo), Context.MODE_PRIVATE);
             username = pref.getString(getResources().getString(R.string.username_key), "");
         }
 
@@ -157,7 +157,7 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
                 public void onResponse(Product product) {
                     Log.d("final product", product.toString());
                     if (product.getError().length() != 0) {
-                        titleInput.setText(product.getError());
+                        Toast.makeText(getActivity(), product.getError(), Toast.LENGTH_LONG).show();
 
                     } else {
 
@@ -167,7 +167,6 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
 
                 @Override
                 public void onError(ANError error) {
-                    titleInput.setText(error.toString());
                     error.printStackTrace();
                     imageScroller.submitFailed();
                     Toast.makeText(getActivity(), getString(R.string.error_publishing), Toast.LENGTH_SHORT).show();
