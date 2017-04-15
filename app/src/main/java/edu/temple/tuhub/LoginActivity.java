@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,11 +42,13 @@ public class LoginActivity extends AppCompatActivity {
     private View mProgressView;
     private View mLoginFormView;
     private CheckBox rememberMe;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        preferences = getApplication().getSharedPreferences(getString(R.string.userInfo),Context.MODE_PRIVATE);
         // Set up the login form.
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.email);
         rememberMe = (CheckBox)findViewById(R.id.login_checkbox);
@@ -71,10 +74,22 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        //Sign in as guest -> clear stored login info and start main activity
+        (findViewById(R.id.guest_log_in)).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.clear();
+                editor.commit();
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+        //If login info is stored, use it to sign in
         String password = preferences.getString(getResources().getString(R.string.password_key), "");
         if(password.length() != 0){
             mPasswordView.setText(password);
@@ -168,7 +183,6 @@ public class LoginActivity extends AppCompatActivity {
                 public void onResponse(User user) {
                     showProgress(false);
 
-                    SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putString(getResources().getString(R.string.username_key), username);
                     editor.putString(getResources().getString(R.string.user_id_key), user.getTuID());
@@ -178,7 +192,6 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString(getResources().getString(R.string.password_key), "");
                     }
                     editor.apply();
-
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                 }

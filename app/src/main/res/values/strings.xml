@@ -23,6 +23,11 @@
     <string name="are_you_sure">Are You Sure?</string>
     <string name="cancel">Cancel</string>
     <string name="okay">Okay</string>
+    <string name="logout">Log Out</string>
+    <string name="you_must_be_logged_in">You must be logged in to use this feature.</string>
+    <string name="login">Log In</string>
+    <string name="log_in_guest">Log in as Guest</string>
+    <string name="userInfo">userInfo</string>
 
     <!-- Calendar strings -->
     <string name="sun">SUN</string>

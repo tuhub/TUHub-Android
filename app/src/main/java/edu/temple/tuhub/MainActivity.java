@@ -1,5 +1,6 @@
 package edu.temple.tuhub;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -9,15 +10,15 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import java.io.Serializable;
 
 import edu.temple.tuhub.models.Course;
 import edu.temple.tuhub.models.Entry;
-import edu.temple.tuhub.models.Grade;
 import edu.temple.tuhub.models.Marketitem;
 import edu.temple.tuhub.models.Newsitem;
 
@@ -28,24 +29,42 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
     FragmentManager manage ;//For TUNews
     FragmentTransaction transact;//For TUNews
 
+    private SharedPreferences preferences;
+
     CourseFragment cf;
     CourseSearchAllDetail csad;
     CoursesSearchAllFragment csaf;
     MyCourseSearchFragment mcsf;
     CourseDetailsFragment cdf;
     MapsFragment mf;
+    PageDeniedFragment pf;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            String username;
+            if(preferences == null) {
+                SharedPreferences preferences = getApplication().getSharedPreferences(getString(R.string.userInfo), Context.MODE_PRIVATE);
+            }
+
             switch (item.getItemId()) {
                 case R.id.navigation_courses:
-                    loadFragment(R.id.contentFragment, cf.newInstance(), false, true);
+                    username = preferences.getString(getResources().getString(R.string.username_key), "");
+                    if(username.length() != 0) {
+                        loadFragment(R.id.contentFragment, cf.newInstance(), false, true);
+                    } else {
+                        loadFragment(R.id.contentFragment, pf.newInstance(), false, true);
+                    }
                     return true;
                 case R.id.navigation_marketplace:
-                    loadFragment(R.id.contentFragment, fraghold[2], false, true);
+                    username = preferences.getString(getResources().getString(R.string.username_key), "");
+                    if(username.length() != 0) {
+                        loadFragment(R.id.contentFragment, fraghold[2], false, true);
+                    } else {
+                        loadFragment(R.id.contentFragment, pf.newInstance(), false, true);
+                    }
                     return true;
                 case R.id.navigation_maps:
                     loadFragment(R.id.contentFragment, mf, false, true);
@@ -54,20 +73,50 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
                     loadFragment(R.id.contentFragment, fraghold[1], false, true);
                     return true;
                 case R.id.navigation_more:
-                    // TODO: Load fragment
                     return true;
+
             }
             return false;
         }
 
     };
 
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle item selection
+        switch (item.getItemId()) {
+            case R.id.logout:
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.clear();
+                editor.commit();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                return true;
+            case R.id.login:
+                Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(loginIntent);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        String username = preferences.getString(getString(R.string.username_key), "");
+        if(username.length() == 0) {
+            inflater.inflate(R.menu.login_menu, menu);
+        } else {
+            inflater.inflate(R.menu.logout_menu, menu);
+        }
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getFragmentManager().addOnBackStackChangedListener(backStackChangedListener);
+        preferences = getApplication().getSharedPreferences(getString(R.string.userInfo),Context.MODE_PRIVATE);
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -80,9 +129,15 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         mf = new MapsFragment();
 
         if(savedInstanceState==null) {
-            int selectedID = navigation.getSelectedItemId();
-            View selectedView = navigation.findViewById(selectedID);
-            selectedView.performClick();
+            String username = preferences.getString(getString(R.string.username_key), "");
+            //If logged in, go to the first item in menu, otherwise go to navigation
+            if(username.length()!= 0) {
+                int selectedID = navigation.getSelectedItemId();
+                View selectedView = navigation.findViewById(selectedID);
+                selectedView.performClick();
+            } else {
+                navigation.setSelectedItemId(R.id.navigation_maps);
+            }
         }
 
         if(fraghold[1] == null)//For TUNews
