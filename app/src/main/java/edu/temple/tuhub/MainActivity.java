@@ -22,7 +22,7 @@ import edu.temple.tuhub.models.Entry;
 import edu.temple.tuhub.models.Marketitem;
 import edu.temple.tuhub.models.Newsitem;
 
-public class MainActivity extends AppCompatActivity implements NewsTableFragment.newsshow, NewsTableFragment.filterbutton, FilterMenuFrag.selectorinterface, CourseFragment.showCourseDetails, CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener, CourseFragment.courseSearchHandler, CoursesSearchAllFragment.searchAllResultsInterface, MarketTableFragment.newListingInterface, MarketTableFragment.marketshow{
+public class MainActivity extends AppCompatActivity implements NewsTableFragment.newsshow, NewsTableFragment.filterbutton, FilterMenuFrag.selectorinterface, CourseFragment.showCourseDetails, CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener, CourseFragment.courseSearchHandler, CoursesSearchAllFragment.searchAllResultsInterface, MarketTableFragment.newListingInterface, MarketTableFragment.marketshow, MapsFragment.loadBuildingDetails{
     static Fragment[] fraghold = new Fragment[3];//For TUNews and some TUmarketplace
     FilterMenuFrag tufilter;//For TUNews
 
@@ -327,6 +327,14 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         //should probally assign the market item to a variable inside the shower class
         //should replace the marketfragment here with the fragment that shows the market information
         // on back pressed it should go back to the market fragment! (implement line 228-233)
+    }
+
+    public void loadBuildingDetails(String name, String imageUrl, String latitude, String longitude){
+        Bundle bundle = new Bundle();
+        bundle.putString("name", name);
+        bundle.putString("imageUrl", imageUrl);
+        bundle.putString("latitude", latitude);
+        bundle.putString("longitude", longitude);
     }
 }
 
