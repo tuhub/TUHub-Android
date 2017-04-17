@@ -119,7 +119,7 @@ public class MarketTableFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         marketgrid = (GridView) getActivity().findViewById(R.id.marketgrid);
 
-        if(Marketitems==null  || (finallink!=null && !finallink.equals(baselink)))
+        if(Marketitems==null  || Marketitems.size()==0 || (finallink!=null && !finallink.equals(defaultlink)))
         {
             loadmarket();
         }

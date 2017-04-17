@@ -1,6 +1,8 @@
 package edu.temple.tuhub;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.LayoutRes;
@@ -25,7 +27,7 @@ import edu.temple.tuhub.models.Newsitem;
 
 public class ArrayNewsAdapter extends ArrayAdapter<Newsitem> {
 
-
+    Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.drawable.no_photo);
     Handler setimage = new Handler()
     {
         @Override
@@ -68,6 +70,7 @@ public class ArrayNewsAdapter extends ArrayAdapter<Newsitem> {
         }
         else
         {
+            imgre.setImageBitmap(noimage);
             ImageLoadThread imthread = new ImageLoadThread(new ImageItem(imgre,item),setimage);
             imthread.start();
 

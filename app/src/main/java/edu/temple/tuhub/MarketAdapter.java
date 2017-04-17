@@ -109,6 +109,7 @@ Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.draw
         }
         else
         {
+            imgre.setImageBitmap(noimage);
             MarketImageloadThread imthread = new MarketImageloadThread(new MarketImageItem(imgre,item),setimage);
             imthread.start();
 
