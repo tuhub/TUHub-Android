@@ -93,6 +93,7 @@
     <string name="phone_number">Phone Number (numbers only)</string>
     <string name="phone_number_error">Please enter numbers only</string>
     <string name="invalid_length">Invalid Length</string>
+    <string name="google_android_map_api_key">AIzaSyAlmlxd6P-cT2AN0XYdV_n5wZ0wxziyoQA</string>
 
 
 </resources>

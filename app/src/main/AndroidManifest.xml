@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyAlmlxd6P-cT2AN0XYdV_n5wZ0wxziyoQA"/>
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/google_android_map_api_key"/>
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

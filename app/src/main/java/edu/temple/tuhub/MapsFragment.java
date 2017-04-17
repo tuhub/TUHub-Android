@@ -10,10 +10,12 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.androidnetworking.error.ANError;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -34,6 +36,8 @@ public class MapsFragment extends Fragment {
     private MapView mMapView;
     private String currentCampus = "MN";
     private Building[] Buildings;
+    private Button detailBtn;
+    private Marker currentMarker;
 
     public MapsFragment() {
         // Required empty public constructor
@@ -43,9 +47,15 @@ public class MapsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_maps, container, false);
+        detailBtn = (Button) v.findViewById(R.id.mapDetailsButton);
+        detailBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadBuildingDetails();
+            }
+        });
         mMapView = (MapView) v.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-        mMapView.onResume(); // needed to get the map to display immediately
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
         } catch (Exception e) {
@@ -94,18 +104,29 @@ public class MapsFragment extends Fragment {
                     });
                     CameraPosition cameraPosition = new CameraPosition.Builder().target(templeUniversity).zoom(16).build();
                     googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                    googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+
+                    googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
-                        public void onInfoWindowClick(Marker marker) {
-                            for (edu.temple.tuhub.models.Building Building : Buildings) {
-                                if (Building.getName().equals(marker.getTitle())) {
-                                    activity.loadBuildingDetails(Building.getName(), Building.getImageUrl(), Building.getLatitude(), Building.getLongitude());
-                                }
-                            }
+                        public boolean onMarkerClick(Marker marker) {
+                            marker.showInfoWindow();
+                            currentMarker = marker;
+                            if(detailBtn!=null)
+                                detailBtn.setVisibility(View.VISIBLE);
+                            return false;
+                        }
+                    });
+                    googleMap.setOnInfoWindowCloseListener(new GoogleMap.OnInfoWindowCloseListener() {
+                        @Override
+                        public void onInfoWindowClose(Marker marker) {
+                            currentMarker = null;
+                            if(detailBtn!=null)
+                                detailBtn.setVisibility(View.INVISIBLE);
                         }
                     });
 
                 } }
+
+
         });
 
 
@@ -114,29 +135,42 @@ public class MapsFragment extends Fragment {
     public void onRequestPermissionsResult ( int requestCode, String[]
             permissions,int[] grantResults) {
     }
+    private void loadBuildingDetails(){
+        if(currentMarker!=null) {
+            for (edu.temple.tuhub.models.Building Building : Buildings) {
+                if (Building.getName().equals(currentMarker.getTitle())) {
+                    activity.loadBuildingDetails(Building.getName(), Building.getImageUrl(), Building.getLatitude(), Building.getLongitude());
+                }
+            }
+        }
+    }
 
 
     @Override
     public void onResume() {
         super.onResume();
+        if(mMapView!=null)
         mMapView.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        if(mMapView!=null)
         mMapView.onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(mMapView!=null)
         mMapView.onDestroy();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
+        if(mMapView!=null)
         mMapView.onLowMemory();
     }
 

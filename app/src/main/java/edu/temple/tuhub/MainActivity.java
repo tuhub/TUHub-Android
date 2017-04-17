@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
     CourseDetailsFragment cdf;
     MapsFragment mf;
     PageDeniedFragment pf;
+    BuildingDetailFragment bdf;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         cdf = new CourseDetailsFragment();
         cf = new CourseFragment();
         mf = new MapsFragment();
+        bdf = new BuildingDetailFragment();
 
         if(savedInstanceState==null) {
             String username = preferences.getString(getString(R.string.username_key), "");
@@ -456,6 +458,8 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         bundle.putString("imageUrl", imageUrl);
         bundle.putString("latitude", latitude);
         bundle.putString("longitude", longitude);
+        bdf.setArguments(bundle);
+        loadFragment(R.id.contentFragment, bdf, true, false);
     }
 }
 
