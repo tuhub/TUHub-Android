@@ -414,6 +414,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
             tufilter = new FilterMenuFrag();//new filter because the checkboxes keep procting with state changes if it is the same menufrrag
             transact.add(android.R.id.content, tufilter).commit();
             manage.executePendingTransactions();
+
         }
     }
 

@@ -2,6 +2,8 @@ package edu.temple.tuhub.models;
 
 import android.graphics.Bitmap;
 
+import java.util.ArrayList;
+
 /**
  * Created by mangaramu on 4/2/2017.
  */
@@ -9,7 +11,8 @@ import android.graphics.Bitmap;
 public class Marketitem { // should have everything I can obtain about the market
     //should discuss idea about having api call that allows for partial loading of database items.
     public String placeholderstring;
-    public Bitmap marketimage;
+    public Bitmap Firstmarketimagescaled;
+    public ArrayList<String> marketimagelinks = new ArrayList<>();
     public String price;
     public String pay;
     public String ownerid;
@@ -60,14 +63,6 @@ public class Marketitem { // should have everything I can obtain about the marke
 
     public void setPlaceholderstring(String placeholderstring) {
         this.placeholderstring = placeholderstring;
-    }
-
-    public Bitmap getMarketimage() {
-        return marketimage;
-    }
-
-    public void setMarketimage(Bitmap marketimage) {
-        this.marketimage = marketimage;
     }
 
     public String getPrice() {

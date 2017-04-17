@@ -1,20 +1,19 @@
 package edu.temple.tuhub;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -27,13 +26,20 @@ import edu.temple.tuhub.models.Marketitem;
 
 public class MarketAdapter extends ArrayAdapter<Marketitem> {
 
-
+Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.drawable.no_photo);
     Handler setimage = new Handler()
     {
         @Override
         public void handleMessage(Message msg) {
             MarketImageItem x = (MarketImageItem) msg.obj;
-            x.getViewref().setImageBitmap(x.getItemref().getMarketimage()); // TODo need to fix
+            if(x.getItemref().Firstmarketimagescaled ==null)
+            {
+                x.getItemref().Firstmarketimagescaled =noimage;
+                x.getViewref().setImageBitmap(noimage);
+            }
+            else {
+                x.getViewref().setImageBitmap(x.getItemref().Firstmarketimagescaled); // TODo need to fix
+            }
 
         }
     };
@@ -97,16 +103,16 @@ public class MarketAdapter extends ArrayAdapter<Marketitem> {
 
 
 
-      /*  if (item.newsimage != null)//if the image has already been loaded, We can just set the image from here.
+         if (item.Firstmarketimagescaled !=null )//if the image has already been loaded, We can just set the image from here.
         {
-            imgre.setImageBitmap(item.newsimage);
+            imgre.setImageBitmap(item.Firstmarketimagescaled);
         }
         else
         {
-            MarketImageloadThread imthread = new MarketImageloadThread(new Marketitem(),setimage);// TODo need to fix
+            MarketImageloadThread imthread = new MarketImageloadThread(new MarketImageItem(imgre,item),setimage);
             imthread.start();
 
-        }*/
+        }
 
 
 
