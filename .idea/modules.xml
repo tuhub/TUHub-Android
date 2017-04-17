@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/TUHub-Android.iml" filepath="$PROJECT_DIR$/TUHub-Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/yelp-android-master/yelp-android-master.iml" filepath="$PROJECT_DIR$/yelp-android-master/yelp-android-master.iml" />
     </modules>
   </component>
 </project>
