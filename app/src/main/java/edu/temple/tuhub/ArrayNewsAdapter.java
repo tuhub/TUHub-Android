@@ -12,7 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -26,6 +28,7 @@ import edu.temple.tuhub.models.Newsitem;
  */
 
 public class ArrayNewsAdapter extends ArrayAdapter<Newsitem> {
+    ListView par;
 
     Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.drawable.no_photo);
     Handler setimage = new Handler()
@@ -33,7 +36,17 @@ public class ArrayNewsAdapter extends ArrayAdapter<Newsitem> {
         @Override
         public void handleMessage(Message msg) {
             ImageItem x = (ImageItem) msg.obj;
-            x.getViewref().setImageBitmap(x.getItemref().newsimage);
+            int firstpos;
+            int lastpos;
+            lastpos=par.getLastVisiblePosition();
+            firstpos= par.getFirstVisiblePosition();
+            if(x.getOsition()>=firstpos || x.getOsition()<=lastpos) {
+                x.getViewref().setImageBitmap(x.getItemref().newsimage);
+            }
+            else
+            {
+
+            }
 
         }
     };
@@ -49,6 +62,7 @@ public class ArrayNewsAdapter extends ArrayAdapter<Newsitem> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        par=(ListView)parent;
         Newsitem item = getItem(position);
 
         if (convertView ==null)
@@ -71,7 +85,7 @@ public class ArrayNewsAdapter extends ArrayAdapter<Newsitem> {
         else
         {
             imgre.setImageBitmap(noimage);
-            ImageLoadThread imthread = new ImageLoadThread(new ImageItem(imgre,item),setimage);
+            ImageLoadThread imthread = new ImageLoadThread(new ImageItem(imgre,item,position),setimage);
             imthread.start();
 
         }

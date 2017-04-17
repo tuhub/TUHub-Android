@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,20 +27,34 @@ import edu.temple.tuhub.models.Marketitem;
 
 public class MarketAdapter extends ArrayAdapter<Marketitem> {
 
+    GridView par;
+
 Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.drawable.no_photo);
+
     Handler setimage = new Handler()
     {
         @Override
         public void handleMessage(Message msg) {
             MarketImageItem x = (MarketImageItem) msg.obj;
-            if(x.getItemref().Firstmarketimagescaled ==null)
+            int firstpos;
+            int lastpos;
+            lastpos=par.getLastVisiblePosition();
+            firstpos= par.getFirstVisiblePosition();
+            if(x.getOsition()>=firstpos || x.getOsition()<=lastpos) {
+                if(x.getItemref().Firstmarketimagescaled ==null)
+                {
+                    x.getItemref().Firstmarketimagescaled =noimage;
+                    x.getViewref().setImageBitmap(noimage);
+                }
+                else {
+                    x.getViewref().setImageBitmap(x.getItemref().Firstmarketimagescaled); // TODo need to fix
+                }
+            }
+            else
             {
-                x.getItemref().Firstmarketimagescaled =noimage;
-                x.getViewref().setImageBitmap(noimage);
+
             }
-            else {
-                x.getViewref().setImageBitmap(x.getItemref().Firstmarketimagescaled); // TODo need to fix
-            }
+
 
         }
     };
@@ -55,6 +70,7 @@ Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.draw
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        par=(GridView)parent;
         Marketitem item = getItem(position);
 
         if (convertView ==null)
@@ -100,9 +116,6 @@ Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.draw
         }
 
 
-
-
-
          if (item.Firstmarketimagescaled !=null )//if the image has already been loaded, We can just set the image from here.
         {
             imgre.setImageBitmap(item.Firstmarketimagescaled);
@@ -110,7 +123,7 @@ Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.draw
         else
         {
             imgre.setImageBitmap(noimage);
-            MarketImageloadThread imthread = new MarketImageloadThread(new MarketImageItem(imgre,item),setimage);
+            MarketImageloadThread imthread = new MarketImageloadThread(new MarketImageItem(imgre,item,position),setimage);
             imthread.start();
 
         }

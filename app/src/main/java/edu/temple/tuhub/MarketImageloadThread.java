@@ -88,20 +88,34 @@ public class MarketImageloadThread extends Thread {
         }
         else { // if there are image links we the first image
 
-            BitmapFactory bitmafa;
-            Bitmap tmpbitma;
             BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inScaled=true;
+            options.inJustDecodeBounds = true;
 
             try {
+                int reqHeight=400;
+                int reqWidth=400;
+            BitmapFactory.decodeStream(((URL) new URL(Imagei.getItemref().marketimagelinks.get(0))).openStream(),null,options);
 
-            tmpbitma= BitmapFactory.decodeStream(((URL) new URL(Imagei.getItemref().marketimagelinks.get(0))).openStream());
 
-                //scaling the bitmap using the ratio of the smallest side over the biggest side
-                final int height = tmpbitma.getHeight();
-                final int width = tmpbitma.getWidth();
+                final int height = options.outHeight;
+                final int width = options.outWidth;
 
-                double ratio= height/(double)width;
+                int inSampleSize = 1;
+
+                if (height > reqHeight || width > reqWidth) {
+
+                    final int halfHeight = height / 2;
+                    final int halfWidth = width / 2;
+
+                    // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+                    // height and width larger than the requested height and width.
+                    while ((halfHeight / inSampleSize) >= reqHeight
+                            && (halfWidth / inSampleSize) >= reqWidth) {
+                        inSampleSize *= 2;
+                    }
+                }
+
+                /*double ratio= height/(double)width;
                 double newhight=height;
                 double newwidth=width;
 
@@ -122,9 +136,11 @@ public class MarketImageloadThread extends Thread {
                     newwidth = newwidth * ratio;
 
 
-                }
+                }*/
 
-                Imagei.getItemref().Firstmarketimagescaled =Bitmap.createScaledBitmap(tmpbitma,(int)newwidth,(int)newhight, false);
+                options.inJustDecodeBounds = false;
+                options.inSampleSize=inSampleSize;
+                Imagei.getItemref().Firstmarketimagescaled =BitmapFactory.decodeStream(((URL) new URL(Imagei.getItemref().marketimagelinks.get(0))).openStream(),null,options);
 
 
             } catch (IOException e) {
