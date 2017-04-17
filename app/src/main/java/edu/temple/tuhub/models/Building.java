@@ -78,12 +78,10 @@ public class Building {
         this.longitude = longitude;
     }
 
-    public static void retrieveBuildings(String location, final BuildingRequestListener buildingRequestListener) {
-        Map map = new HashMap<>(1);
-        map.put("","MN");
+    public static void retrieveBuildings(final String location, final BuildingRequestListener buildingRequestListener) {
         NetworkManager.SHARED.requestFromEndpoint(NetworkManager.Endpoint.MAP,
                 null,
-                map,
+                null,
                 null,
                 new JSONObjectRequestListener() {
                     @Override
@@ -91,15 +89,17 @@ public class Building {
                         try {
 
                             JSONArray campusJson = response.getJSONArray("campuses");
-                            for(int i = 0; i<campusJson.length(); i++) {
+                           for(int i = 0; i<campusJson.length(); i++) {
                                 JSONObject campusObj = campusJson.getJSONObject(i);
-                                JSONArray buildingJson = campusObj.getJSONArray("buildings");
-                                Building[] buildings = new Building[buildingJson.length()];
-                                for (int k = 0; k < buildingJson.length(); k++) {
-                                    Building building = new Building(buildingJson.getJSONObject(k));
-                                    buildings[k] = building;
-                                    System.out.println(buildings[k].getName());
-                                }
+                               if(campusObj.getString("id").equals(location)) {
+                                   JSONArray buildingJson = campusObj.getJSONArray("buildings");
+                                   Building[] buildings = new Building[buildingJson.length()];
+                                   for (int k = 0; k < buildingJson.length(); k++) {
+                                       Building building = new Building(buildingJson.getJSONObject(k));
+                                       buildings[k] = building;
+                                   }
+                                   buildingRequestListener.onResponse(buildings);
+                               }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

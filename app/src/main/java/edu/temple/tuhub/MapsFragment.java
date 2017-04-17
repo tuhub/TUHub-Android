@@ -75,12 +75,11 @@ public class MapsFragment extends Fragment {
                     //default map
                     // For dropping a marker at a point on the Map
                     LatLng templeUniversity = new LatLng(39.9794501, -75.1565292);
-                    googleMap.addMarker(new MarkerOptions().position(templeUniversity).title("Temple University").snippet("Main Campus"));
                     // For zooming automatically to the location of the marker
                     Building.retrieveBuildings(currentCampus, new Building.BuildingRequestListener() {
                         @Override
                         public void onResponse(Building[] buildingResponse) {
-                            System.out.println(buildingResponse[0].getName());
+                            Buildings = new Building[buildingResponse.length];
                             for(int i = 0; i<buildingResponse.length; i++){
                                 Buildings[i] = buildingResponse[i];
                                 if(buildingResponse[i]!=null){
@@ -98,25 +97,24 @@ public class MapsFragment extends Fragment {
                     googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                         @Override
                         public void onInfoWindowClick(Marker marker) {
-
-                                for(int i = 0; i<Buildings.length; i++){
-                                    if(Buildings[i].getName().equals(marker.getTitle())){
-                                        activity.loadBuildingDetails(Buildings[i].getName(),Buildings[i].getImageUrl(),Buildings[i].getLatitude(),Buildings[i].getLongitude());
-                                    }
+                            for (edu.temple.tuhub.models.Building Building : Buildings) {
+                                if (Building.getName().equals(marker.getTitle())) {
+                                    activity.loadBuildingDetails(Building.getName(), Building.getImageUrl(), Building.getLatitude(), Building.getLongitude());
                                 }
-
-
+                            }
                         }
                     });
-                }  }
+
+                } }
         });
+
 
         return v;
     }
     public void onRequestPermissionsResult ( int requestCode, String[]
             permissions,int[] grantResults) {
-
     }
+
 
     @Override
     public void onResume() {
@@ -141,6 +139,7 @@ public class MapsFragment extends Fragment {
         super.onLowMemory();
         mMapView.onLowMemory();
     }
+
 
     loadBuildingDetails activity;
 

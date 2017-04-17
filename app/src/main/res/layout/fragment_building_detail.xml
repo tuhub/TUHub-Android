@@ -1,0 +1,60 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="edu.temple.tuhub.BuildingDetailFragment">
+
+
+    <TextView
+        android:id="@+id/buildingDetailName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="BuildingName"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="30sp"/>
+
+    <View
+        android:layout_width="400dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="6dp"
+        android:background="#990033"/>
+
+    <ImageView
+        android:id="@+id/buildingImageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+    <View
+        android:layout_width="400dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="6dp"
+        android:background="#990033"/>
+
+    <TextView
+        android:id="@+id/AddressText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Address"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/buildingDirectionButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center"
+            android:layout_margin="5dp"
+            android:background="@color/colorPrimary"
+            android:text="Directions"
+            android:textColor="@color/colorAccent"/>
+    </LinearLayout>
+
+</LinearLayout>
