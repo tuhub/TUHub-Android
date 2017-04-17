@@ -1,5 +1,6 @@
 package edu.temple.tuhub;
 
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
@@ -15,17 +16,16 @@ import android.widget.Button;
 import com.androidnetworking.error.ANError;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import edu.temple.tuhub.models.Building;
+import edu.temple.tuhub.models.FoodTruck;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,6 +36,7 @@ public class MapsFragment extends Fragment {
     private MapView mMapView;
     private String currentCampus = "MN";
     private Building[] Buildings;
+    private FoodTruck[] FoodTrucks;
     private Button detailBtn;
     private Marker currentMarker;
 
@@ -85,6 +86,23 @@ public class MapsFragment extends Fragment {
                     //default map
                     // For dropping a marker at a point on the Map
                     LatLng templeUniversity = new LatLng(39.9794501, -75.1565292);
+                    FoodTruck.retrieveFoodTrucks(new FoodTruck.FoodTruckRequestListener() {
+                        @Override
+                        public void onResponse(FoodTruck[] foodTrucks) {
+                            FoodTrucks = new FoodTruck[foodTrucks.length];
+                            for(int i = 0; i<foodTrucks.length; i++){
+                                FoodTrucks[i] = foodTrucks[i];
+                                if(foodTrucks[i]!=null) {
+                                    googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(foodTrucks[i].getLatitude()),Double.parseDouble(foodTrucks[i].getLongitude()))).title(foodTrucks[i].getName()));
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onError(ANError error) {
+
+                        }
+                    });
                     // For zooming automatically to the location of the marker
                     Building.retrieveBuildings(currentCampus, new Building.BuildingRequestListener() {
                         @Override
