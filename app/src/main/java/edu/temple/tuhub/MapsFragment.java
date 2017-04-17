@@ -52,7 +52,7 @@ public class MapsFragment extends Fragment {
         detailBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadBuildingDetails();
+                loadDetails();
             }
         });
         mMapView = (MapView) v.findViewById(R.id.mapView);
@@ -153,11 +153,16 @@ public class MapsFragment extends Fragment {
     public void onRequestPermissionsResult ( int requestCode, String[]
             permissions,int[] grantResults) {
     }
-    private void loadBuildingDetails(){
+    private void loadDetails(){
         if(currentMarker!=null) {
             for (edu.temple.tuhub.models.Building Building : Buildings) {
                 if (Building.getName().equals(currentMarker.getTitle())) {
                     activity.loadBuildingDetails(Building.getName(), Building.getImageUrl(), Building.getLatitude(), Building.getLongitude());
+                }
+            }
+            for(edu.temple.tuhub.models.FoodTruck FoodTruck : FoodTrucks){
+                if(FoodTruck.getName().equals(currentMarker.getTitle())){
+                    //activity2
                 }
             }
         }
@@ -194,21 +199,27 @@ public class MapsFragment extends Fragment {
 
 
     loadBuildingDetails activity;
+    loadFoodTruckDetails activity2;
 
     @Override
     public void onAttach(Activity c) {
         super.onAttach(c);
         activity = (loadBuildingDetails) c;
+        activity2 = (loadFoodTruckDetails) c;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         activity = null;
+        activity2 = null;
     }
 
     public interface loadBuildingDetails{
         void loadBuildingDetails(String name, String imageUrl, String latitude, String longitude);
+    }
+    public interface loadFoodTruckDetails{
+        //loadFoodTruckDetails
     }
 }
 

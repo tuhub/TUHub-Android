@@ -32,7 +32,7 @@ import edu.temple.tuhub.models.Marketitem;
 import edu.temple.tuhub.models.Newsitem;
 import edu.temple.tuhub.models.User;
 
-public class MainActivity extends AppCompatActivity implements NewsTableFragment.newsshow, NewsTableFragment.filterbutton, FilterMenuFrag.selectorinterface, CourseFragment.showCourseDetails, CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener, CourseFragment.courseSearchHandler, CoursesSearchAllFragment.searchAllResultsInterface, MarketTableFragment.newListingInterface, MarketTableFragment.marketshow, MapsFragment.loadBuildingDetails{
+public class MainActivity extends AppCompatActivity implements NewsTableFragment.newsshow, NewsTableFragment.filterbutton, FilterMenuFrag.selectorinterface, CourseFragment.showCourseDetails, CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener, CourseFragment.courseSearchHandler, CoursesSearchAllFragment.searchAllResultsInterface, MarketTableFragment.newListingInterface, MarketTableFragment.marketshow, MapsFragment.loadBuildingDetails, MapsFragment.loadFoodTruckDetails{
     static Fragment[] fraghold = new Fragment[3];//For TUNews and some TUmarketplace
     FilterMenuFrag tufilter;//For TUNews
 
@@ -460,6 +460,9 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         bundle.putString("longitude", longitude);
         bdf.setArguments(bundle);
         loadFragment(R.id.contentFragment, bdf, true, false);
+    }
+    public void loadFoodTruckDetails(){
+
     }
 }
 
