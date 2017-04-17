@@ -124,14 +124,14 @@ public class MarketImageloadThread extends Thread {
 
                 }
 
-
                 Imagei.getItemref().Firstmarketimagescaled =Bitmap.createScaledBitmap(tmpbitma,(int)newwidth,(int)newhight, false);
-
+                tmpbitma.recycle();
 
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
 
         }
 
@@ -139,6 +139,8 @@ public class MarketImageloadThread extends Thread {
         m.obj = Imagei;
         m.setTarget(placetosend);
         m.sendToTarget();
+
+
 
     }
 }
