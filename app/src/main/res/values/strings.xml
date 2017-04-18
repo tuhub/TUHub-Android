@@ -77,6 +77,9 @@
     <string name="Products">Products</string>
     <string name="Jobs">Jobs</string>
     <string name="Personals">Personals</string>
+    <string name="userProducts">My Products</string>
+    <string name="userJobs">My Jobs</string>
+    <string name="userPersonals">My Personals</string>
     <string name="newlisting">New Listing</string>
     <string name="hourlyrate">Hourly Rate</string>
     <string name="submitted">Submitted</string>
