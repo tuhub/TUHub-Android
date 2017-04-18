@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import edu.temple.tuhub.models.Marketitem;
+import edu.temple.tuhub.models.User;
 
 
 /**
@@ -48,11 +49,17 @@ public class MarketTableFragment extends Fragment {
             "/select_all_products.jsp?activeOnly=true", // = “Products”
             "/select_all_jobs.jsp?activeOnly=true", // = “Jobs”
             "/select_all_personals.jsp?activeOnly=true", // = “Personals”
+            "/find_products_by_user_id.jsp?userId=" + User.CURRENT.getUsername(), // = “Products”
+            "/find_jobs_by_user_id.jsp?userId=" +  User.CURRENT.getUsername(), // = “Jobs”
+            "/find_personals_by_user_id.jsp?userId=" + User.CURRENT.getUsername() // = “Personals”
               };
     String[] marketsearchfeeds = {
             "/search_active_product_titles.jsp?title=", // = “Productssearch”
             "/search_active_job_titles.jsp?title=", // = “Jobssearch”
             "/search_active_personal_titles.jsp?title=", // = “Personalssearch”
+            "/find_products_by_user_id.jsp?userId=" + User.CURRENT.getUsername(), // = “Products”
+            "/find_jobs_by_user_id.jsp?userId=" +  User.CURRENT.getUsername(), // = “Jobs”
+            "/find_personals_by_user_id.jsp?userId=" + User.CURRENT.getUsername() // = “Personals”
     };
 
     String baselink = "http://tuhubapi-env.us-east-1.elasticbeanstalk.com";
@@ -173,6 +180,16 @@ public class MarketTableFragment extends Fragment {
             case 2 :
                 whichone.setText(R.string.Personals);
                 break;
+            case 3 :
+                whichone.setText(R.string.userProducts);
+                break;
+            case 4 :
+                whichone.setText(R.string.userJobs);
+                break;
+            case 5 :
+                whichone.setText(R.string.userPersonals);
+                break;
+
         }
 
     }
@@ -303,6 +320,28 @@ public class MarketTableFragment extends Fragment {
                 loadmarket();
                 whichone.setText(R.string.Personals);
                 return true;
+            case R.id.UsersProductsButt:
+                finallink = baselink;
+                finallink=finallink+marketfeeds[3];
+                selected=3;
+                loadmarket();
+                whichone.setText(R.string.userProducts);
+                return true;
+            case R.id.UsersJobsButt:
+                finallink = baselink;
+                finallink=finallink+marketfeeds[4];
+                selected=4;
+                loadmarket();
+                whichone.setText(R.string.userJobs);
+                return true;
+            case R.id.UsersPersonalsButt:
+                finallink = baselink;
+                finallink=finallink+marketfeeds[5];
+                selected=5;
+                loadmarket();
+                whichone.setText(R.string.userPersonals);
+                return true;
+
 
             default:
                 return super.onOptionsItemSelected(item);
