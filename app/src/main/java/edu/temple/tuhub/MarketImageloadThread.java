@@ -70,7 +70,7 @@ public class MarketImageloadThread extends Thread {
 
             tmpstring= html2.substring(tmpstart+5,tmpend);
 
-            if(tmpstring.matches(".+?\\.[a-zA-Z]+"))//regex to see if the tmpstring between <Key> and </Key> matches an image filename or a path to an imagefilename
+            if(tmpstring.matches("[a-zA-Z0-9]+/[a-zA-Z0-9.]+"))//regex to see if the tmpstring between <Key> and </Key> matches an image filename or a path to an imagefilename
             {
                 Imagei.getItemref().marketimagelinks.add(Marketstage2+tmpstring);
             }

@@ -40,7 +40,7 @@ public class ArrayNewsAdapter extends ArrayAdapter<Newsitem> {
             int lastpos;
             lastpos=par.getLastVisiblePosition();
             firstpos= par.getFirstVisiblePosition();
-            if(x.getOsition()>=firstpos || x.getOsition()<=lastpos) {
+            if(x.getOsition()>=firstpos && x.getOsition()<=lastpos+2) {
                 x.getViewref().setImageBitmap(x.getItemref().newsimage);
             }
             else

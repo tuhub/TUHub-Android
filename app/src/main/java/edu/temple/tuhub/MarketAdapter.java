@@ -40,7 +40,7 @@ Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.draw
             int lastpos;
             lastpos=par.getLastVisiblePosition();
             firstpos= par.getFirstVisiblePosition();
-            if(x.getOsition()>=firstpos || x.getOsition()<=lastpos) {
+            if(x.getOsition()>=firstpos && x.getOsition()<=lastpos+2) {
                 if(x.getItemref().Firstmarketimagescaled ==null)
                 {
                     x.getItemref().Firstmarketimagescaled =noimage;
