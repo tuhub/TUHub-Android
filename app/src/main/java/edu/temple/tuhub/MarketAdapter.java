@@ -81,13 +81,11 @@ Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.draw
 
         TextView title = (TextView) convertView.findViewById(R.id.markettitle);// to be able to set the text of these fields later on!
         ImageView imgre = (ImageView) convertView.findViewById(R.id.marketimage);
-        TextView date = (TextView) convertView.findViewById(R.id.marketdate) ;
         TextView price = (TextView) convertView.findViewById(R.id.marketprice) ;
 
          if (item.getMarkettype().equals("Product"))
         {
             title.setText(item.getMarkettitle());
-            date.setText(item.getDateposted());
             price.setVisibility(View.VISIBLE);
             price.setText(getContext().getText(R.string.price) + ": " +item.getPrice());
         }
@@ -95,7 +93,7 @@ Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.draw
          else if(item.getMarkettype().equals("Job"))
          {
              title.setText(item.getMarkettitle());
-             date.setText(item.getDateposted());
+
              if(item.getPay()!=null) {
                  price.setVisibility(View.VISIBLE);
                  price.setText(getContext().getText(R.string.hourlyrate) + ": " + item.getPay());
@@ -111,7 +109,6 @@ Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.draw
         {
 
             title.setText(item.getMarkettitle());
-            date.setText(item.getDateposted());
             price.setVisibility(View.GONE);
         }
 
