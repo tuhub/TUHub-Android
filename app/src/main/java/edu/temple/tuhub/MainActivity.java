@@ -35,6 +35,7 @@ import edu.temple.tuhub.models.Entry;
 import edu.temple.tuhub.models.Marketitem;
 import edu.temple.tuhub.models.Newsitem;
 import edu.temple.tuhub.models.User;
+import edu.temple.tuhub.models.marketplace.Listing;
 
 import static edu.temple.tuhub.CourseCalendarFragment.*;
 import static edu.temple.tuhub.CourseFragment.*;
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
                     if(username.length() != 0) {
                         loadMarketplace();
                     } else {
-                        loadFragment(R.id.contentFragment, pf.newInstance(), false, true);
+                        loadFragment(R.id.contentFragment, pf.newInstance(), true, true);
                     }
                     return true;
                 case R.id.navigation_maps:
@@ -455,6 +456,11 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
         else if(i==2){
             loadFragment(R.id.contentFragment, new MarketPersonalListingFragment(), true, false);
         }
+    }
+
+    @Override
+    public void editListing(Listing listing) {
+        loadFragment(R.id.contentFragment, EditListingFragment.newInstance(listing.toHashMap()), true, false);
     }
 
     @Override

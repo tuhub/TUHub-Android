@@ -28,6 +28,8 @@ import edu.temple.tuhub.models.Marketitem;
 public class MarketAdapter extends ArrayAdapter<Marketitem> {
 
     GridView par;
+    String currentList;
+    EditItemListener listener;
 
 Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.drawable.no_photo);
 
@@ -59,8 +61,10 @@ Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.draw
         }
     };
 
-    public MarketAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Marketitem> objects) {
+    public MarketAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Marketitem> objects, String currentList, EditItemListener listener) {
         super(context, resource, objects);
+        this.currentList = currentList;
+        this.listener = listener;
     }
 
     public MarketAdapter(@NonNull Context context, @LayoutRes int resource) {
@@ -71,7 +75,7 @@ Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.draw
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         par=(GridView)parent;
-        Marketitem item = getItem(position);
+        final Marketitem item = getItem(position);
 
         if (convertView ==null)
         {
@@ -125,6 +129,17 @@ Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.draw
 
         }
 
+        if(currentList.equals(MarketTableFragment.MY_JOBS) || currentList.equals(MarketTableFragment.MY_PERSONALS)
+                || currentList.equals(MarketTableFragment.MY_PRODUCTS)){
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.EditItem(item);
+                }
+            });
+
+        }
+
 
 
         //the async non-ui thread based scheme for loading the image from the url link
@@ -132,5 +147,9 @@ Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.draw
 
 
         return convertView;
+    }
+
+    public interface EditItemListener{
+        public void EditItem(Marketitem item);
     }
 }

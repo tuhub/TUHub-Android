@@ -24,6 +24,7 @@ import com.androidnetworking.error.ANError;
 
 
 import java.sql.Date;
+import java.util.ArrayList;
 
 import edu.temple.tuhub.models.User;
 import edu.temple.tuhub.models.marketplace.Job;
@@ -127,6 +128,11 @@ public class MarketJobListingFragment extends Fragment implements ImageScroller.
         } else {
             imageScroller.submitFailed();
         }
+    }
+
+    @Override
+    public void deleteFilesFromS3(ArrayList<String> filesToDelete) {
+
     }
 
     /*

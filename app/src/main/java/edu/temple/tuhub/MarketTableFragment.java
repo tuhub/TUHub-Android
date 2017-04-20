@@ -22,19 +22,29 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import edu.temple.tuhub.models.Marketitem;
 import edu.temple.tuhub.models.User;
+import edu.temple.tuhub.models.marketplace.Job;
+import edu.temple.tuhub.models.marketplace.Listing;
+import edu.temple.tuhub.models.marketplace.Personal;
+import edu.temple.tuhub.models.marketplace.Product;
 
 
 /**
  * Created by mangaramu on 4/2/2017.
  */
 
-public class MarketTableFragment extends Fragment {
+public class MarketTableFragment extends Fragment implements MarketAdapter.EditItemListener {
+    public static final String MY_PERSONALS = "my personals";
+    public static final String MY_JOBS = "my jobs";
+    public static final String MY_PRODUCTS = "my products";
+
+    public String currentList = "";
     GridView marketgrid;
     GetMarketDataThread mark;//TODO needs to be changed
     ArrayList<Marketitem> Marketitems;
@@ -84,7 +94,9 @@ public class MarketTableFragment extends Fragment {
             Marketitems=(ArrayList<Marketitem>) msg.obj;
 
             if(getActivity()!=null) {
-                arraymarket = new MarketAdapter(getActivity().getApplicationContext(), R.layout.marketperitem, Marketitems);
+
+                    arraymarket = new MarketAdapter(getActivity().getApplicationContext(), R.layout.marketperitem, Marketitems, currentList, MarketTableFragment.this);
+
             }
             marketgrid.setAdapter(arraymarket);
         }
@@ -167,7 +179,7 @@ public class MarketTableFragment extends Fragment {
         }
         else
         {
-            arraymarket=new MarketAdapter(getActivity().getApplicationContext(),R.layout.marketperitem,Marketitems);
+            arraymarket=new MarketAdapter(getActivity().getApplicationContext(),R.layout.marketperitem,Marketitems, "", MarketTableFragment.this);
             marketgrid.setAdapter(arraymarket);
         }
 
@@ -304,6 +316,7 @@ public class MarketTableFragment extends Fragment {
                 finallink = baselink;
                 finallink= finallink+marketfeeds[0];
                 selected=0;
+                currentList = "";
                 loadmarket();
                 whichone.setText(R.string.Products);
                 return true;
@@ -311,6 +324,7 @@ public class MarketTableFragment extends Fragment {
                 finallink = baselink;
                 finallink= finallink+marketfeeds[1];
                 selected=1;
+                currentList = "";
                 loadmarket();
                 whichone.setText(R.string.Jobs);
                 return true;
@@ -318,6 +332,7 @@ public class MarketTableFragment extends Fragment {
                 finallink = baselink;
                 finallink=finallink+marketfeeds[2];
                 selected=2;
+                currentList = "";
                 loadmarket();
                 whichone.setText(R.string.Personals);
                 return true;
@@ -325,6 +340,7 @@ public class MarketTableFragment extends Fragment {
                 finallink = baselink;
                 finallink=finallink+marketfeeds[3];
                 selected=3;
+                currentList = MY_PRODUCTS;
                 loadmarket();
                 whichone.setText(R.string.userProducts);
                 return true;
@@ -332,6 +348,7 @@ public class MarketTableFragment extends Fragment {
                 finallink = baselink;
                 finallink=finallink+marketfeeds[4];
                 selected=4;
+                currentList = MY_JOBS;
                 loadmarket();
                 whichone.setText(R.string.userJobs);
                 return true;
@@ -339,6 +356,7 @@ public class MarketTableFragment extends Fragment {
                 finallink = baselink;
                 finallink=finallink+marketfeeds[5];
                 selected=5;
+                currentList = MY_PERSONALS;
                 loadmarket();
                 whichone.setText(R.string.userPersonals);
                 return true;
@@ -363,6 +381,23 @@ public class MarketTableFragment extends Fragment {
         return builder.create();
     }
 
+    @Override
+    public void EditItem(Marketitem item) {
+        if(item.markettype.equalsIgnoreCase("Personal")){
+            Personal personal = new Personal(item.getId(), item.getMarkettitle(), item.getDescription(), item.getLocation(),
+                    item.getIsActive(), item.getOwnerid(), item.getDateposted(), item.getPicfolder());
+            activity.editListing(personal);
+        } else if(item.markettype.equalsIgnoreCase("Job")){
+            Job job = new Job(item.getId(), item.getMarkettitle(), item.getDescription(),item.getPay(), item.getStartdate(), item.getLocation(),
+                    item.getHoursPerWeek(), item.getIsActive(), item.getOwnerid(), item.getDateposted(), item.getPicfolder());
+            activity.editListing(job);
+        } else if (item.markettype.equalsIgnoreCase("Product")){
+            Product product = new Product(item.getId(), item.getMarkettitle(), item.getDescription(), item.getPrice(),
+                    item.getIsActive(), item.getOwnerid(), item.getDateposted(), item.getPicfolder());
+            activity.editListing(product);
+        }
+    }
+
     public interface marketshow
     {
         public void showmarket(Marketitem t);// for possibly showing the market item
@@ -370,7 +405,8 @@ public class MarketTableFragment extends Fragment {
     }
 
     public interface newListingInterface{
-        public void newListing(int i);
+        void newListing(int i);
+        void editListing(Listing listing);
     }
 
 
