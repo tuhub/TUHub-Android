@@ -43,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     private View mLoginFormView;
     private CheckBox rememberMe;
     private SharedPreferences preferences;
+    private boolean loggingInFromStoredCredentials = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +96,7 @@ public class LoginActivity extends AppCompatActivity {
             mPasswordView.setText(password);
             String username = preferences.getString(getResources().getString(R.string.username_key), "");
             mUsernameView.setText(username);
+            loggingInFromStoredCredentials = true;
             attemptLogin();
         }
     }
@@ -186,7 +188,7 @@ public class LoginActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putString(getResources().getString(R.string.username_key), username);
                     editor.putString(getResources().getString(R.string.user_id_key), user.getTuID());
-                    if(isRemembered) {
+                    if(isRemembered || loggingInFromStoredCredentials) {
                         editor.putString(getResources().getString(R.string.password_key), password);
                     } else {
                         editor.putString(getResources().getString(R.string.password_key), "");
