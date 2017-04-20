@@ -26,13 +26,25 @@ import com.androidnetworking.error.ANError;
 import java.io.Serializable;
 import java.math.BigInteger;
 
+import edu.temple.tuhub.CourseFragment.showCourseDetails;
+import edu.temple.tuhub.CourseListFragment.OnListFragmentInteractionListener;
+import edu.temple.tuhub.MapsFragment.loadBuildingDetails;
+import edu.temple.tuhub.MarketTableFragment.newListingInterface;
 import edu.temple.tuhub.models.Course;
 import edu.temple.tuhub.models.Entry;
 import edu.temple.tuhub.models.Marketitem;
 import edu.temple.tuhub.models.Newsitem;
 import edu.temple.tuhub.models.User;
 
-public class MainActivity extends AppCompatActivity implements NewsTableFragment.newsshow, NewsTableFragment.filterbutton, FilterMenuFrag.selectorinterface, CourseFragment.showCourseDetails, CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener, CourseFragment.courseSearchHandler, CoursesSearchAllFragment.searchAllResultsInterface, MarketTableFragment.newListingInterface, MarketTableFragment.marketshow, MapsFragment.loadBuildingDetails, MapsFragment.loadFoodTruckDetails{
+import static edu.temple.tuhub.CourseCalendarFragment.*;
+import static edu.temple.tuhub.CourseFragment.*;
+import static edu.temple.tuhub.CoursesSearchAllFragment.*;
+import static edu.temple.tuhub.FilterMenuFrag.*;
+import static edu.temple.tuhub.MapsFragment.*;
+import static edu.temple.tuhub.MarketTableFragment.*;
+import static edu.temple.tuhub.NewsTableFragment.*;
+
+public class MainActivity extends AppCompatActivity implements newsshow, filterbutton, selectorinterface, showCourseDetails, OnListFragmentInteractionListener, CalendarClickListener, courseSearchHandler, searchAllResultsInterface, newListingInterface, marketshow, loadBuildingDetails, loadFoodTruckDetails, reloadMap{
     static Fragment[] fraghold = new Fragment[3];//For TUNews and some TUmarketplace
     FilterMenuFrag tufilter;//For TUNews
 
@@ -463,6 +475,14 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
     }
     public void loadFoodTruckDetails(){
 
+    }
+
+    @Override
+    public void reloadMap() {
+        final FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction().detach(mf).replace(R.id.contentFragment, mf).attach(mf);
+        ft.commit();
+        fm.executePendingTransactions();
     }
 }
 
