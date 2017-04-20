@@ -2,6 +2,7 @@ package edu.temple.tuhub.models;
 
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +21,10 @@ public class Building {
     private String imageUrl;
     private String latitude;
     private String longitude;
+    private static double northWestLatitude;
+    private static double southEastLatitude;
+    private static double northWestLongitude;
+    private static double southEastLongitude;
     private String error = "";
 
     public interface BuildingRequestListener {
@@ -91,7 +96,11 @@ public class Building {
                             JSONArray campusJson = response.getJSONArray("campuses");
                            for(int i = 0; i<campusJson.length(); i++) {
                                 JSONObject campusObj = campusJson.getJSONObject(i);
-                               if(campusObj.getString("id").equals(location)) {
+                               if(campusObj.getString("name").equals(location)) {
+                                   northWestLatitude = campusObj.getDouble("northWestLatitude");
+                                   northWestLongitude = campusObj.getDouble("northWestLongitude");
+                                   southEastLatitude = campusObj.getDouble("southEastLatitude");
+                                   southEastLongitude = campusObj.getDouble("southEastLongitude");
                                    JSONArray buildingJson = campusObj.getJSONArray("buildings");
                                    Building[] buildings = new Building[buildingJson.length()];
                                    for (int k = 0; k < buildingJson.length(); k++) {
@@ -111,5 +120,8 @@ public class Building {
                         buildingRequestListener.onError(anError);
                     }
                 });
+    }
+    public static LatLng getcampusLatLng(){
+        return new LatLng((northWestLatitude+southEastLatitude)/2,(northWestLongitude+southEastLongitude)/2);
     }
 }

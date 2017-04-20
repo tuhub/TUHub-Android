@@ -45,21 +45,22 @@ public class MarketTableFragment extends Fragment {
     //http://tuhubapi-env.us-east-1.elasticbeanstalk.com/select_all_products.jsp?activeOnly=true
     //http://tuhubapi-env.us-east-1.elasticbeanstalk.com/select_all_jobs.jsp?activeOnly=true
     //http://tuhubapi-env.us-east-1.elasticbeanstalk.com/select_all_personals.jsp?activeOnly=true
+
     String[] marketfeeds = {
             "/select_all_products.jsp?activeOnly=true", // = “Products”
             "/select_all_jobs.jsp?activeOnly=true", // = “Jobs”
             "/select_all_personals.jsp?activeOnly=true", // = “Personals”
-            "/find_products_by_user_id.jsp?userId=" + User.CURRENT.getUsername(), // = “Products”
-            "/find_jobs_by_user_id.jsp?userId=" +  User.CURRENT.getUsername(), // = “Jobs”
-            "/find_personals_by_user_id.jsp?userId=" + User.CURRENT.getUsername() // = “Personals”
+            "/find_products_by_user_id.jsp?userId=" + (User.CURRENT != null ? User.CURRENT.getUsername() : null), // = “Products”
+            "/find_jobs_by_user_id.jsp?userId=" + (User.CURRENT != null ? User.CURRENT.getUsername() : null), // = “Jobs”
+            "/find_personals_by_user_id.jsp?userId=" + (User.CURRENT != null ? User.CURRENT.getUsername() : null) // = “Personals”
               };
     String[] marketsearchfeeds = {
             "/search_active_product_titles.jsp?title=", // = “Productssearch”
             "/search_active_job_titles.jsp?title=", // = “Jobssearch”
             "/search_active_personal_titles.jsp?title=", // = “Personalssearch”
-            "/find_products_by_user_id.jsp?userId=" + User.CURRENT.getUsername(), // = “Products”
-            "/find_jobs_by_user_id.jsp?userId=" +  User.CURRENT.getUsername(), // = “Jobs”
-            "/find_personals_by_user_id.jsp?userId=" + User.CURRENT.getUsername() // = “Personals”
+            "/find_products_by_user_id.jsp?userId=" + (User.CURRENT != null ? User.CURRENT.getUsername() : null), // = “Products”
+            "/find_jobs_by_user_id.jsp?userId=" + (User.CURRENT != null ? User.CURRENT.getUsername() : null), // = “Jobs”
+            "/find_personals_by_user_id.jsp?userId=" + (User.CURRENT != null ? User.CURRENT.getUsername() : null) // = “Personals”
     };
 
     String baselink = "http://tuhubapi-env.us-east-1.elasticbeanstalk.com";

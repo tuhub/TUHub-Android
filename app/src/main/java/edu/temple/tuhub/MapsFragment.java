@@ -3,15 +3,27 @@ package edu.temple.tuhub;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.androidnetworking.error.ANError;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -19,6 +31,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -26,6 +39,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import edu.temple.tuhub.models.Building;
 import edu.temple.tuhub.models.FoodTruck;
+import edu.temple.tuhub.models.User;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,11 +48,12 @@ public class MapsFragment extends Fragment {
 
     private GoogleMap googleMap;
     private MapView mMapView;
-    private String currentCampus = "MN";
+    private String currentCampus;
     private Building[] Buildings;
     private FoodTruck[] FoodTrucks;
     private Button detailBtn;
     private Marker currentMarker;
+    private LatLng templeUniversity;
 
     public MapsFragment() {
         // Required empty public constructor
@@ -55,6 +70,12 @@ public class MapsFragment extends Fragment {
                 loadDetails();
             }
         });
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("MapsPreferences",Context.MODE_PRIVATE);
+        if(User.CURRENT!=null){
+            currentCampus = sharedPref.getString(User.CURRENT.getTuID()+"MapPreference", getString(R.string.saved_default_map));
+        }else{
+            currentCampus = sharedPref.getString("GuestMapPreference", getString(R.string.saved_default_map));
+        }
         mMapView = (MapView) v.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         try {
@@ -85,7 +106,7 @@ public class MapsFragment extends Fragment {
                 } else {
                     //default map
                     // For dropping a marker at a point on the Map
-                    LatLng templeUniversity = new LatLng(39.9794501, -75.1565292);
+                    templeUniversity = new LatLng(39.9794501, -75.1565292);
                     FoodTruck.retrieveFoodTrucks(new FoodTruck.FoodTruckRequestListener() {
                         @Override
                         public void onResponse(FoodTruck[] foodTrucks) {
@@ -93,7 +114,7 @@ public class MapsFragment extends Fragment {
                             for(int i = 0; i<foodTrucks.length; i++){
                                 FoodTrucks[i] = foodTrucks[i];
                                 if(foodTrucks[i]!=null) {
-                                    googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(foodTrucks[i].getLatitude()),Double.parseDouble(foodTrucks[i].getLongitude()))).title(foodTrucks[i].getName()));
+                                    googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(foodTrucks[i].getLatitude()),Double.parseDouble(foodTrucks[i].getLongitude()))).title(foodTrucks[i].getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.restaurant)));
                                 }
                             }
                         }
@@ -107,11 +128,19 @@ public class MapsFragment extends Fragment {
                     Building.retrieveBuildings(currentCampus, new Building.BuildingRequestListener() {
                         @Override
                         public void onResponse(Building[] buildingResponse) {
+                            CameraPosition cameraPosition = new CameraPosition.Builder().target(Building.getcampusLatLng()).zoom(16).build();
+                            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                             Buildings = new Building[buildingResponse.length];
                             for(int i = 0; i<buildingResponse.length; i++){
                                 Buildings[i] = buildingResponse[i];
                                 if(buildingResponse[i]!=null){
-                                    googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(buildingResponse[i].getLatitude()),Double.parseDouble(buildingResponse[i].getLongitude()))).title(buildingResponse[i].getName()));
+                                    if(buildingResponse[i].getName().toLowerCase().contains("library")){
+                                        googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(buildingResponse[i].getLatitude()),Double.parseDouble(buildingResponse[i].getLongitude()))).title(buildingResponse[i].getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.book)));
+                                    }
+                                    else if(buildingResponse[i].getName().toLowerCase().contains("tech center")){
+                                        googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(buildingResponse[i].getLatitude()),Double.parseDouble(buildingResponse[i].getLongitude()))).title(buildingResponse[i].getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.computers)));
+                                    }else
+                                    googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(buildingResponse[i].getLatitude()),Double.parseDouble(buildingResponse[i].getLongitude()))).title(buildingResponse[i].getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.university)));
                                 }
                             }
                         }
@@ -120,8 +149,6 @@ public class MapsFragment extends Fragment {
                         public void onError(ANError error) {
                         }
                     });
-                    CameraPosition cameraPosition = new CameraPosition.Builder().target(templeUniversity).zoom(16).build();
-                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
                     googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
@@ -150,8 +177,9 @@ public class MapsFragment extends Fragment {
 
         return v;
     }
-    public void onRequestPermissionsResult ( int requestCode, String[]
-            permissions,int[] grantResults) {
+
+    public void onRequestPermissionsResult (int requestCode, @NonNull String[]
+            permissions, @NonNull int[] grantResults) {
     }
     private void loadDetails(){
         if(currentMarker!=null) {
@@ -165,6 +193,83 @@ public class MapsFragment extends Fragment {
                     //activity2
                 }
             }
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.options_menu_map, menu);
+        MenuItem item = menu.findItem(R.id.searchMaps);
+        SearchView sv = new SearchView(((MainActivity) getActivity()).getSupportActionBar().getThemedContext());
+        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        MenuItemCompat.setActionView(item, sv);
+        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle item selection
+        switch (item.getItemId()) {
+            case R.id.searchMaps:
+                return true;
+            case R.id.menu_change_campus:
+                //final String tuid = preferences.getString(getString(R.string.user_id_key), "");
+                final String[] Campuses = {"Ambler", "Center City", "Health Sciences", "Japan", "Main"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Change Campus")
+                        .setSingleChoiceItems(Campuses, 0, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                currentCampus = Campuses[i];
+                            }
+                        });
+                builder.setPositiveButton(R.string.SetDefault, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SharedPreferences sharedPref = getActivity().getSharedPreferences("MapsPreferences",Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        if(User.CURRENT!=null){
+                            editor.putString(User.CURRENT.getTuID()+"MapPreference", currentCampus);
+                        }else{
+                            editor.putString("GuestMapPreference", currentCampus);
+                        }
+                        editor.commit();
+                        activity3.reloadMap();
+                    }
+                });
+                builder.setNeutralButton(R.string.OK, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        activity3.reloadMap();
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -200,12 +305,14 @@ public class MapsFragment extends Fragment {
 
     loadBuildingDetails activity;
     loadFoodTruckDetails activity2;
+    reloadMap activity3;
 
     @Override
     public void onAttach(Activity c) {
         super.onAttach(c);
         activity = (loadBuildingDetails) c;
         activity2 = (loadFoodTruckDetails) c;
+        activity3 = (reloadMap) c;
     }
 
     @Override
@@ -213,13 +320,17 @@ public class MapsFragment extends Fragment {
         super.onDetach();
         activity = null;
         activity2 = null;
+        activity3 = null;
     }
 
-    public interface loadBuildingDetails{
+    interface loadBuildingDetails{
         void loadBuildingDetails(String name, String imageUrl, String latitude, String longitude);
     }
-    public interface loadFoodTruckDetails{
+    interface loadFoodTruckDetails{
         //loadFoodTruckDetails
+    }
+    interface reloadMap{
+        void reloadMap();
     }
 }
 
