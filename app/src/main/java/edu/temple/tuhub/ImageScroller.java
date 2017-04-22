@@ -79,6 +79,7 @@ public class ImageScroller extends LinearLayout implements UserImagePreview.S3De
     private ImageScrollerFragment fragment;
     private CognitoCachingCredentialsProvider credentialsProvider;
     private ArrayList<String> filesToDelete;
+    private int highestFileName = -1;
 
     public ImageScroller(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -195,6 +196,12 @@ public class ImageScroller extends LinearLayout implements UserImagePreview.S3De
         }
     }
 
+    /*
+    Method to add an ImagePreview that is from S3 rather than the user's device.
+    These ImagePreview's need a S3DeleteListener to handle when the user wants
+    to delete the image from S3. They also need to store the key associated with
+    the image on S3.
+     */
     public void addImagePreviewFromS3(File file, String fileKey){
         Log.d("s3Objects", "Adding Image Preview");
         Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
@@ -207,6 +214,9 @@ public class ImageScroller extends LinearLayout implements UserImagePreview.S3De
         imageContainer.addView(imagePreview);
     }
 
+    /*
+    Adds a file key to the list of object keys to delete from S3
+     */
     @Override
     public void addToDeleteList(String fileKey) {
         if(filesToDelete == null){
@@ -358,12 +368,16 @@ public class ImageScroller extends LinearLayout implements UserImagePreview.S3De
         if(filesToDelete != null && !filesToDelete.isEmpty()){
             fragment.deleteFilesFromS3(filesToDelete);
         }
-        for(int i = 0; i < imageContainer.getChildCount(); i++){
+        int offset = highestFileName + 1; //Used to make sure we don't overwrite files already in the folder on S3
+        boolean addingNewImages = false;
+        for(int i = offset; i < imageContainer.getChildCount() + offset; i++){
+            Log.d("Looking at image ", String.valueOf(i));
 
-            UserImagePreview img = (UserImagePreview)imageContainer.getChildAt(i);
+            UserImagePreview img = (UserImagePreview)imageContainer.getChildAt(i-offset);
             if(img.isFromS3()){
                 continue;
             }
+            addingNewImages = true;
 
             File imageFile = null;
 
@@ -424,17 +438,29 @@ public class ImageScroller extends LinearLayout implements UserImagePreview.S3De
             }
 
         }
-        if(imageContainer.getChildCount() == 0){
+        if(imageContainer.getChildCount() == 0 || !addingNewImages){
             finalizeListing();
         }
     }
 
+    /*
+    Given a list of S3ObjectSummaries, this method retrieves the key for each S3 object and downloads the object to
+    a file on the user's device. It then calls addImagePreviewFromS3 to add an ImagePreview for the file
+     */
     public void getImagesFromS3(String folderName, List<S3ObjectSummary> s3ObjectSummaries){
         AmazonS3 s3 = new AmazonS3Client(credentialsProvider);
         for(int i = 0; i<s3ObjectSummaries.size(); i++){
             final int imageIndex = i;
             TransferUtility transferUtility = new TransferUtility(s3, fragment.obtainActivity().getApplicationContext());
             final String key = s3ObjectSummaries.get(i).getKey();
+            try{
+                int index = key.indexOf('/');
+                if(Integer.parseInt(key.substring(index+1)) > highestFileName){
+                    highestFileName = Integer.parseInt(key.substring(index+1));
+                }
+            } catch (NumberFormatException e){
+                Log.d("Looking", "key not an int: " + key);
+            }
             Log.d("s3Objects", key);
             String fileName = "imageScrollerTempFile" + String.valueOf(i);
             try {
@@ -500,6 +526,7 @@ public class ImageScroller extends LinearLayout implements UserImagePreview.S3De
         //Fragment submits its listing data, then calls loadImagesToS3(folderName) on the ImageScroller object
         void submitListing();
 
+        //Fragment needs to handle deleting objects from S3 since it takes a network request
         void deleteFilesFromS3(ArrayList<String> filesToDelete);
 
     }

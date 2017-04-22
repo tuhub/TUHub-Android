@@ -94,7 +94,7 @@ public class Job extends Listing{
         this.description = description;
         this.pay = pay.replaceAll("$","");
         this.hoursPerWeek = hours;
-        this.startDate = formatDate(startDate);
+        this.startDate = (startDate);
         this.location = location;
         this.isActive = isActive;
         this.ownerId = ownerId;
@@ -108,7 +108,6 @@ public class Job extends Listing{
                 + " active: " + isActive + " owner: " + ownerId + " date posted: " + datePosted + " picfilename: " + picFileName
                 + " pay: " + pay + " hours: " + hoursPerWeek + " start: " + startDate + " error: " + error;
     }
-    //TODO Fix this, it breaks when there aren't '/' chars --> use for loop, while indexOf('/') != -1
     public String formatDate(String startDate){
         String newDate;
         if(startDate != null && startDate.length()!=0) {
@@ -120,9 +119,10 @@ public class Job extends Listing{
                     newDate = newDate.substring(1);
                 } else {
                     boolean isNotEnd = (index+1) < newDate.length()-1;
-                    newDate = newDate.substring(0, index);
                     if(isNotEnd){
-                        newDate.substring(index + 1);
+                        newDate = newDate.substring(0, index) + newDate.substring(index + 1);
+                    } else {
+                        newDate = newDate.substring(0, index);
                     }
                 }
                 index = newDate.indexOf("/");
@@ -438,30 +438,40 @@ public class Job extends Listing{
                     if(value.length() > 45){
                         noErrors = false;
                         field.editText.setError("Must be less than 45 characters");
+                    } else if(value.length() == 0){
+                        noErrors = false;
+                        field.editText.setError("Required Field");
                     }
                     break;
                 case PAY:
-                    if(value.charAt(0) == '$'){
-                        value = value.substring(1);
-                    }
-                    if(!value.matches(DOLLAR_REGEX)){
+                    if(value == null || value.length() == 0){
                         noErrors = false;
-                        field.editText.setError("Must be digits only and have two decimal places");
+                        field.editText.setError("Required Field");
+                    } else {
+                        if (value.charAt(0) == '$') {
+                            value = value.substring(1);
+                        }
+                        if (!value.matches(DOLLAR_REGEX)) {
+                            noErrors = false;
+                            field.editText.setError("Must be digits only and have two decimal places");
+                        }
                     }
                     break;
                 case HOURSPERWEEK:
-                    try{
-                        int num = Integer.parseInt(value);
-                        if(num < 0){
-                            throw new NumberFormatException();
+                    if(value != null && value.length() > 0) {
+                        try {
+                            int num = Integer.parseInt(value);
+                            if (num < 0) {
+                                throw new NumberFormatException();
+                            }
+                        } catch (NumberFormatException e) {
+                            noErrors = false;
+                            field.editText.setError("Must be a valid, positive integer");
                         }
-                    } catch (NumberFormatException e){
-                        noErrors = false;
-                        field.editText.setError("Must be a valid, positive integer");
                     }
                     break;
                 case START_DATE:
-                    if(value.length() == 0){
+                    if(value == null || value.length() == 0){
                         break;
                     }
                     SimpleDateFormat badFormat = new SimpleDateFormat("MMM d, yyyy hh:mm:ss a");
@@ -485,6 +495,7 @@ public class Job extends Listing{
 
     @Override
     public void update(final ListingUpdateListener listener) {
+        changeNullToSpacesForUpdate();
         String updateUrl = createUpdateUrl();
         Log.d("updateUrl", updateUrl);
         NetworkManager.SHARED.requestFromUrl(updateUrl,
@@ -518,6 +529,19 @@ public class Job extends Listing{
                         listener.onError(anError);
                     }
                 });
+    }
+
+    //Change the non-required null fields to spaces so that the API stores the blank data in the DB
+    public void changeNullToSpacesForUpdate(){
+        if(description.length() == 0 || description == null){
+            description = " ";
+        }
+        if(startDate.length() == 0 || startDate == null){
+            startDate = " ";
+        }
+        if(hoursPerWeek.length() == 0 || hoursPerWeek == null){
+            hoursPerWeek = " ";
+        }
     }
 
     /*

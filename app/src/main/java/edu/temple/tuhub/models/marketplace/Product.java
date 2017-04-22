@@ -391,15 +391,23 @@ public class Product extends Listing{
                     if(value.length() > 45){
                         noErrors = false;
                         field.editText.setError("Must be less than 45 characters");
+                    } else if (value == null || value.length() == 0) {
+                        noErrors = false;
+                        field.editText.setError("Required Field");
                     }
                     break;
                 case PRICE:
-                    if(value.charAt(0) == '$'){
-                        value = value.substring(1);
-                    }
-                    if(!value.matches(DOLLAR_REGEX)){
+                    if (value == null || value.length() == 0) {
                         noErrors = false;
-                        field.editText.setError("Must be digits only and have two decimal places");
+                        field.editText.setError("Required Field");
+                    } else {
+                        if (value.charAt(0) == '$') {
+                            value = value.substring(1);
+                        }
+                        if (!value.matches(DOLLAR_REGEX)) {
+                            noErrors = false;
+                            field.editText.setError("Must be digits only and have two decimal places");
+                        }
                     }
                     break;
             }
@@ -409,6 +417,7 @@ public class Product extends Listing{
 
     @Override
     public void update(final ListingUpdateListener listener) {
+        changeNullToSpacesForUpdate();
         String updateUrl = createUpdateUrl();
         Log.d("updateUrl", updateUrl);
         NetworkManager.SHARED.requestFromUrl(updateUrl,
@@ -442,6 +451,13 @@ public class Product extends Listing{
                         listener.onError(anError);
                     }
                 });
+    }
+
+    //Change the non-required null fields to spaces so that the API stores the blank data in the DB
+    public void changeNullToSpacesForUpdate(){
+        if(description.length() == 0 || description == null){
+            description = " ";
+        }
     }
 
     public interface ProductRequestListener {

@@ -2,6 +2,7 @@ package edu.temple.tuhub;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -24,7 +26,10 @@ import com.androidnetworking.error.ANError;
 
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 import edu.temple.tuhub.models.User;
 import edu.temple.tuhub.models.marketplace.Job;
@@ -38,6 +43,7 @@ public class MarketJobListingFragment extends Fragment implements ImageScroller.
     private ImageScroller imageScroller;
     private String username;
     private int requestCode;
+    private Calendar myCalendar = Calendar.getInstance();
     AutoCompleteTextView titleInput;
     AutoCompleteTextView descriptionInput;
     AutoCompleteTextView payInput;
@@ -73,9 +79,29 @@ public class MarketJobListingFragment extends Fragment implements ImageScroller.
         payInput = (AutoCompleteTextView) v.findViewById(R.id.editJobPay);
         hoursInput = (AutoCompleteTextView) v.findViewById((R.id.editHoursPerWeek));
         startDateInput = (AutoCompleteTextView) v.findViewById(R.id.editJobStartDate);
+        startDateInput.setFocusable(false);
         locationInput = (AutoCompleteTextView) v.findViewById(R.id.editJobLocation);
+
+        startDateInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(getActivity(), date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
         return v;
     }
+
+    private void updateStartDate() {
+
+        String myFormat = "MM-dd-yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        startDateInput.setText(sdf.format(myCalendar.getTime()));
+
+    }
+
 
     @Override
     public void sendSelectImageIntent(Intent intent, int requestCode) {
@@ -180,4 +206,17 @@ public class MarketJobListingFragment extends Fragment implements ImageScroller.
 
         imageScroller.onActivityResult(requestCode, resultCode, data);
     }
+
+    DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, monthOfYear);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateStartDate();
+        }
+
+    };
 }

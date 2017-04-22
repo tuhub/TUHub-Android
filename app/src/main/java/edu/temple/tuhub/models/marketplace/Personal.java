@@ -362,6 +362,9 @@ public class Personal extends Listing{
                     if(value.length() > 45){
                         noErrors = false;
                         field.editText.setError("Must be less than 45 characters");
+                    } else if(value == null || value.length() ==0){
+                        noErrors = false;
+                        field.editText.setError("Required Field");
                     }
                     break;
             }
@@ -371,6 +374,7 @@ public class Personal extends Listing{
 
     @Override
     public void update(final ListingUpdateListener listener) {
+        changeNullToSpacesForUpdate();
         String updateUrl = createUpdateUrl();
         Log.d("updateUrl", updateUrl);
         NetworkManager.SHARED.requestFromUrl(updateUrl,
@@ -404,6 +408,16 @@ public class Personal extends Listing{
                         listener.onError(anError);
                     }
                 });
+    }
+
+    //Change the non-required null fields to spaces so that the API stores the blank data in the DB
+    public void changeNullToSpacesForUpdate(){
+        if(description.length() == 0 || description == null){
+            description = " ";
+        }
+        if(location.length() == 0 || location == null){
+            location = " ";
+        }
     }
 
     /*

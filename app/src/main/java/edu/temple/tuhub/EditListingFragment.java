@@ -101,10 +101,16 @@ public class EditListingFragment extends Fragment implements ImageScroller.Image
 
         handler = new Handler();
 
+        //Set up the ImageScroller
         imageScroller.verifyStoragePermissions(getActivity());
         imageScroller.setImageScrollerFragment(EditListingFragment.this);
         imageScroller.setCredentialsProvider();
         imageScroller.submitButton.setText(getResources().getString(R.string.update));
+
+        /*Retrieve a list of object keys stored in the Listing's folder. This
+        cannot be done in the ImageScroller object, so the list is passed to the ImageScroller
+        once it has been retrieved. Then, the ImageScroller's getImagesFromS3 method is called.
+        */
         final CognitoCachingCredentialsProvider credentialsProvider = imageScroller.getAwsCredentialsProvider();
         new AsyncTask<Void, Void, Void>(){
 
@@ -122,16 +128,18 @@ public class EditListingFragment extends Fragment implements ImageScroller.Image
             }
         }.execute();
 
-
+        //These fields do not need pairs of title TextView and EditText input
         isActive = (((String)fieldMap.get(Listing.IS_ACTIVE_KEY)).equalsIgnoreCase("true"));
         datePosted = ((String)fieldMap.get(Listing.DATE_POSTED));
-
         fieldMap.remove(Listing.IS_ACTIVE_KEY);
         fieldMap.remove(Listing.DATE_POSTED);
 
+        /*
+        Iterate through the keys and values in the HashMap, creating pairs of title TextView and EditText input
+        when necessary
+         */
         Object[] titlesArray = fieldMap.keySet().toArray();
         Object[] valuesArray = fieldMap.values().toArray();
-
         inputs = new ArrayList<>();
         for(int i = 0; i < titlesArray.length; i++){
             String title = ((String)titlesArray[i]);
@@ -141,16 +149,15 @@ public class EditListingFragment extends Fragment implements ImageScroller.Image
             addInput(title, (String)valuesArray[i]);
         }
 
+        //Display the date posted
         TextView datePostedTitle = new TextView(getActivity());
         datePostedTitle.setText(Listing.DATE_POSTED);
         TextView datePostedValue = new TextView(getActivity());
         datePostedValue.setText(datePosted);
-        inputContainer.addView(datePostedTitle);
-        inputContainer.addView(datePostedValue);
 
+        //Display a switch to handle activating/deactivating the listing
         final Switch activeSwitch = new Switch(getActivity());
         activeSwitch.setText(getResources().getString(R.string.deactivated)); //starts out false
-
         activeSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,11 +174,18 @@ public class EditListingFragment extends Fragment implements ImageScroller.Image
             isActive = false;
             activeSwitch.performClick();
         }
+
         inputContainer.addView(activeSwitch);
+        inputContainer.addView(datePostedTitle);
+        inputContainer.addView(datePostedValue);
 
         return v;
     }
 
+    /*
+    Dynamically adds a TextView for the title and an EditText for user input.
+    It sets the EditText text to the given value.
+     */
     public void addInput(String title, String value){
         TextView textView = new TextView(getActivity());
         textView.setText(title);
@@ -264,6 +278,13 @@ public class EditListingFragment extends Fragment implements ImageScroller.Image
         return getActivity();
     }
 
+    /*
+    Process for updating a listing in the marketplace.
+    Parses the list of user inputs and stores their values in the HashMap.
+    Then, a Listing object is created from the HashMap.
+    Once the Listing object's fields have been validated, the object's
+    update method is called to update the row in the DB.
+     */
     @Override
     public void submitListing() {
         //Go through the editable fields and store them back in the listing hashmap
@@ -278,14 +299,10 @@ public class EditListingFragment extends Fragment implements ImageScroller.Image
 
         if(fieldMap.get(Product.PRODUCT_ID_KEY) != null){
             editedListing = (new Product()).fromMap(fieldMap);
-            Toast.makeText(getActivity(), "Product", Toast.LENGTH_SHORT).show();
-            Log.d("FIELDS", fieldMap.toString());
         } else if(fieldMap.get(Job.JOB_ID_KEY) != null){
             editedListing = (new Job()).fromMap(fieldMap);
-            Toast.makeText(getActivity(), "job", Toast.LENGTH_SHORT).show();
         } else if (fieldMap.get(Personal.PERSONAL_ID_KEY) != null){
             editedListing = (new Personal()).fromMap(fieldMap);
-            Toast.makeText(getActivity(), "personal", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getActivity(), "Error Submitting Listing -> No Listing Type", Toast.LENGTH_SHORT).show();
         }
@@ -320,6 +337,8 @@ public class EditListingFragment extends Fragment implements ImageScroller.Image
         }
     }
 
+    //Given a list of file keys, this method creates an AmazonS3Client and deletes
+    // the object corresponding to each key in our bucket
     @Override
     public void deleteFilesFromS3(final ArrayList<String> filesToDelete) {
 
@@ -339,6 +358,7 @@ public class EditListingFragment extends Fragment implements ImageScroller.Image
 
     }
 
+    //Wrapper class for an editText and its associated key in the HashMap of values
     public class InputAndKey{
         public EditText editText;
         public String key;
@@ -349,6 +369,7 @@ public class EditListingFragment extends Fragment implements ImageScroller.Image
         }
     }
 
+    //DialogListener for Choosing the start date of a job
     DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
         @Override
@@ -362,6 +383,7 @@ public class EditListingFragment extends Fragment implements ImageScroller.Image
 
     };
 
+    //Searches through the list of fields for the start date input and sets the  input to display the chosen date
     private void updateStartDate() {
 
         String myFormat = "MM-dd-yyyy";
