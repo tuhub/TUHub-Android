@@ -230,6 +230,7 @@ public class ListingDetailsFragment extends Fragment implements ImageScroller.Im
 
 
 
+
         return v;
     }
 

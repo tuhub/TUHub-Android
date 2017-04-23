@@ -120,7 +120,7 @@
     <!-- Maps Strings -->
     <string name="google_android_map_api_key">AIzaSyAlmlxd6P-cT2AN0XYdV_n5wZ0wxziyoQA</string>
     <string name="change_campus">Change Campus</string>
-    <string name ="SetDefault">Set As Default</string>
+    <string name="SetDefault">Set As Default</string>
     <string name="saved_map">Main</string>
     <string name="saved_default_map">Main</string>
 

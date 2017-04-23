@@ -190,7 +190,7 @@ public class MapsFragment extends Fragment {
             }
             for(edu.temple.tuhub.models.FoodTruck FoodTruck : FoodTrucks){
                 if(FoodTruck.getName().equals(currentMarker.getTitle())){
-                    //activity2
+                    activity2.loadFoodTruckDetails(FoodTruck.getName(), FoodTruck.getRating(), FoodTruck.getIsClosed(), FoodTruck.getLatitude(), FoodTruck.getLongitude(), FoodTruck.getImageURL(), FoodTruck.getPhone());
                 }
             }
         }
@@ -327,7 +327,7 @@ public class MapsFragment extends Fragment {
         void loadBuildingDetails(String name, String imageUrl, String latitude, String longitude);
     }
     interface loadFoodTruckDetails{
-        //loadFoodTruckDetails
+        void loadFoodTruckDetails(String name, String rating, String isClosed, String latitude, String longitude, String imageURL, String phone);
     }
     interface reloadMap{
         void reloadMap();

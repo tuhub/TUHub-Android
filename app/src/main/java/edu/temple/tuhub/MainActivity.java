@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
     MapsFragment mf;
     PageDeniedFragment pf;
     BuildingDetailFragment bdf;
+    FoodTruckDetailFragment ftdf;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -152,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
         cf = new CourseFragment();
         mf = new MapsFragment();
         bdf = new BuildingDetailFragment();
+        ftdf = new FoodTruckDetailFragment();
 
         if(savedInstanceState==null) {
             String username = preferences.getString(getString(R.string.username_key), "");
@@ -484,8 +486,17 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
         bdf.setArguments(bundle);
         loadFragment(R.id.contentFragment, bdf, true, false);
     }
-    public void loadFoodTruckDetails(){
-
+    public void loadFoodTruckDetails(String name, String rating, String isClosed,  String latitude, String longitude,String imageUrl, String phone){
+        Bundle bundle = new Bundle();
+        bundle.putString("name", name);
+        bundle.putString("rating", rating);
+        bundle.putString("isClosed", isClosed);
+        bundle.putString("latitude", latitude);
+        bundle.putString("longitude", longitude);
+        bundle.putString("imageURL", imageUrl);
+        bundle.putString("phone", phone);
+        ftdf.setArguments(bundle);
+        loadFragment(R.id.contentFragment, ftdf, true, false);
     }
 
     @Override

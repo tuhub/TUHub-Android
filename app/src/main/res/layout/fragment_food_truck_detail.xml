@@ -1,0 +1,114 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="edu.temple.tuhub.FoodTruckDetailFragment">
+
+
+    <TextView
+        android:id="@+id/foodTruckDetailName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Food Truck Name"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="30sp"/>
+
+    <View
+        android:layout_width="400dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="6dp"
+        android:background="#990033"/>
+
+    <ImageView
+        android:id="@+id/foodTruckImageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/no_photo"/>
+
+    <View
+        android:layout_width="400dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="6dp"
+        android:background="#990033"/>
+
+    <TextView
+        android:text="Address"
+        android:layout_width="195dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/addressHeader"
+        android:textColor="#000000"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/foodTruckImageView"
+        android:layout_alignStart="@+id/foodTruckImageView" />
+    <TextView
+        android:id="@+id/AddressText"
+        android:text="Address Result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/addressHeader" />
+        />
+    <TextView
+        android:text="Phone"
+        android:layout_width="195dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/phoneHeader"
+        android:textColor="#000000"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/addressHeader"
+        android:layout_alignStart="@+id/addressHeader" />
+    <TextView
+        android:id="@+id/phoneText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Phone"
+        android:layout_alignStart="@+id/phoneHeader" />
+
+    <TextView
+        android:text="Rating"
+        android:layout_width="195dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/ratingHeader"
+        android:textColor="#000000"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/phoneHeader"
+        android:layout_alignStart="@+id/phoneHeader" />
+    <TextView
+        android:id="@+id/ratingText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Rating"
+        android:layout_alignStart="@+id/ratingHeader" />
+
+
+    <TextView
+        android:id="@+id/closedText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:layout_marginTop="13dp"
+        android:layout_below="@+id/ratingHeader"
+        android:layout_alignStart="@+id/ratingHeader"
+        android:text="Closed"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/foodTruckDirectionButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center"
+            android:layout_margin="5dp"
+            android:background="@color/colorPrimary"
+            android:text="Directions"
+            android:textColor="@color/colorAccent"/>
+    </LinearLayout>
+
+</LinearLayout>
