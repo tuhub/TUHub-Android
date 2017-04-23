@@ -41,8 +41,8 @@
         android:id="@+id/price_input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/seller_input"
-        android:layout_toEndOf="@+id/seller_input" />
+        android:layout_above="@+id/start_text"
+        android:layout_toEndOf="@+id/title_view" />
 
     <TextView
         android:id="@+id/start_text"
@@ -117,4 +117,11 @@
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/description_text" />
+
+    <TextView
+        android:id="@+id/seller_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/price_input"
+        android:layout_alignStart="@+id/price_input" />
 </RelativeLayout>

@@ -25,15 +25,15 @@ import edu.temple.tuhub.models.Marketitem;
 public class ListingAdapter extends ArrayAdapter<Marketitem> {
 
 
-    Handler setimage = new Handler()
-    {
-        @Override
-        public void handleMessage(Message msg) {
-            MarketImageItem x = (MarketImageItem) msg.obj;
-            x.getViewref().setImageBitmap(x.getItemref().getMarketimage()); // TODo need to fix
-
-        }
-    };
+//    Handler setimage = new Handler()
+//    {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            MarketImageItem x = (MarketImageItem) msg.obj;
+//            x.getViewref().setImageBitmap(x.getItemref().getMarketimage()); // TODo need to fix
+//
+//        }
+//    };
 
     public ListingAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Marketitem> objects) {
         super(context, resource, objects);

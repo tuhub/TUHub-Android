@@ -138,4 +138,6 @@ public class Marketitem { // should have everything I can obtain about the marke
     public void setMarkettype(String markettype) {
         this.markettype = markettype;
     }
+
+
 }
