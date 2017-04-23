@@ -202,15 +202,19 @@ public class ImageScroller extends LinearLayout implements UserImagePreview.S3De
     to delete the image from S3. They also need to store the key associated with
     the image on S3.
      */
-    public void addImagePreviewFromS3(File file, String fileKey){
+    public void addImagePreviewFromS3(File file, String fileKey, boolean viewableOnly){
         Log.d("s3Objects", "Adding Image Preview");
         Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
         UserImagePreview imagePreview = new UserImagePreview(fragment.obtainActivity());
         imagePreview.setImageBitmap(bitmap);
-        imagePreview.setS3DeleteListener(ImageScroller.this);
         imagePreview.setIsFromS3(true);
         imagePreview.getUserImage().setOnClickListener(new DisplayFullImageOnClickListener(bitmap, false));
         imagePreview.setS3FileKey(fileKey);
+        if(viewableOnly){
+            imagePreview.removeDeleteButton();
+        } else {
+            imagePreview.setS3DeleteListener(ImageScroller.this);
+        }
         imageContainer.addView(imagePreview);
     }
 
@@ -447,7 +451,7 @@ public class ImageScroller extends LinearLayout implements UserImagePreview.S3De
     Given a list of S3ObjectSummaries, this method retrieves the key for each S3 object and downloads the object to
     a file on the user's device. It then calls addImagePreviewFromS3 to add an ImagePreview for the file
      */
-    public void getImagesFromS3(String folderName, List<S3ObjectSummary> s3ObjectSummaries){
+    public void getImagesFromS3(String folderName, List<S3ObjectSummary> s3ObjectSummaries, final boolean viewableOnly){
         AmazonS3 s3 = new AmazonS3Client(credentialsProvider);
         for(int i = 0; i<s3ObjectSummaries.size(); i++){
             final int imageIndex = i;
@@ -487,7 +491,7 @@ public class ImageScroller extends LinearLayout implements UserImagePreview.S3De
                         if (percentage == 100) {
                             boolean fromS3 = true;
                             if(!alreadyCreatedAnImage) {
-                                addImagePreviewFromS3(imageFile, key);
+                                addImagePreviewFromS3(imageFile, key, viewableOnly);
                                 alreadyCreatedAnImage = true;
                             }
                             submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.update));

@@ -100,6 +100,21 @@
     <string name="activated">Available</string>
     <string name="update">Update</string>
     <string name="loading_image">Loading Image </string>
+    <string name="posted_by">Posted By:</string>
+    <string name="price_input">Price:</string>
+    <string name="start_date">Start Date:</string>
+    <string name="location">Location:</string>
+    <string name="hours_per_week">Hours Per Week:</string>
+    <string name="pay">Pay:</string>
+    <string name="description_input">Description:</string>
+    <string name="contact_listing_owner">Contact Listing Owner</string>
+    <string name="subject">Subject</string>
+    <string name="message">Message</string>
+    <string name="send">Send</string>
+    <string name="default_subject">TUHub Marketplace Listing -</string>
+    <string name="default_message_intro">Hello,\nI am interested in your listing for</string>
+    <string name="default_message_outro">I would greatly appreciate it if you could provide me with more information regarding the listing.\nBest,\n</string>
+    <string name="date_posted">Date Posted:</string>
 
 
     <!-- Maps Strings -->

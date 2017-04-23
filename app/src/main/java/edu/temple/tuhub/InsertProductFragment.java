@@ -76,7 +76,6 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
         return fragment;
     }
 
-    // TODO: Rename and change types and number of parameters
     public static InsertProductFragment newInstance() {
         InsertProductFragment fragment = new InsertProductFragment();
 

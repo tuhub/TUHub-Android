@@ -464,6 +464,11 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
     }
 
     @Override
+    public void showListingDetails(Marketitem item){
+        loadFragment(R.id.contentFragment, ListingDetailsFragment.newInstance(item), true, false);
+    }
+
+    @Override
     public void showmarket(Marketitem t) {/// gives the clicked marketitem
         //should probally assign the market item to a variable inside the shower class
         //should replace the marketfragment here with the fragment that shows the market information

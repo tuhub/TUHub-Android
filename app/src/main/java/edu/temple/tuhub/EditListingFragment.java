@@ -54,8 +54,7 @@ import static android.support.v4.content.PermissionChecker.checkSelfPermission;
 
 
 public class EditListingFragment extends Fragment implements ImageScroller.ImageScrollerFragment{
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String FIELD_MAP = "field_map";
 
     private LinkedHashMap<String, String> fieldMap;
@@ -121,7 +120,8 @@ public class EditListingFragment extends Fragment implements ImageScroller.Image
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        imageScroller.getImagesFromS3(fieldMap.get(Listing.PIC_FOLDER_NAME_KEY), s3ObjectSummaries);
+                        boolean viewableOnly = false;
+                        imageScroller.getImagesFromS3(fieldMap.get(Listing.PIC_FOLDER_NAME_KEY), s3ObjectSummaries, viewableOnly);
                     }
                 });
                 return null;

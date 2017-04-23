@@ -134,11 +134,16 @@ Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.draw
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.EditItem(item);
+                    listener.editItem(item);
                 }
             });
 
-        }
+        } else convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.showListingDetails(item);
+            }
+        });
 
 
 
@@ -150,6 +155,7 @@ Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.draw
     }
 
     public interface EditItemListener{
-        public void EditItem(Marketitem item);
+        void editItem(Marketitem item);
+        void showListingDetails(Marketitem item);
     }
 }

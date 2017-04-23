@@ -1,6 +1,7 @@
 package edu.temple.tuhub.models;
 
 import android.graphics.Bitmap;
+import android.os.Bundle;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,22 @@ public class Marketitem { // should have everything I can obtain about the marke
     private String id;
     private String hoursPerWeek;
     private String isActive;
+
+    public Bundle toBundle(){
+        Bundle bundle = new Bundle();
+        bundle.putString("listingType", markettype);
+       bundle.putString("seller", ownerid);
+        bundle.putString("price", price);
+        bundle.putString("description", description);
+        bundle.putString("title", markettitle);
+        bundle.putString("startdate", startdate);
+        bundle.putString("hours", hoursPerWeek);
+        bundle.putString("location", location);
+        bundle.putString("pay", pay);
+        bundle.putString("picfolder", picfolder);
+        bundle.putString("dateposted", dateposted);
+        return bundle;
+    }
 
     public String getId() {
         return id;

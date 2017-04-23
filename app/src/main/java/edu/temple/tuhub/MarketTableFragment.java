@@ -382,7 +382,7 @@ public class MarketTableFragment extends Fragment implements MarketAdapter.EditI
     }
 
     @Override
-    public void EditItem(Marketitem item) {
+    public void editItem(Marketitem item) {
         if(item.markettype.equalsIgnoreCase("Personal")){
             Personal personal = new Personal(item.getId(), item.getMarkettitle(), item.getDescription(), item.getLocation(),
                     item.getIsActive(), item.getOwnerid(), item.getDateposted(), item.getPicfolder());
@@ -398,6 +398,11 @@ public class MarketTableFragment extends Fragment implements MarketAdapter.EditI
         }
     }
 
+    @Override
+    public void showListingDetails(Marketitem item) {
+        activity.showListingDetails(item);
+    }
+
     public interface marketshow
     {
         public void showmarket(Marketitem t);// for possibly showing the market item
@@ -407,6 +412,7 @@ public class MarketTableFragment extends Fragment implements MarketAdapter.EditI
     public interface newListingInterface{
         void newListing(int i);
         void editListing(Listing listing);
+        void showListingDetails(Marketitem item);
     }
 
 
