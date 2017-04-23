@@ -43,19 +43,23 @@ public class FoodTruck {
     private String isClosed;
     private String longitude;
     private String latitude;
+    private String imageURL;
+    private String phone;
 
-    private FoodTruck(String name, String rating, String isClosed, String longitude, String latitude) {
+    private FoodTruck(String name, String rating, String isClosed, String longitude, String latitude, String imageURL, String phone) {
         this.name = name;
         this.rating = rating;
         this.isClosed = isClosed;
         this.longitude = longitude;
         this.latitude = latitude;
+        this.imageURL = imageURL;
+        this.phone = phone;
     }
 
     @Nullable
-    public static FoodTruck createFoodTruck(String name, String rating, String isClosed, String longitude, String latitude) {
+    public static FoodTruck createFoodTruck(String name, String rating, String isClosed, String longitude, String latitude,String imageURL, String phone) {
         if (name != null && rating != null && isClosed != null && longitude != null && latitude != null)
-            return new FoodTruck(name, rating, isClosed, longitude, latitude);
+            return new FoodTruck(name, rating, isClosed, longitude, latitude, imageURL, phone);
         return null;
     }
 
@@ -78,6 +82,10 @@ public class FoodTruck {
     public String getLatitude() {
         return latitude;
     }
+
+    public String getImageURL(){return imageURL;}
+
+    public String getPhone(){return phone;}
 
 
     public static void retrieveFoodTrucks(final FoodTruckRequestListener foodTruckRequestListener) {
@@ -107,7 +115,9 @@ public class FoodTruck {
                             businesses.get(i).rating().toString(),
                             businesses.get(i).isClosed().toString(),
                             businesses.get(i).location().coordinate().longitude().toString(),
-                            businesses.get(i).location().coordinate().latitude().toString()
+                            businesses.get(i).location().coordinate().latitude().toString(),
+                            businesses.get(i).imageUrl(),
+                            businesses.get(i).displayPhone()
                     );
                     foodTrucks[i] = ft;
                 }
