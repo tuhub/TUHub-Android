@@ -20,6 +20,7 @@ public class Marketitem { // should have everything I can obtain about the marke
     public String location;
     public String picfolder;
     public String startdate;
+    public String hours;
 
 
     public String getStartdate() {
@@ -117,4 +118,8 @@ public class Marketitem { // should have everything I can obtain about the marke
     public void setMarkettype(String markettype) {
         this.markettype = markettype;
     }
+
+    public String getHoursPerWeek() { return hours; }
+
+    public void setHours(String hours) { this.hours = hours; }
 }

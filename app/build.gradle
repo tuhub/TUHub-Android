@@ -50,7 +50,7 @@ dependencies {
     compile 'com.github.Mariovc:ImagePicker:1.0.5'
     compile 'com.amazonaws:aws-android-sdk-core:2.2.+'
     compile 'com.amazonaws:aws-android-sdk-s3:2.2.+'
+    compile 'com.google.android.gms:play-services-maps:10.2.1'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
-    compile 'com.google.android.gms:play-services-maps:10.2.1'
 }
