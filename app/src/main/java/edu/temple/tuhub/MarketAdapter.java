@@ -1,20 +1,20 @@
 package edu.temple.tuhub;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -27,19 +27,44 @@ import edu.temple.tuhub.models.Marketitem;
 
 public class MarketAdapter extends ArrayAdapter<Marketitem> {
 
+    GridView par;
+    String currentList;
+    EditItemListener listener;
+
+Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.drawable.no_photo);
 
     Handler setimage = new Handler()
     {
         @Override
         public void handleMessage(Message msg) {
             MarketImageItem x = (MarketImageItem) msg.obj;
-            x.getViewref().setImageBitmap(x.getItemref().getMarketimage()); // TODo need to fix
+            int firstpos;
+            int lastpos;
+            lastpos=par.getLastVisiblePosition();
+            firstpos= par.getFirstVisiblePosition();
+            if(x.getOsition()>=firstpos && x.getOsition()<=lastpos+2) {
+                if(x.getItemref().Firstmarketimagescaled ==null)
+                {
+                    x.getItemref().Firstmarketimagescaled =noimage;
+                    x.getViewref().setImageBitmap(noimage);
+                }
+                else {
+                    x.getViewref().setImageBitmap(x.getItemref().Firstmarketimagescaled); // TODo need to fix
+                }
+            }
+            else
+            {
+
+            }
+
 
         }
     };
 
-    public MarketAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Marketitem> objects) {
+    public MarketAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Marketitem> objects, String currentList, EditItemListener listener) {
         super(context, resource, objects);
+        this.currentList = currentList;
+        this.listener = listener;
     }
 
     public MarketAdapter(@NonNull Context context, @LayoutRes int resource) {
@@ -49,7 +74,8 @@ public class MarketAdapter extends ArrayAdapter<Marketitem> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Marketitem item = getItem(position);
+        par=(GridView)parent;
+        final Marketitem item = getItem(position);
 
         if (convertView ==null)
         {
@@ -59,13 +85,11 @@ public class MarketAdapter extends ArrayAdapter<Marketitem> {
 
         TextView title = (TextView) convertView.findViewById(R.id.markettitle);// to be able to set the text of these fields later on!
         ImageView imgre = (ImageView) convertView.findViewById(R.id.marketimage);
-        TextView date = (TextView) convertView.findViewById(R.id.marketdate) ;
         TextView price = (TextView) convertView.findViewById(R.id.marketprice) ;
 
          if (item.getMarkettype().equals("Product"))
         {
             title.setText(item.getMarkettitle());
-            date.setText(item.getDateposted());
             price.setVisibility(View.VISIBLE);
             price.setText(getContext().getText(R.string.price) + ": " +item.getPrice());
         }
@@ -73,7 +97,7 @@ public class MarketAdapter extends ArrayAdapter<Marketitem> {
          else if(item.getMarkettype().equals("Job"))
          {
              title.setText(item.getMarkettitle());
-             date.setText(item.getDateposted());
+
              if(item.getPay()!=null) {
                  price.setVisibility(View.VISIBLE);
                  price.setText(getContext().getText(R.string.hourlyrate) + ": " + item.getPay());
@@ -89,24 +113,32 @@ public class MarketAdapter extends ArrayAdapter<Marketitem> {
         {
 
             title.setText(item.getMarkettitle());
-            date.setText(item.getDateposted());
             price.setVisibility(View.GONE);
         }
 
 
-
-
-
-      /*  if (item.newsimage != null)//if the image has already been loaded, We can just set the image from here.
+         if (item.Firstmarketimagescaled !=null )//if the image has already been loaded, We can just set the image from here.
         {
-            imgre.setImageBitmap(item.newsimage);
+            imgre.setImageBitmap(item.Firstmarketimagescaled);
         }
         else
         {
-            MarketImageloadThread imthread = new MarketImageloadThread(new Marketitem(),setimage);// TODo need to fix
+            imgre.setImageBitmap(noimage);
+            MarketImageloadThread imthread = new MarketImageloadThread(new MarketImageItem(imgre,item,position),setimage);
             imthread.start();
 
-        }*/
+        }
+
+        if(currentList.equals(MarketTableFragment.MY_JOBS) || currentList.equals(MarketTableFragment.MY_PERSONALS)
+                || currentList.equals(MarketTableFragment.MY_PRODUCTS)){
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.EditItem(item);
+                }
+            });
+
+        }
 
 
 
@@ -115,5 +147,9 @@ public class MarketAdapter extends ArrayAdapter<Marketitem> {
 
 
         return convertView;
+    }
+
+    public interface EditItemListener{
+        public void EditItem(Marketitem item);
     }
 }

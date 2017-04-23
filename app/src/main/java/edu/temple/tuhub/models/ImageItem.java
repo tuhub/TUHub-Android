@@ -10,11 +10,22 @@ public class ImageItem {
 
     Newsitem itemref;
     ImageView viewref;
+    int osition;
 
-    public ImageItem(ImageView x, Newsitem y)
+    public ImageItem(ImageView x, Newsitem y, int z)
     {
         viewref=x;
         itemref=y;
+        osition=z;
+    }
+
+
+    public int getOsition() {
+        return osition;
+    }
+
+    public void setOsition(int osition) {
+        this.osition = osition;
     }
 
     public void setItemref(Newsitem itemref) {

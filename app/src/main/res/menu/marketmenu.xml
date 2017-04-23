@@ -5,12 +5,12 @@
         android:title="@string/search_title"
         android:icon="@drawable/ic_search"
         app:showAsAction="always"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         app:actionViewClass="android.support.v7.widget.SearchView" />
     <item
         android:id="@+id/NewListing"
         android:icon="@drawable/iconplus"
-        android:orderInCategory="2"
+        android:orderInCategory="3"
         android:title="@string/newlisting"
         app:showAsAction="always" />
     <item
@@ -28,11 +28,27 @@
         android:orderInCategory="2"
         app:showAsAction="never"
         android:title="@string/Personals"/>
-   <!-- <item
-        android:id="@+id/YourListings"
+    <item
+        android:id="@+id/UsersProductsButt"
         android:orderInCategory="2"
         app:showAsAction="never"
-        android:title="@string/Personals"/> -->
+        android:title="My Products" />
+    <item
+        android:id="@+id/UsersJobsButt"
+        android:orderInCategory="2"
+        app:showAsAction="never"
+        android:title="My Jobs" />
+    <item
+        android:id="@+id/UsersPersonalsButt"
+        android:orderInCategory="2"
+        app:showAsAction="never"
+        android:title="My Personals" />
+
+    <!-- <item
+         android:id="@+id/YourListings"
+         android:orderInCategory="2"
+         app:showAsAction="never"
+         android:title="@string/Personals"/> -->
 
 
 </menu>

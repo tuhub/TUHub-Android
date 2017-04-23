@@ -27,6 +27,10 @@ public class UserImagePreview extends LinearLayout {
     @BindView(R.id.user_image_preview_delete)
     ImageView deleteButton;
 
+    private boolean isFromS3 = false;
+    private S3DeleteListener deleteListener;
+    private String s3FileKey;
+
 
     public UserImagePreview(Context context) {
         super(context);
@@ -39,10 +43,29 @@ public class UserImagePreview extends LinearLayout {
         deleteButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(isFromS3){
+                    deleteListener.addToDeleteList(s3FileKey);
+                }
                 ((ViewGroup)UserImagePreview.this.getParent()).removeView(UserImagePreview.this);
             }
         });
 
+    }
+
+    public void setS3DeleteListener(S3DeleteListener deleteListener){
+        this.deleteListener = deleteListener;
+    }
+
+    public void setS3FileKey(String s3FileKey){
+        this.s3FileKey = s3FileKey;
+    }
+
+    public void setIsFromS3(boolean isFromS3){
+        this.isFromS3 = isFromS3;
+    }
+
+    public boolean isFromS3(){
+        return isFromS3;
     }
 
     public void setImageBitmap(Bitmap bitmap){
@@ -60,6 +83,10 @@ public class UserImagePreview extends LinearLayout {
     public void removeDeleteButton(){
         deleteButton.setVisibility(View.INVISIBLE);
         deleteButton.setClickable(false);
+    }
+
+    public interface S3DeleteListener{
+        void addToDeleteList(String fileKey);
     }
 
 }

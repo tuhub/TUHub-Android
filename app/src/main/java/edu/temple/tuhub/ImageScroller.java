@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -34,12 +35,15 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,7 +55,7 @@ import static android.R.attr.bitmap;
  * Created by Ben on 4/8/2017.
  */
 
-public class ImageScroller extends LinearLayout {
+public class ImageScroller extends LinearLayout implements UserImagePreview.S3DeleteListener {
 
     @BindView(R.id.image_container)
     LinearLayout imageContainer;
@@ -70,10 +74,12 @@ public class ImageScroller extends LinearLayout {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
-    private static final String BUCKET_NAME = "tumobilemarketplace";
+    public static final String BUCKET_NAME = "tumobilemarketplace";
 
     private ImageScrollerFragment fragment;
     private CognitoCachingCredentialsProvider credentialsProvider;
+    private ArrayList<String> filesToDelete;
+    private int highestFileName = -1;
 
     public ImageScroller(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -188,6 +194,36 @@ public class ImageScroller extends LinearLayout {
             imagePreview.getUserImage().setOnClickListener(new DisplayFullImageOnClickListener(bmp, fromCamera));
             imageContainer.addView(imagePreview);
         }
+    }
+
+    /*
+    Method to add an ImagePreview that is from S3 rather than the user's device.
+    These ImagePreview's need a S3DeleteListener to handle when the user wants
+    to delete the image from S3. They also need to store the key associated with
+    the image on S3.
+     */
+    public void addImagePreviewFromS3(File file, String fileKey){
+        Log.d("s3Objects", "Adding Image Preview");
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+        UserImagePreview imagePreview = new UserImagePreview(fragment.obtainActivity());
+        imagePreview.setImageBitmap(bitmap);
+        imagePreview.setS3DeleteListener(ImageScroller.this);
+        imagePreview.setIsFromS3(true);
+        imagePreview.getUserImage().setOnClickListener(new DisplayFullImageOnClickListener(bitmap, false));
+        imagePreview.setS3FileKey(fileKey);
+        imageContainer.addView(imagePreview);
+    }
+
+    /*
+    Adds a file key to the list of object keys to delete from S3
+     */
+    @Override
+    public void addToDeleteList(String fileKey) {
+        if(filesToDelete == null){
+            filesToDelete = new ArrayList<>();
+        }
+
+        filesToDelete.add(fileKey);
     }
 
     /*
@@ -328,8 +364,21 @@ public class ImageScroller extends LinearLayout {
     and uploads the files to the proper folder in the S3 bucket
      */
     public void loadImagesToS3(String picFileName){
-        for(int i = 0; i < imageContainer.getChildCount(); i++){
-            UserImagePreview img = (UserImagePreview)imageContainer.getChildAt(i);
+        AmazonS3 s3 = new AmazonS3Client(credentialsProvider);
+        if(filesToDelete != null && !filesToDelete.isEmpty()){
+            fragment.deleteFilesFromS3(filesToDelete);
+        }
+        int offset = highestFileName + 1; //Used to make sure we don't overwrite files already in the folder on S3
+        boolean addingNewImages = false;
+        for(int i = offset; i < imageContainer.getChildCount() + offset; i++){
+            Log.d("Looking at image ", String.valueOf(i));
+
+            UserImagePreview img = (UserImagePreview)imageContainer.getChildAt(i-offset);
+            if(img.isFromS3()){
+                continue;
+            }
+            addingNewImages = true;
+
             File imageFile = null;
 
             if(img.getTag() instanceof Uri) {
@@ -353,7 +402,6 @@ public class ImageScroller extends LinearLayout {
             }
 
             if(imageFile != null) {
-                AmazonS3 s3 = new AmazonS3Client(credentialsProvider);
                 TransferUtility transferUtility = new TransferUtility(s3, fragment.obtainActivity().getApplicationContext());
                 TransferObserver observer = transferUtility.upload(BUCKET_NAME, picFileName + "/" + String.valueOf(i), imageFile);
 
@@ -390,10 +438,80 @@ public class ImageScroller extends LinearLayout {
             }
 
         }
-        if(imageContainer.getChildCount() == 0){
+        if(imageContainer.getChildCount() == 0 || !addingNewImages){
             finalizeListing();
         }
     }
+
+    /*
+    Given a list of S3ObjectSummaries, this method retrieves the key for each S3 object and downloads the object to
+    a file on the user's device. It then calls addImagePreviewFromS3 to add an ImagePreview for the file
+     */
+    public void getImagesFromS3(String folderName, List<S3ObjectSummary> s3ObjectSummaries){
+        AmazonS3 s3 = new AmazonS3Client(credentialsProvider);
+        for(int i = 0; i<s3ObjectSummaries.size(); i++){
+            final int imageIndex = i;
+            TransferUtility transferUtility = new TransferUtility(s3, fragment.obtainActivity().getApplicationContext());
+            final String key = s3ObjectSummaries.get(i).getKey();
+            try{
+                int index = key.indexOf('/');
+                if(Integer.parseInt(key.substring(index+1)) > highestFileName){
+                    highestFileName = Integer.parseInt(key.substring(index+1));
+                }
+            } catch (NumberFormatException e){
+                Log.d("Looking", "key not an int: " + key);
+            }
+            Log.d("s3Objects", key);
+            String fileName = "imageScrollerTempFile" + String.valueOf(i);
+            try {
+                final File imageFile = File.createTempFile(fileName, ".png", fragment.obtainActivity().getCacheDir());
+                TransferObserver observer = transferUtility.download(BUCKET_NAME, key, imageFile);
+
+                observer.setTransferListener(new TransferListener() {
+                    boolean alreadyCreatedAnImage = false;
+                    @Override
+                    public void onStateChanged(int id, TransferState state) {
+                        //do something
+                    }
+
+                    @Override
+                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                        double percentage;
+                        if(bytesTotal == 0){
+                            percentage = 0;
+                        }
+                        else {
+                            percentage = ((double)bytesCurrent / (double)bytesTotal * 100.00);
+                        }
+
+                        if (percentage == 100) {
+                            boolean fromS3 = true;
+                            if(!alreadyCreatedAnImage) {
+                                addImagePreviewFromS3(imageFile, key);
+                                alreadyCreatedAnImage = true;
+                            }
+                            submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.update));
+                        } else {
+                            submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.loading_image)
+                                    + (imageIndex+1) + ":" + " " + String.valueOf(percentage) + "%");
+                        }
+                    }
+
+                    @Override
+                    public void onError(int id, Exception ex) {
+
+                        Toast.makeText(fragment.obtainActivity(), "Image Download Error: " + ex.toString(), Toast.LENGTH_LONG).show();
+                        Log.d("S3 error", ex.toString());
+                    }
+                });
+            } catch (IOException e){
+                Toast.makeText(fragment.obtainActivity(), "Error loading file: " + key + " Error: " + e.toString(), Toast.LENGTH_LONG).show();
+            }
+        }
+
+    }
+
+
 
 
     /** Interface to communicate with parent fragment **/
@@ -407,6 +525,9 @@ public class ImageScroller extends LinearLayout {
 
         //Fragment submits its listing data, then calls loadImagesToS3(folderName) on the ImageScroller object
         void submitListing();
+
+        //Fragment needs to handle deleting objects from S3 since it takes a network request
+        void deleteFilesFromS3(ArrayList<String> filesToDelete);
 
     }
 }

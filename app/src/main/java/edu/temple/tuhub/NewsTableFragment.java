@@ -97,7 +97,7 @@ public class NewsTableFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         newslist = (ListView) getActivity().findViewById(R.id.newslist);
 
-        if(newsitems==null  || (finallink!=null && !finallink.equals(baselink)))
+        if(newsitems==null ||newsitems.size()==0  || (finallink!=null && !finallink.equals(baselink)))
         {
             loadnews();
         }

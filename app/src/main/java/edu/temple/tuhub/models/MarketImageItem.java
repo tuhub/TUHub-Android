@@ -9,11 +9,21 @@ import android.widget.ImageView;
 public class MarketImageItem {
     Marketitem itemref;
     ImageView viewref;
+    int osition;
 
-    public MarketImageItem(ImageView x, Marketitem y)
+    public MarketImageItem(ImageView x, Marketitem y, int z)
     {
         viewref=x;
         itemref=y;
+        osition=z;
+    }
+
+    public int getOsition() {
+        return osition;
+    }
+
+    public void setOsition(int osition) {
+        this.osition = osition;
     }
 
     public void setItemref(Marketitem itemref) {

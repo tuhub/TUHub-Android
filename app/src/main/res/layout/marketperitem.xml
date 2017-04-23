@@ -2,31 +2,22 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="190dp"
-    android:layout_height="180dp"
-    android:id="@+id/marketplaceitem">
+    android:layout_width="205dp"
+    android:layout_height="190dp"
+    android:id="@+id/marketplaceitem"
+    >
 
-
-    <TextView
-        android:id="@+id/marketdate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:text=""
-        android:textAlignment="center"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="11sp"
-        />
-
-    <!--120 chars max-->
+    <!--45 chars max-->
     <TextView
         android:id="@+id/markettitle"
         android:layout_width="match_parent"
-        android:layout_height="46dp"
-        android:layout_below="@+id/marketdate"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textAlignment="center"
+        android:textStyle="bold"
         android:text=""
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="13sp"
+        android:textSize="14sp"
         />
 
     <TextView
@@ -40,11 +31,28 @@
         android:textSize="12sp"
         android:visibility="gone"/>
 
+
+    <!--<TextView
+        android:id="@+id/marketdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text=""
+        android:textAlignment="viewStart"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="12sp"
+        android:paddingBottom="5dp"
+        android:visibility="gone"
+        />
+    android:layout_below="@id/marketprice"
+    android:layout_alignParentBottom="true"
+     -->
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_below="@id/marketprice"
         android:layout_alignParentBottom="true"
+        android:layout_below="@id/marketprice"
         android:id="@+id/marketimage"/>
 
 </RelativeLayout>

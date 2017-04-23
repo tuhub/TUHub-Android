@@ -77,6 +77,9 @@
     <string name="Products">Products</string>
     <string name="Jobs">Jobs</string>
     <string name="Personals">Personals</string>
+    <string name="userProducts">My Products</string>
+    <string name="userJobs">My Jobs</string>
+    <string name="userPersonals">My Personals</string>
     <string name="newlisting">New Listing</string>
     <string name="hourlyrate">Hourly Rate</string>
     <string name="submitted">Submitted</string>
@@ -93,6 +96,17 @@
     <string name="phone_number">Phone Number (numbers only)</string>
     <string name="phone_number_error">Please enter numbers only</string>
     <string name="invalid_length">Invalid Length</string>
+    <string name="deactivated">Unavailable</string>
+    <string name="activated">Available</string>
+    <string name="update">Update</string>
+    <string name="loading_image">Loading Image </string>
 
+
+    <!-- Maps Strings -->
+    <string name="google_android_map_api_key">AIzaSyAlmlxd6P-cT2AN0XYdV_n5wZ0wxziyoQA</string>
+    <string name="change_campus">Change Campus</string>
+    <string name ="SetDefault">Set As Default</string>
+    <string name="saved_map">Main</string>
+    <string name="saved_default_map">Main</string>
 
 </resources>

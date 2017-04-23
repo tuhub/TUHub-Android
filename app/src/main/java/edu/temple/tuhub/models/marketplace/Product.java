@@ -9,14 +9,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import edu.temple.tuhub.EditListingFragment;
 import edu.temple.tuhub.models.NetworkManager;
 
 /**
  * Created by Ben on 4/5/2017.
  */
 
-public class Product {
+public class Product extends Listing{
     public static final String INSERT_URL = "/insert_product.jsp?";
+    public static final String UPDATE_URL = "/update_product.jsp?";
     public static final String SELECT_BY_OWNER_URL = "/find_products_by_user_id.jsp?";
     public static final String LIMIT_KEY = "limit";
     public static final String OFFSET_KEY = "offset";
@@ -24,7 +34,6 @@ public class Product {
     public static final String PRODUCT_ID_KEY = "productId";
     public static final String DESCRIPTION_KEY = "description";
     public static final String PRICE_KEY = "price";
-    public static final String IS_ACTIVE_KEY = "isActive";
     public static final String OWNER_ID_KEY = "ownerId";
     public static final String USER_ID_KEY = "userId";
     public static final String PIC_FOLDER_NAME_KEY = "picFolder";
@@ -33,6 +42,9 @@ public class Product {
     public static final String ERROR_KEY = "error";
     public static final String TRUE = "true";
     public static final String FALSE = "false";
+    public static final String PRICE = "Price";
+
+    public static final int FIELD_COUNT = 8;
 
     private String productId = "";
     private String title="";
@@ -73,6 +85,12 @@ public class Product {
         this.ownerId = ownerId;
         this.datePosted = datePosted;
         this.picFileName = picFileName;
+    }
+
+    @Override
+    public String toString(){
+        return "ID: " + productId + " title: " + title + " description: " + description + " price" + price + " isActive" + isActive
+                + " owner: " + ownerId + " date posted: " + datePosted + " picFileName: " + picFileName + " error: " + error;
     }
 
     public void insert(final ProductRequestListener productRequestListener){
@@ -205,12 +223,48 @@ public class Product {
         return buffer.toString();
     }
 
+    /*
+   Create the url for the update API call. Checks to see which arguments are not null and appends their values to the GET url
+    */
+    public String createUpdateUrl(){
+        UrlBuffer buffer = new UrlBuffer(NetworkManager.Endpoint.MARKETPLACE.toString());
+        buffer.append(UPDATE_URL);
+        String string = "productId=[id]&title=[nullable]&price=[nullable]&description=[nullable]&isActive=[nullable]";
+
+
+        if(productId != null){
+            buffer.urlArgAppend(PRODUCT_ID_KEY, productId);
+        }
+        if(title != null){
+            buffer.urlArgAppend(TITLE_KEY, title);
+        }
+
+        if( description != null){
+            buffer.urlArgAppend(DESCRIPTION_KEY, description);
+        }
+
+        if(price != null){
+            buffer.urlArgAppend(PRICE_KEY, price);
+        }
+
+        if(isActive != null){
+            buffer.urlArgAppend(IS_ACTIVE_KEY, isActive);
+        }
+
+        return buffer.toString();
+    }
+
     public boolean isEmpty(){
         String allFields = productId + title + description + price + isActive + ownerId + datePosted + picFileName + error;
         return (allFields.length() == 0);
     }
 
     public String getProductId() {
+        return productId;
+    }
+
+    @Override
+    public String getId(){
         return productId;
     }
 
@@ -237,6 +291,10 @@ public class Product {
     public String getPicFileName() {
         return picFileName;
     }
+    @Override
+    public String getPicFolderName(){
+        return picFileName;
+    }
 
     public void setPicFileName(String picFileName) {
         this.picFileName = picFileName;
@@ -250,6 +308,7 @@ public class Product {
         this.price = price;
     }
 
+    @Override
     public String getIsActive() {
         return isActive;
     }
@@ -266,6 +325,7 @@ public class Product {
         this.ownerId = ownerId;
     }
 
+    @Override
     public String getDatePosted() {
         return datePosted;
     }
@@ -282,39 +342,129 @@ public class Product {
         this.error = error;
     }
 
+    @Override
+    public LinkedHashMap<String, String> toHashMap() {
+
+        LinkedHashMap<String, String> fieldMap = new LinkedHashMap<>();
+        fieldMap.put(PRODUCT_ID_KEY, productId);
+        fieldMap.put(TITLE, title);
+        fieldMap.put(DESCRIPTION, description);
+        fieldMap.put(PRICE, price);
+        fieldMap.put(IS_ACTIVE_KEY, isActive);
+        fieldMap.put(OWNER, ownerId);
+        fieldMap.put(DATE_POSTED, datePosted);
+        fieldMap.put(PIC_FOLDER_NAME_KEY, picFileName);
+
+        return fieldMap;
+    }
+
+    @Override
+    public Listing fromMap(LinkedHashMap<String, String> fieldMap) {
+        if(fieldMap.size() != FIELD_COUNT) {
+            return null;
+        }
+        Product product = new Product();
+        product.setProductId(fieldMap.get(PRODUCT_ID_KEY));
+        product.setTitle(fieldMap.get(TITLE));
+        product.setDescription(fieldMap.get(DESCRIPTION));
+        String price = fieldMap.get(PRICE);
+        if(price.charAt(0) == '$'){
+            price = price.substring(1);
+        }
+        product.setPrice(price);
+        product.setIsActive(fieldMap.get(IS_ACTIVE_KEY));
+        product.setOwnerId(fieldMap.get(OWNER));
+        product.setDatePosted(fieldMap.get(DATE_POSTED));
+        product.setPicFileName(fieldMap.get(PIC_FOLDER_NAME_KEY));
+
+        return product;
+    }
+
+    @Override
+    public boolean validateFields(ArrayList<EditListingFragment.InputAndKey> inputs) {
+        boolean noErrors = true;
+        for(int i = 0; i<inputs.size(); i++){
+            EditListingFragment.InputAndKey field = inputs.get(i);
+            String value = field.editText.getText().toString();
+            switch (field.key){
+                case TITLE:
+                    if(value.length() > 45){
+                        noErrors = false;
+                        field.editText.setError("Must be less than 45 characters");
+                    } else if (value == null || value.length() == 0) {
+                        noErrors = false;
+                        field.editText.setError("Required Field");
+                    }
+                    break;
+                case PRICE:
+                    if (value == null || value.length() == 0) {
+                        noErrors = false;
+                        field.editText.setError("Required Field");
+                    } else {
+                        if (value.charAt(0) == '$') {
+                            value = value.substring(1);
+                        }
+                        if (!value.matches(DOLLAR_REGEX)) {
+                            noErrors = false;
+                            field.editText.setError("Must be digits only and have two decimal places");
+                        }
+                    }
+                    break;
+            }
+        }
+        return noErrors;
+    }
+
+    @Override
+    public void update(final ListingUpdateListener listener) {
+        changeNullToSpacesForUpdate();
+        String updateUrl = createUpdateUrl();
+        Log.d("updateUrl", updateUrl);
+        NetworkManager.SHARED.requestFromUrl(updateUrl,
+                null,
+                null,
+                null,
+                new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.d("product", response.toString());
+                            String error = response.getString(ERROR_KEY);
+                            if(error.length() == 0) {
+
+                                listener.onResponse(true);
+
+                            } else {
+                                Product product = new Product(response);
+                                product.setError(error);
+                                ListingError productError = new ListingError();
+                                productError.body = product.toString();
+                                listener.onError(productError);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        listener.onError(anError);
+                    }
+                });
+    }
+
+    //Change the non-required null fields to spaces so that the API stores the blank data in the DB
+    public void changeNullToSpacesForUpdate(){
+        if(description.length() == 0 || description == null){
+            description = " ";
+        }
+    }
+
     public interface ProductRequestListener {
         void onResponse(Product product);
         void onError(ANError error);
     }
 
-    public class UrlBuffer{
-        private StringBuffer buffer;
-
-        public UrlBuffer(String baseUrl){
-            buffer = new StringBuffer(baseUrl);
-        }
-
-        public void append(String string){
-            buffer.append(string);
-        }
-
-        public void urlArgAppend(String valueKey, String value){
-            buffer.append(valueKey);
-            buffer.append("=");
-            buffer.append(value);
-            buffer.append("&");
-        }
-
-        @Override
-        public String toString(){
-            return buffer.toString();
-        }
-
-        public StringBuffer getBuffer(){
-            return buffer;
-        }
-
-    }
 }
 
 

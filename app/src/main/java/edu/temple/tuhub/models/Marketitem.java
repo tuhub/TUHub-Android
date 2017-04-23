@@ -2,6 +2,8 @@ package edu.temple.tuhub.models;
 
 import android.graphics.Bitmap;
 
+import java.util.ArrayList;
+
 /**
  * Created by mangaramu on 4/2/2017.
  */
@@ -9,7 +11,8 @@ import android.graphics.Bitmap;
 public class Marketitem { // should have everything I can obtain about the market
     //should discuss idea about having api call that allows for partial loading of database items.
     public String placeholderstring;
-    public Bitmap marketimage;
+    public Bitmap Firstmarketimagescaled;
+    public ArrayList<String> marketimagelinks = new ArrayList<>();
     public String price;
     public String pay;
     public String ownerid;
@@ -20,8 +23,33 @@ public class Marketitem { // should have everything I can obtain about the marke
     public String location;
     public String picfolder;
     public String startdate;
-    public String hours;
+    private String id;
+    private String hoursPerWeek;
+    private String isActive;
 
+    public String getId() {
+        return id;
+    }
+
+    public String getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(String isActive) {
+        this.isActive = isActive;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getHoursPerWeek() {
+        return hoursPerWeek;
+    }
+
+    public void setHoursPerWeek(String hoursPerWeek) {
+        this.hoursPerWeek = hoursPerWeek;
+    }
 
     public String getStartdate() {
         return startdate;
@@ -61,14 +89,6 @@ public class Marketitem { // should have everything I can obtain about the marke
 
     public void setPlaceholderstring(String placeholderstring) {
         this.placeholderstring = placeholderstring;
-    }
-
-    public Bitmap getMarketimage() {
-        return marketimage;
-    }
-
-    public void setMarketimage(Bitmap marketimage) {
-        this.marketimage = marketimage;
     }
 
     public String getPrice() {
@@ -118,8 +138,4 @@ public class Marketitem { // should have everything I can obtain about the marke
     public void setMarkettype(String markettype) {
         this.markettype = markettype;
     }
-
-    public String getHoursPerWeek() { return hours; }
-
-    public void setHours(String hours) { this.hours = hours; }
 }

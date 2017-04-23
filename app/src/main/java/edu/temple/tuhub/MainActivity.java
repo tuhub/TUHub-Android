@@ -26,14 +26,26 @@ import com.androidnetworking.error.ANError;
 import java.io.Serializable;
 import java.math.BigInteger;
 
+import edu.temple.tuhub.CourseFragment.showCourseDetails;
+import edu.temple.tuhub.CourseListFragment.OnListFragmentInteractionListener;
+import edu.temple.tuhub.MapsFragment.loadBuildingDetails;
+import edu.temple.tuhub.MarketTableFragment.newListingInterface;
 import edu.temple.tuhub.models.Course;
 import edu.temple.tuhub.models.Entry;
 import edu.temple.tuhub.models.Marketitem;
 import edu.temple.tuhub.models.Newsitem;
 import edu.temple.tuhub.models.User;
+import edu.temple.tuhub.models.marketplace.Listing;
 
-public class MainActivity extends AppCompatActivity implements NewsTableFragment.newsshow, NewsTableFragment.filterbutton, FilterMenuFrag.selectorinterface, CourseFragment.showCourseDetails, CourseListFragment.OnListFragmentInteractionListener, CourseCalendarFragment.CalendarClickListener, CourseFragment.courseSearchHandler, CoursesSearchAllFragment.searchAllResultsInterface, MarketTableFragment.newListingInterface, MarketTableFragment.marketshow{
+import static edu.temple.tuhub.CourseCalendarFragment.*;
+import static edu.temple.tuhub.CourseFragment.*;
+import static edu.temple.tuhub.CoursesSearchAllFragment.*;
+import static edu.temple.tuhub.FilterMenuFrag.*;
+import static edu.temple.tuhub.MapsFragment.*;
+import static edu.temple.tuhub.MarketTableFragment.*;
+import static edu.temple.tuhub.NewsTableFragment.*;
 
+public class MainActivity extends AppCompatActivity implements newsshow, filterbutton, selectorinterface, showCourseDetails, OnListFragmentInteractionListener, CalendarClickListener, courseSearchHandler, searchAllResultsInterface, newListingInterface, marketshow, loadBuildingDetails, loadFoodTruckDetails, reloadMap{
     static Fragment[] fraghold = new Fragment[3];//For TUNews and some TUmarketplace
     FilterMenuFrag tufilter;//For TUNews
 
@@ -49,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
     CourseDetailsFragment cdf;
     MapsFragment mf;
     PageDeniedFragment pf;
+    BuildingDetailFragment bdf;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -74,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
                     if(username.length() != 0) {
                         loadMarketplace();
                     } else {
-                        loadFragment(R.id.contentFragment, pf.newInstance(), false, true);
+                        loadFragment(R.id.contentFragment, pf.newInstance(), true, true);
                     }
                     return true;
                 case R.id.navigation_maps:
@@ -138,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
         cdf = new CourseDetailsFragment();
         cf = new CourseFragment();
         mf = new MapsFragment();
+        bdf = new BuildingDetailFragment();
 
         if(savedInstanceState==null) {
             String username = preferences.getString(getString(R.string.username_key), "");
@@ -415,6 +429,7 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
             tufilter = new FilterMenuFrag();//new filter because the checkboxes keep procting with state changes if it is the same menufrrag
             transact.add(android.R.id.content, tufilter).commit();
             manage.executePendingTransactions();
+
         }
     }
 
@@ -444,10 +459,36 @@ public class MainActivity extends AppCompatActivity implements NewsTableFragment
     }
 
     @Override
+    public void editListing(Listing listing) {
+        loadFragment(R.id.contentFragment, EditListingFragment.newInstance(listing.toHashMap()), true, false);
+    }
+
+    @Override
     public void showmarket(Marketitem t) {/// gives the clicked marketitem
         //should probally assign the market item to a variable inside the shower class
         //should replace the marketfragment here with the fragment that shows the market information
         // on back pressed it should go back to the market fragment! (implement line 228-233)
+    }
+
+    public void loadBuildingDetails(String name, String imageUrl, String latitude, String longitude){
+        Bundle bundle = new Bundle();
+        bundle.putString("name", name);
+        bundle.putString("imageUrl", imageUrl);
+        bundle.putString("latitude", latitude);
+        bundle.putString("longitude", longitude);
+        bdf.setArguments(bundle);
+        loadFragment(R.id.contentFragment, bdf, true, false);
+    }
+    public void loadFoodTruckDetails(){
+
+    }
+
+    @Override
+    public void reloadMap() {
+        final FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction().detach(mf).replace(R.id.contentFragment, mf).attach(mf);
+        ft.commit();
+        fm.executePendingTransactions();
     }
 }
 
