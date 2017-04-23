@@ -54,7 +54,7 @@ public class ListingDetailsFragment extends Fragment {
         View v;
         listingType = data.getString("listingType");
 
-        /*if(listingType.equals("product"))
+        if(listingType.equals("product"))
         {
             // Inflate the layout for this fragment
             v = inflater.inflate(R.layout.fragment_product_listing_details, container, false);
@@ -94,12 +94,12 @@ public class ListingDetailsFragment extends Fragment {
 
             getListingData(data);
             setListingData(v);
-*/
-       v= inflater.inflate(R.layout.fragment_listing_details, container, false);
+
+
         return v;
     }
 
-  /*  private void getListingData(Bundle data){
+    private void getListingData(Bundle data){
 
         seller = data.getString("seller");
         price = data.getString("price");
@@ -174,6 +174,6 @@ public class ListingDetailsFragment extends Fragment {
             descriptionView.setText(description);
         }
 
-        } */
+        }
     }
 
