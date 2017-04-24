@@ -1,5 +1,6 @@
 package edu.temple.tuhub;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -160,6 +161,7 @@ public class BuildingDetailFragment extends Fragment {
                                 @Override
                                 public void run() {
                                     i.setImageBitmap(bitmap);
+                                    i.setOnClickListener(new DisplayFullImageOnClickListener(bitmap));
                                     i.invalidate();
                                 }
                             });
@@ -169,5 +171,27 @@ public class BuildingDetailFragment extends Fragment {
             }
         };
         t.start();
+    }
+
+    /*
+  OnClickListener for ImagePreview objects. When clicked, the full image is displayed in a dialog.
+   */
+    private class DisplayFullImageOnClickListener implements View.OnClickListener{
+
+        private Bitmap bitmap;
+
+        public DisplayFullImageOnClickListener(Bitmap bitmap){
+            this.bitmap = bitmap;
+        }
+
+        @Override
+        public void onClick(View v) {
+            final Dialog nagDialog = new Dialog(getActivity(),android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+            nagDialog.setContentView(R.layout.preview_image);
+            ImageView ivPreview = (ImageView)nagDialog.findViewById(R.id.iv_preview_image);
+            ivPreview.setImageBitmap(bitmap);
+
+            nagDialog.show();
+        }
     }
 }
