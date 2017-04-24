@@ -35,6 +35,7 @@ import edu.temple.tuhub.models.Entry;
 import edu.temple.tuhub.models.Marketitem;
 import edu.temple.tuhub.models.Newsitem;
 import edu.temple.tuhub.models.User;
+import edu.temple.tuhub.models.marketplace.Listing;
 
 import static edu.temple.tuhub.CourseCalendarFragment.*;
 import static edu.temple.tuhub.CourseFragment.*;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
     MapsFragment mf;
     PageDeniedFragment pf;
     BuildingDetailFragment bdf;
+    FoodTruckDetailFragment ftdf;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -86,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
                     if(username.length() != 0) {
                         loadMarketplace();
                     } else {
-                        loadFragment(R.id.contentFragment, pf.newInstance(), false, true);
+                        loadFragment(R.id.contentFragment, pf.newInstance(), true, true);
                     }
                     return true;
                 case R.id.navigation_maps:
@@ -151,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
         cf = new CourseFragment();
         mf = new MapsFragment();
         bdf = new BuildingDetailFragment();
+        ftdf = new FoodTruckDetailFragment();
 
         if(savedInstanceState==null) {
             String username = preferences.getString(getString(R.string.username_key), "");
@@ -458,6 +461,16 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
     }
 
     @Override
+    public void editListing(Listing listing) {
+        loadFragment(R.id.contentFragment, EditListingFragment.newInstance(listing.toHashMap()), true, false);
+    }
+
+    @Override
+    public void showListingDetails(Marketitem item){
+        loadFragment(R.id.contentFragment, ListingDetailsFragment.newInstance(item), true, false);
+    }
+
+    @Override
     public void showmarket(Marketitem t) {/// gives the clicked marketitem
         //should probally assign the market item to a variable inside the shower class
         //should replace the marketfragment here with the fragment that shows the market information
@@ -473,8 +486,17 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
         bdf.setArguments(bundle);
         loadFragment(R.id.contentFragment, bdf, true, false);
     }
-    public void loadFoodTruckDetails(){
-
+    public void loadFoodTruckDetails(String name, String rating, String isClosed,  String latitude, String longitude,String imageUrl, String phone){
+        Bundle bundle = new Bundle();
+        bundle.putString("name", name);
+        bundle.putString("rating", rating);
+        bundle.putString("isClosed", isClosed);
+        bundle.putString("latitude", latitude);
+        bundle.putString("longitude", longitude);
+        bundle.putString("imageURL", imageUrl);
+        bundle.putString("phone", phone);
+        ftdf.setArguments(bundle);
+        loadFragment(R.id.contentFragment, ftdf, true, false);
     }
 
     @Override

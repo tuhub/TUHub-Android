@@ -9,16 +9,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.zip.DataFormatException;
 
+import edu.temple.tuhub.EditListingFragment;
 import edu.temple.tuhub.models.NetworkManager;
 
 /**
  * Created by laurenlezberg on 4/9/17.
  */
 
-public class Job {
+public class Job extends Listing{
     public static final String INSERT_URL = "/insert_job.jsp?";
+    public static final String UPDATE_URL = "/update_job.jsp?";
     public static final String SELECT_BY_OWNER_URL = "/find_jobs_by_user_id.jsp?";
     public static final String LIMIT_KEY = "limit";
     public static final String OFFSET_KEY = "offset";
@@ -29,15 +38,19 @@ public class Job {
     public static final String LOCATION_KEY = "location";
     public static final String PAY_KEY = "pay";
     public static final String HOURS_KEY = "hoursPerWeek";
-    public static final String IS_ACTIVE_KEY = "isActive";
     public static final String OWNER_ID_KEY = "ownerId";
     public static final String USER_ID_KEY = "userId";
-    public static final String PIC_FOLDER_NAME_KEY = "picFolder";
     public static final String DATE_POSTED_KEY = "datePosted";
     public static final String JOB_LIST_KEY = "jobList";
     public static final String ERROR_KEY = "error";
     public static final String TRUE = "true";
     public static final String FALSE = "false";
+    public static final String PAY = "Pay";
+    public static final String HOURSPERWEEK = "Hours Per Week";
+    public static final String START_DATE = "Start Date";
+    public static final String LOCATION = "Location";
+
+    public static final int FIELD_COUNT = 11;
 
     private String jobId = "";
     private String title="";
@@ -81,17 +94,39 @@ public class Job {
         this.description = description;
         this.pay = pay.replaceAll("$","");
         this.hoursPerWeek = hours;
-        this.startDate = formatDate(startDate);
+        this.startDate = (startDate);
         this.location = location;
         this.isActive = isActive;
         this.ownerId = ownerId;
         this.datePosted = datePosted;
         this.picFileName = picFileName;
     }
+
+    @Override
+    public String toString(){
+        return "Job ID: " + jobId + " title: " + title + " description: " + description + " location: " + location
+                + " active: " + isActive + " owner: " + ownerId + " date posted: " + datePosted + " picfilename: " + picFileName
+                + " pay: " + pay + " hours: " + hoursPerWeek + " start: " + startDate + " error: " + error;
+    }
     public String formatDate(String startDate){
         String newDate;
         if(startDate != null && startDate.length()!=0) {
-            newDate = startDate.substring(0, startDate.indexOf('/')) + "-" + startDate.substring(startDate.indexOf('/') + 1, startDate.lastIndexOf('/')) + "-20" + startDate.substring(startDate.lastIndexOf('/') + 1, startDate.length());
+            newDate = startDate;
+            int index = newDate.indexOf("/");
+
+            while(index >= 0){
+                if(index == 0){
+                    newDate = newDate.substring(1);
+                } else {
+                    boolean isNotEnd = (index+1) < newDate.length()-1;
+                    if(isNotEnd){
+                        newDate = newDate.substring(0, index) + newDate.substring(index + 1);
+                    } else {
+                        newDate = newDate.substring(0, index);
+                    }
+                }
+                index = newDate.indexOf("/");
+            }
         } else {
             newDate = "";
         }
@@ -262,6 +297,11 @@ public class Job {
         return jobId;
     }
 
+    @Override
+    public String getId(){
+        return jobId;
+    }
+
     public void setJobId(String jobId) {
         this.jobId = jobId;
     }
@@ -290,6 +330,11 @@ public class Job {
         this.picFileName = picFileName;
     }
 
+    @Override
+    public String getPicFolderName(){
+        return picFileName;
+    }
+
     public String getPay() {
         return pay;
     }
@@ -302,6 +347,7 @@ public class Job {
 
     public void setHoursPerWeek(String hours) {this.hoursPerWeek = hours;}
 
+    @Override
     public String getIsActive() {
         return isActive;
     }
@@ -318,6 +364,7 @@ public class Job {
         this.ownerId = ownerId;
     }
 
+    @Override
     public String getDatePosted() {
         return datePosted;
     }
@@ -334,37 +381,214 @@ public class Job {
         this.error = error;
     }
 
+    @Override
+    public LinkedHashMap<String, String> toHashMap() {
+
+        LinkedHashMap<String, String> fieldMap = new LinkedHashMap<>();
+        fieldMap.put(JOB_ID_KEY, jobId);
+        fieldMap.put(TITLE, title);
+        fieldMap.put(DESCRIPTION, description);
+        fieldMap.put(PAY, pay);
+        fieldMap.put(HOURSPERWEEK, hoursPerWeek);
+        fieldMap.put(START_DATE, startDate);
+        fieldMap.put(LOCATION, location);
+        fieldMap.put(IS_ACTIVE_KEY, isActive);
+        fieldMap.put(OWNER, ownerId);
+        fieldMap.put(DATE_POSTED, datePosted);
+        fieldMap.put(PIC_FOLDER_NAME_KEY, picFileName);
+        return fieldMap;
+
+    }
+
+    @Override
+    public Listing fromMap(LinkedHashMap<String, String> fieldMap) {
+        if(fieldMap.size() != FIELD_COUNT) {
+            return null;
+        }
+        Job job = new Job();
+        job.setJobId(fieldMap.get(JOB_ID_KEY));
+        job.setTitle(fieldMap.get(TITLE));
+        job.setDescription(fieldMap.get(DESCRIPTION));
+        String pay = fieldMap.get(PAY);
+        if(pay.charAt(0) == '$'){
+            pay = pay.substring(1);
+        }
+        job.setPay(pay);
+        job.setHoursPerWeek(fieldMap.get(HOURSPERWEEK));
+        job.setStartDate(fieldMap.get(START_DATE));
+        job.setLocation(fieldMap.get(LOCATION));
+        job.setIsActive(fieldMap.get(IS_ACTIVE_KEY));
+        job.setOwnerId(fieldMap.get(OWNER));
+        job.setDatePosted(fieldMap.get(DATE_POSTED));
+        job.setPicFileName(fieldMap.get(PIC_FOLDER_NAME_KEY));
+
+        return job;
+
+    }
+
+    @Override
+    public boolean validateFields(ArrayList<EditListingFragment.InputAndKey> inputs) {
+        boolean noErrors = true;
+        for(int i = 0; i<inputs.size(); i++){
+            EditListingFragment.InputAndKey field = inputs.get(i);
+            String value = field.editText.getText().toString();
+            switch (field.key){
+                case TITLE:
+                case LOCATION:
+                    if(value.length() > 45){
+                        noErrors = false;
+                        field.editText.setError("Must be less than 45 characters");
+                    } else if(value.length() == 0){
+                        noErrors = false;
+                        field.editText.setError("Required Field");
+                    }
+                    break;
+                case PAY:
+                    if(value == null || value.length() == 0){
+                        noErrors = false;
+                        field.editText.setError("Required Field");
+                    } else {
+                        if (value.charAt(0) == '$') {
+                            value = value.substring(1);
+                        }
+                        if (!value.matches(DOLLAR_REGEX)) {
+                            noErrors = false;
+                            field.editText.setError("Must be digits only and have two decimal places");
+                        }
+                    }
+                    break;
+                case HOURSPERWEEK:
+                    if(value != null && value.length() > 0) {
+                        try {
+                            int num = Integer.parseInt(value);
+                            if (num < 0) {
+                                throw new NumberFormatException();
+                            }
+                        } catch (NumberFormatException e) {
+                            noErrors = false;
+                            field.editText.setError("Must be a valid, positive integer");
+                        }
+                    }
+                    break;
+                case START_DATE:
+                    if(value == null || value.length() == 0){
+                        break;
+                    }
+                    SimpleDateFormat badFormat = new SimpleDateFormat("MMM d, yyyy hh:mm:ss a");
+                    SimpleDateFormat goodFormat = new SimpleDateFormat("MM-dd-yyyy");
+                    try{
+                        Date unformatedDate = badFormat.parse(value);
+                        field.editText.setText(goodFormat.format(unformatedDate));
+                    } catch (ParseException d){
+                        try{
+                            Date formatedDate = goodFormat.parse(value);
+                        } catch (ParseException e){
+                            noErrors = false;
+                            field.editText.setError("Start Date must be of form: MM-DD-YYYY");
+                        }
+                    }
+                    break;
+            }
+        }
+        return noErrors;
+    }
+
+    @Override
+    public void update(final ListingUpdateListener listener) {
+        changeNullToSpacesForUpdate();
+        String updateUrl = createUpdateUrl();
+        Log.d("updateUrl", updateUrl);
+        NetworkManager.SHARED.requestFromUrl(updateUrl,
+                null,
+                null,
+                null,
+                new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.d("job", response.toString());
+                            String error = response.getString(ERROR_KEY);
+                            if(error.length() == 0) {
+
+                                listener.onResponse(true);
+
+                            } else {
+                                Job job = new Job(response);
+                                job.setError(error);
+                                ListingError listingError = new ListingError();
+                                listingError.body = job.toString();
+                                listener.onError(listingError);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        listener.onError(anError);
+                    }
+                });
+    }
+
+    //Change the non-required null fields to spaces so that the API stores the blank data in the DB
+    public void changeNullToSpacesForUpdate(){
+        if(description.length() == 0 || description == null){
+            description = " ";
+        }
+        if(startDate.length() == 0 || startDate == null){
+            startDate = " ";
+        }
+        if(hoursPerWeek.length() == 0 || hoursPerWeek == null){
+            hoursPerWeek = " ";
+        }
+    }
+
+    /*
+   Create the url for the update API call. Checks to see which arguments are not null and appends their values to the GET url
+    */
+    public String createUpdateUrl(){
+        Job.UrlBuffer buffer = new Job.UrlBuffer(NetworkManager.Endpoint.MARKETPLACE.toString());
+        buffer.append(UPDATE_URL);
+        buffer.append("&");
+
+        if(jobId != null){
+            buffer.urlArgAppend(JOB_ID_KEY, jobId);
+        }
+
+        if(title != null){
+            buffer.urlArgAppend(TITLE_KEY, title);
+        }
+
+        if( description != null){
+            buffer.urlArgAppend(DESCRIPTION_KEY, description);
+        }
+        if(pay != null) {
+            buffer.urlArgAppend(PAY_KEY, pay);
+        }
+
+        if(isActive != null){
+            buffer.urlArgAppend(IS_ACTIVE_KEY, isActive);
+        }
+
+        if(startDate != null){
+            buffer.urlArgAppend(START_DATE_KEY, startDate);
+        }
+
+        if(hoursPerWeek!=null){
+            buffer.urlArgAppend(HOURS_KEY, hoursPerWeek);
+        }
+        if(location != null){
+            buffer.urlArgAppend(LOCATION_KEY, location);
+        }
+
+        return buffer.toString();
+    }
+
     public interface JobRequestListener {
         void onResponse(Job job);
         void onError(ANError error);
     }
 
-    public class UrlBuffer{
-        private StringBuffer buffer;
 
-        public UrlBuffer(String baseUrl){
-            buffer = new StringBuffer(baseUrl);
-        }
-
-        public void append(String string){
-            buffer.append(string);
-        }
-
-        public void urlArgAppend(String valueKey, String value){
-            buffer.append(valueKey);
-            buffer.append("=");
-            buffer.append(value);
-            buffer.append("&");
-        }
-
-        @Override
-        public String toString(){
-            return buffer.toString();
-        }
-
-        public StringBuffer getBuffer(){
-            return buffer;
-        }
-
-    }
 }

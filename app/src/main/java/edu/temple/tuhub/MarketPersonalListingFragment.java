@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.androidnetworking.error.ANError;
 
 import java.sql.Date;
+import java.util.ArrayList;
 
 import edu.temple.tuhub.models.User;
 import edu.temple.tuhub.models.marketplace.Personal;
@@ -120,6 +121,11 @@ public class MarketPersonalListingFragment extends Fragment implements ImageScro
         } else {
             imageScroller.submitFailed();
         }
+    }
+
+    @Override
+    public void deleteFilesFromS3(ArrayList<String> filesToDelete) {
+
     }
 
     /*

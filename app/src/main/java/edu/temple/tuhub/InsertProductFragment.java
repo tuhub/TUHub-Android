@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import edu.temple.tuhub.models.marketplace.Product;
@@ -74,7 +76,6 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
         return fragment;
     }
 
-    // TODO: Rename and change types and number of parameters
     public static InsertProductFragment newInstance() {
         InsertProductFragment fragment = new InsertProductFragment();
 
@@ -175,6 +176,11 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
         } else {
             imageScroller.submitFailed();
         }
+    }
+
+    @Override
+    public void deleteFilesFromS3(ArrayList<String> filesToDelete) {
+
     }
 
     /*

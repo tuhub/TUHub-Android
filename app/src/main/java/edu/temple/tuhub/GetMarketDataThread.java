@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import edu.temple.tuhub.models.Marketitem;
+import edu.temple.tuhub.models.marketplace.Job;
+import edu.temple.tuhub.models.marketplace.Personal;
+import edu.temple.tuhub.models.marketplace.Product;
 
 
 /**
@@ -87,6 +90,8 @@ public class GetMarketDataThread extends Thread {
             JSONArray marketList;
             JSONObject tmp;
             SimpleDateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            SimpleDateFormat startDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat startDateEndFormat = new SimpleDateFormat("dd-MM-yyyy");
             SimpleDateFormat destFormat = new SimpleDateFormat("MMM d, yyyy hh:mm:ss a"); //here 'a' for AM/PM
 
             if (marketJSON.has("productList")) {
@@ -135,6 +140,8 @@ public class GetMarketDataThread extends Thread {
                     tmppicfolder = (String)tmp.get("picFolder");
                     pow.setPicfolder(tmppicfolder);
                     pow.setMarkettype("Product");
+                    pow.setId(tmp.getString(Product.PRODUCT_ID_KEY));
+                    pow.setIsActive(tmp.getString(Product.IS_ACTIVE_KEY));
 
 
 
@@ -182,11 +189,11 @@ public class GetMarketDataThread extends Thread {
 
                    if(tmpstartdate!=null) { // a job may not have a start date? maybe
                        try {
-                           date = sourceFormat.parse(tmpstartdate);
+                           date = startDateFormat.parse(tmpstartdate);
                        } catch (java.text.ParseException e) {
                            e.printStackTrace();
                        }
-                       formattedDate = destFormat.format(date);
+                       formattedDate = startDateEndFormat.format(date);
                        pow.setStartdate(formattedDate);//Setting the formated date
                    }
 
@@ -203,6 +210,9 @@ public class GetMarketDataThread extends Thread {
                     tmppicfolder = (String) tmp.get("picFolder");
                     pow.setPicfolder(tmppicfolder);
                     pow.setMarkettype("Job");
+                    pow.setId(tmp.getString(Job.JOB_ID_KEY));
+                    pow.setHoursPerWeek(tmp.getString(Job.HOURS_KEY));
+                    pow.setIsActive(tmp.getString(Job.IS_ACTIVE_KEY));
 
 
                     t.add(pow);
@@ -231,6 +241,7 @@ public class GetMarketDataThread extends Thread {
                     String tmppicfolder;
 
 
+
                     tmp=(JSONObject)marketList.get(x);
                     tmptime = (String)tmp.get("datePosted");
 
@@ -254,6 +265,8 @@ public class GetMarketDataThread extends Thread {
                     tmppicfolder = (String)tmp.get("picFolder");
                     pow.setPicfolder(tmppicfolder);
                     pow.setMarkettype("Personal");
+                    pow.setId(tmp.getString(Personal.PERSONAL_ID_KEY));
+                    pow.setIsActive(tmp.getString(Personal.IS_ACTIVE_KEY));
 
 
 
