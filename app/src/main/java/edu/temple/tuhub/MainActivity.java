@@ -30,8 +30,10 @@ import edu.temple.tuhub.CourseFragment.showCourseDetails;
 import edu.temple.tuhub.CourseListFragment.OnListFragmentInteractionListener;
 import edu.temple.tuhub.MapsFragment.loadBuildingDetails;
 import edu.temple.tuhub.MarketTableFragment.newListingInterface;
+import edu.temple.tuhub.models.Building;
 import edu.temple.tuhub.models.Course;
 import edu.temple.tuhub.models.Entry;
+import edu.temple.tuhub.models.FoodTruck;
 import edu.temple.tuhub.models.Marketitem;
 import edu.temple.tuhub.models.Newsitem;
 import edu.temple.tuhub.models.User;
@@ -45,7 +47,7 @@ import static edu.temple.tuhub.MapsFragment.*;
 import static edu.temple.tuhub.MarketTableFragment.*;
 import static edu.temple.tuhub.NewsTableFragment.*;
 
-public class MainActivity extends AppCompatActivity implements newsshow, filterbutton, selectorinterface, showCourseDetails, OnListFragmentInteractionListener, CalendarClickListener, courseSearchHandler, searchAllResultsInterface, newListingInterface, marketshow, loadBuildingDetails, loadFoodTruckDetails, reloadMap{
+public class MainActivity extends AppCompatActivity implements newsshow, filterbutton, selectorinterface, showCourseDetails, OnListFragmentInteractionListener, CalendarClickListener, courseSearchHandler, searchAllResultsInterface, newListingInterface, marketshow, loadBuildingDetails, loadFoodTruckDetails, reloadMap, mapSearch{
     static Fragment[] fraghold = new Fragment[3];//For TUNews and some TUmarketplace
     FilterMenuFrag tufilter;//For TUNews
 
@@ -63,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
     PageDeniedFragment pf;
     BuildingDetailFragment bdf;
     FoodTruckDetailFragment ftdf;
+    MapSearchFragment msf;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -154,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
         mf = new MapsFragment();
         bdf = new BuildingDetailFragment();
         ftdf = new FoodTruckDetailFragment();
+        msf = new MapSearchFragment();
 
         if(savedInstanceState==null) {
             String username = preferences.getString(getString(R.string.username_key), "");
@@ -501,11 +505,19 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
 
     @Override
     public void reloadMap() {
-
         final FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction().detach(mf).replace(R.id.contentFragment, mf).attach(mf);
         ft.commit();
         fm.executePendingTransactions();
+    }
+    public void mapSearchResults(Building[] buildings, FoodTruck[] foodTrucks){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("Buildings", buildings);
+        bundle.putSerializable("FoodTrucks", foodTrucks);
+        msf.setArguments(bundle);
+        loadFragment(R.id.contentFragment, msf, true, false);
+
+
     }
 }
 

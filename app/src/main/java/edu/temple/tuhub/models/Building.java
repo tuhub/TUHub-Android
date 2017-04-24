@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +16,7 @@ import java.util.Map;
  * Created by Tom on 4/15/2017.
  */
 
-public class Building {
+public class Building implements Serializable {
 
     private String name;
     private String imageUrl;

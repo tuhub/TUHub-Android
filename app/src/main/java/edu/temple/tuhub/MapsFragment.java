@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,9 +38,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
 import edu.temple.tuhub.models.Building;
 import edu.temple.tuhub.models.FoodTruck;
 import edu.temple.tuhub.models.User;
+
+import static android.R.attr.fragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -223,7 +232,30 @@ public class MapsFragment extends Fragment {
         sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
+                ArrayList<Building> buildingResults = new ArrayList();
+                for(int i = 0; i<Buildings.length; i++){
+                    if(Buildings[i].getName().toLowerCase().contains(query.toLowerCase()))
+                    buildingResults.add(Buildings[i]);
+                }
+                ArrayList<FoodTruck> foodTruckResults = new ArrayList();
+                for(int i = 0; i<FoodTrucks.length; i++){
+                    if(FoodTrucks[i].getName().toLowerCase().contains(query.toLowerCase()))
+                    foodTruckResults.add(FoodTrucks[i]);
+                }
+                Building[] bldRslt = new Building[buildingResults.size()];
+                FoodTruck[] fdTrkRslt = new FoodTruck[foodTruckResults.size()];
+                for(int i = 0; i<buildingResults.size(); i++){
+                    bldRslt[i] = buildingResults.get(i);
+                }
+                for(int i = 0; i<foodTruckResults.size(); i++){
+                    fdTrkRslt[i] = foodTruckResults.get(i);
+                }
+                if(fdTrkRslt.length==0&&bldRslt.length==0){
+                    Toast.makeText(getActivity().getApplicationContext(),"No results", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    activity4.mapSearchResults(bldRslt, fdTrkRslt);
+                }
                 return false;
             }
 
@@ -318,6 +350,7 @@ public class MapsFragment extends Fragment {
     loadBuildingDetails activity;
     loadFoodTruckDetails activity2;
     reloadMap activity3;
+    mapSearch activity4;
 
     @Override
     public void onAttach(Activity c) {
@@ -325,6 +358,7 @@ public class MapsFragment extends Fragment {
         activity = (loadBuildingDetails) c;
         activity2 = (loadFoodTruckDetails) c;
         activity3 = (reloadMap) c;
+        activity4 = (mapSearch) c;
     }
 
     @Override
@@ -333,6 +367,7 @@ public class MapsFragment extends Fragment {
         activity = null;
         activity2 = null;
         activity3 = null;
+        activity4 = null;
     }
 
     interface loadBuildingDetails{
@@ -343,6 +378,9 @@ public class MapsFragment extends Fragment {
     }
     interface reloadMap{
         void reloadMap();
+    }
+    interface mapSearch{
+        void mapSearchResults(Building[] buildings, FoodTruck[] foodTrucks);
     }
 }
 

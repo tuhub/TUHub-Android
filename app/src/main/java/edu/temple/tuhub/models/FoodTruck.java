@@ -9,6 +9,7 @@ import com.yelp.clientlib.entities.Business;
 import com.yelp.clientlib.entities.SearchResponse;
 import com.yelp.clientlib.entities.options.CoordinateOptions;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ import retrofit2.Response;
  * Created by laurenlezberg on 4/17/17.
  */
 
-public class FoodTruck {
+public class FoodTruck implements Serializable {
 
     public interface FoodTruckRequestListener {
         void onResponse(FoodTruck[] foodTrucks);
