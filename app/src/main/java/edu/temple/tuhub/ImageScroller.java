@@ -179,10 +179,10 @@ public class ImageScroller extends LinearLayout implements UserImagePreview.S3De
                 imagePreview.getUserImage().setOnClickListener(new DisplayFullImageOnClickListener(bitmap, fromCamera));
                 imageContainer.addView(imagePreview);
             } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
+
                 e.printStackTrace();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
+
                 e.printStackTrace();
             }
         }
