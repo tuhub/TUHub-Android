@@ -151,6 +151,7 @@ public class BuildingDetailFragment extends Fragment {
             @Override
             public void run() {
                     try {
+                           ImageURL = "https://maps.googleapis.com/maps/api/streetview?size=592x333&location="+latitude+","+longitude+"&key="+getString(R.string.google_android_map_api_key);
                             bitmap = BitmapFactory.decodeStream((InputStream) new URL(ImageURL).getContent());
                             if (getActivity() == null) {
                                 return;

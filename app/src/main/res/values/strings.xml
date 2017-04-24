@@ -101,6 +101,9 @@
     <string name ="SetDefault">Set As Default</string>
     <string name="saved_map">Main</string>
     <string name="saved_default_map">Main</string>
+    <string name="my_courses">My Courses</string>
+    <string name="export_courses">Export Courses</string>
+    <string name="NoMeetingLocation">No Meeting Location</string>
 
 
 </resources>

@@ -1,11 +1,13 @@
 package edu.temple.tuhub;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
 
+import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v13.app.FragmentStatePagerAdapter;
@@ -23,7 +25,16 @@ import android.view.ViewGroup;
 
 import com.androidnetworking.error.ANError;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import edu.temple.tuhub.models.Course;
+import edu.temple.tuhub.models.CourseMeeting;
 import edu.temple.tuhub.models.Term;
 import edu.temple.tuhub.models.User;
 
@@ -199,6 +210,62 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
                 return true;
             case R.id.menu_your_courses:
                 activity.courseSearchHandler("", true);
+                return true;
+            case R.id.menu_export_courses:
+                if(User.CURRENT.getTerms()!=null){
+                    Term[] terms = User.CURRENT.getTerms();
+                    List<Course> courses = terms[0].getCourses();
+                    List<CourseMeeting> meetings;
+                    for(int i = 0; i<courses.size(); i++)
+                    {
+                        System.out.println(courses.size()+", "+i);
+                        meetings = courses.get(i).getMeetings();
+                        if(meetings.size()==0){
+                            Intent intent = new Intent(Intent.ACTION_INSERT)
+                                    .setData(CalendarContract.Events.CONTENT_URI)
+                                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, courses.get(i).getRawStartDate())
+                                    .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, courses.get(i).getRawStartDate())
+                                    .putExtra(CalendarContract.ExtendedProperties.EVENT_LOCATION, getString(R.string.NoMeetingLocation))
+                                    .putExtra(CalendarContract.ExtendedProperties.RRULE,"FREQ=WEEKLY;COUNT=15;BYDAY=MO;")
+                                    .putExtra(CalendarContract.Events.TITLE, courses.get(i).getTitle());
+                            //.putExtra(CalendarContract.Events.EVENT_LOCATION, courses.get(i).getMeetings().get(0).getBuildingName());
+                            startActivityForResult(intent, 0);
+
+                        }else{
+
+                            for(int k = 0; k<meetings.size(); k++) {
+                                Calendar beginCal = Calendar.getInstance();
+                                Date beginDate = null;
+                                try {
+                                    beginDate = new SimpleDateFormat("MMMMM dd, yyyy HH:mm", Locale.US).parse(courses.get(i).getStartDate()+" "+meetings.get(k).getStartTimeWTz());
+                                    meetings.get(k).getDaysString();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                beginCal.setTime(beginDate);
+                                Calendar endCal = Calendar.getInstance();
+                                Date endDate = null;
+                                try{
+                                    endDate = new SimpleDateFormat("MMMMM dd, yyyy HH:mm", Locale.US).parse(courses.get(i).getStartDate()+" "+meetings.get(k).getEndTimeWTz());
+                                }catch(ParseException e){
+                                    e.printStackTrace();
+                                }
+                                endCal.setTime(endDate);
+                                int [] dw = meetings.get(k).getDaysOfWeek();
+                            Intent intent = new Intent(Intent.ACTION_INSERT)
+                                    .setData(CalendarContract.Events.CONTENT_URI)
+                                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginCal.getTimeInMillis())
+                                    .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endCal.getTimeInMillis())
+                                    .putExtra(CalendarContract.ExtendedProperties.EVENT_LOCATION, meetings.get(k).getBuildingName()+", "+meetings.get(k).getRoom())
+                                    .putExtra(CalendarContract.ExtendedProperties.RRULE,"FREQ=WEEKLY;COUNT="+(dw.length*15)+";BYDAY="+meetings.get(k).getDaysString())
+                                    .putExtra(CalendarContract.Events.TITLE, courses.get(i).getTitle());
+                            startActivityForResult(intent, 0);
+                        }}
+                    }
+                }
+                else{
+                    //toast
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -479,6 +479,7 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
 
     @Override
     public void reloadMap() {
+
         final FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction().detach(mf).replace(R.id.contentFragment, mf).attach(mf);
         ft.commit();

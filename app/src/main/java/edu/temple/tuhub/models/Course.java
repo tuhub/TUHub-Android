@@ -45,7 +45,9 @@ public class Course implements Serializable {
     private String termID;
     private String sectionNumber;
     private String startDate;
+    private String startDateStr;
     private String endDate;
+    private String endDateStr;
 
     @Nullable
     private List<CourseMeeting> meetings;
@@ -65,7 +67,9 @@ public class Course implements Serializable {
                   String sectionID,
                   String sectionNumber,
                   String startDate,
+                  String startDateStr,
                   String endDate,
+                  String endDateStr,
                   String termID,
                   List<CourseMeeting> meetings,
                   List<Instructor> instructors) {
@@ -77,7 +81,9 @@ public class Course implements Serializable {
         this.termID = termID;
         this.sectionNumber = sectionNumber;
         this.startDate = startDate;
+        this.startDateStr = startDateStr;
         this.endDate = endDate;
+        this.endDateStr = endDateStr;
         this.meetings = meetings;
         this.instructors = instructors;
     }
@@ -124,7 +130,9 @@ public class Course implements Serializable {
                 sectionID,
                 sectionNumber,
                 startDate,
+                startDateStr,
                 endDate,
+                endDateStr,
                 termID,
                 meetings,
                 instructors);
@@ -195,6 +203,39 @@ public class Course implements Serializable {
 
     public String getStartDate() {
         return startDate;
+    }
+
+    public long getRawStartDate(){
+        try {
+            Date sd =  new SimpleDateFormat("yyyy-MM-dd").parse(startDateStr);
+            return sd.getTime();
+        } catch (ParseException e) {
+            return 0;
+        }
+    }
+    public long getRawEndDate(){
+        try {
+            Date ed = new SimpleDateFormat("yyyy-MM-dd").parse(endDateStr);
+            return ed.getTime();
+        } catch (ParseException e) {
+            return 0;
+        }
+    }
+    public Date getStartDateFormat(){
+        try {
+            return new SimpleDateFormat("yy-MM-dd").parse(startDateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public Date getEndDateFormat(){
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd").parse(endDateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public String getEndDate() {

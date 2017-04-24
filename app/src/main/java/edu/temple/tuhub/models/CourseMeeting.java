@@ -5,6 +5,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created on 3/24/17.
@@ -102,7 +105,7 @@ public class CourseMeeting implements Serializable {
     }
 
     public String getBuildingName() {
-        return buildingName;
+        return buildingName!=null ? buildingName : "";
     }
 
     public String getRoom() {
@@ -110,15 +113,60 @@ public class CourseMeeting implements Serializable {
     }
 
     public String getStartTime() {
-        return startTime;
+        return startTime!=null ? startTime : "";
+    }
+
+    public Date getStartTimeDate(){
+        try {
+            Date st = new SimpleDateFormat("mm:ss").parse(startTimeWTz);
+            return st;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public String getEndTime() {
-        return endTime;
+        return endTime!=null?endTime:"";
     }
 
     public int[] getDaysOfWeek() {
         return daysOfWeek;
+    }
+
+    public String getDaysString(){
+        StringBuilder days = new StringBuilder("");
+        for(int i = 0; i<daysOfWeek.length; i++){
+                switch (daysOfWeek[i]){
+                    case 1:
+                        days.append("SU,");
+                        break;
+                    case 2:
+                        days.append("MO,");
+                        break;
+                    case 3:
+                        days.append("TU,");
+                        break;
+                    case 4:
+                        days.append("WE,");
+                        break;
+                    case 5:
+                        days.append("TH,");
+                        break;
+                    case 6:
+                        days.append("FR,");
+                        break;
+                    case 7:
+                        days.append("SA,");
+                        break;
+                    default:
+                        break;
+                }
+        }
+        if(days.charAt(days.length()-1)==','){
+            days.replace(days.length(),days.length(),"");
+        }
+        return days.toString();
     }
 
     public String getStartTimeWTz() {

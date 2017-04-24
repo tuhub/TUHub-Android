@@ -54,9 +54,15 @@ public class MapsFragment extends Fragment {
     private Button detailBtn;
     private Marker currentMarker;
     private LatLng templeUniversity;
+    private Boolean ignoreSharedPreferences = false;
 
     public MapsFragment() {
         // Required empty public constructor
+    }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = this.getArguments();
     }
 
     @Override
@@ -70,11 +76,16 @@ public class MapsFragment extends Fragment {
                 loadDetails();
             }
         });
-        SharedPreferences sharedPref = getActivity().getSharedPreferences("MapsPreferences",Context.MODE_PRIVATE);
-        if(User.CURRENT!=null){
-            currentCampus = sharedPref.getString(User.CURRENT.getTuID()+"MapPreference", getString(R.string.saved_default_map));
-        }else{
-            currentCampus = sharedPref.getString("GuestMapPreference", getString(R.string.saved_default_map));
+        if(!ignoreSharedPreferences) {
+            SharedPreferences sharedPref = getActivity().getSharedPreferences("MapsPreferences", Context.MODE_PRIVATE);
+            if (User.CURRENT != null) {
+                currentCampus = sharedPref.getString(User.CURRENT.getTuID() + "MapPreference", getString(R.string.saved_default_map));
+            } else {
+                currentCampus = sharedPref.getString("GuestMapPreference", getString(R.string.saved_default_map));
+            }
+        }
+        else{
+            ignoreSharedPreferences = false;
         }
         mMapView = (MapView) v.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -257,6 +268,7 @@ public class MapsFragment extends Fragment {
                 builder.setNeutralButton(R.string.OK, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        ignoreSharedPreferences = true;
                         activity3.reloadMap();
                     }
                 });
