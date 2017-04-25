@@ -1,5 +1,6 @@
 package edu.temple.tuhub;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -41,6 +42,7 @@ public class FoodTruckDetailFragment extends Fragment {
     String reverseGeoCodeURL = "https://maps.googleapis.com/maps/api/geocode/json?latlng="+latitude+","+longitude+"&key="+R.string.google_android_map_api_key;
     Address addressObject;
     TextView addressTV;
+    ImageView phoneButton;
 
     public FoodTruckDetailFragment() {
         // Required empty public constructor
@@ -79,6 +81,12 @@ public class FoodTruckDetailFragment extends Fragment {
         TextView closedView = (TextView) v.findViewById(R.id.closedText);
         closedView.setText(isClosed);
         i = (ImageView) v.findViewById(R.id.foodTruckImageView);
+        phoneButton = (ImageView) v.findViewById(R.id.food_truck_phone_button);
+        if(phone != null && phone.length() != 0) {
+            phoneButton.setOnClickListener(new PhoneCallOnClickListener());
+        } else {
+            phoneButton.setVisibility(View.GONE);
+        }
         fetchImage();
         fetchAddress();
 
@@ -171,6 +179,7 @@ public class FoodTruckDetailFragment extends Fragment {
                         @Override
                         public void run() {
                             i.setImageBitmap(bitmap);
+                            i.setOnClickListener(new DisplayFullImageOnClickListener(bitmap));
                             i.invalidate();
                         }
                     });
@@ -180,6 +189,40 @@ public class FoodTruckDetailFragment extends Fragment {
             }
         };
         t.start();
+    }
+
+    /*
+   OnClickListener for ImagePreview objects. When clicked, the full image is displayed in a dialog.
+    */
+    private class DisplayFullImageOnClickListener implements View.OnClickListener{
+
+        private Bitmap bitmap;
+
+        public DisplayFullImageOnClickListener(Bitmap bitmap){
+            this.bitmap = bitmap;
+        }
+
+        @Override
+        public void onClick(View v) {
+            final Dialog nagDialog = new Dialog(getActivity(),android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+            nagDialog.setContentView(R.layout.preview_image);
+            ImageView ivPreview = (ImageView)nagDialog.findViewById(R.id.iv_preview_image);
+            ivPreview.setImageBitmap(bitmap);
+
+            nagDialog.show();
+        }
+    }
+
+    public class PhoneCallOnClickListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            String uri = "tel:" + phone.trim();
+            intent.setData(Uri.parse(uri));
+            startActivity(intent);
+
+        }
     }
 
 

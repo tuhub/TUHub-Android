@@ -126,6 +126,12 @@
     <string name="my_courses">My Courses</string>
     <string name="export_courses">Export Courses</string>
     <string name="NoMeetingLocation">No Meeting Location</string>
+    <string name="food_truck_name">Food Truck Name</string>
+    <string name="address">Address</string>
+    <string name="phone">Phone</string>
+    <string name="rating">Rating</string>
+    <string name="closed">Closed</string>
+    <string name="directions">Directions</string>
     <string name="exportError">Error exporting courses</string>
 
 </resources>

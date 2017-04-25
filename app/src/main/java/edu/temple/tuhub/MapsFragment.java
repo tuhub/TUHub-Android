@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.NonNull;
@@ -281,7 +282,10 @@ public class MapsFragment extends Fragment {
                         dialog.dismiss();
                     }
                 });
-                builder.show();
+                AlertDialog dialog = builder.show();
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+                dialog.getButton(DialogInterface.BUTTON_NEUTRAL).setTextColor(Color.BLACK);
+                dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

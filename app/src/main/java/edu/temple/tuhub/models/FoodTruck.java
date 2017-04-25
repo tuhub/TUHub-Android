@@ -117,7 +117,7 @@ public class FoodTruck implements Serializable {
                             businesses.get(i).isClosed().toString(),
                             businesses.get(i).location().coordinate().longitude().toString(),
                             businesses.get(i).location().coordinate().latitude().toString(),
-                            businesses.get(i).imageUrl(),
+                            createFullSizeUrl(businesses.get(i).imageUrl()),
                             businesses.get(i).displayPhone()
                     );
                     foodTrucks[i] = ft;
@@ -133,6 +133,23 @@ public class FoodTruck implements Serializable {
         };
 
         call.enqueue(callback);
+    }
+
+    /*
+    The Yelp API provides the URL of a thumbnail pic; this method replaces the
+    size argument from "ms" (mega small I think) to "o" (original size)
+     */
+    public static String createFullSizeUrl(String url){
+        if(url == null){
+            return null;
+        }
+        int index = url.indexOf("ms.jpg");
+        if(index == -1){
+            return url;
+        }
+        url = url.substring(0, index);
+        url += "o.jpg";
+        return url;
     }
 
 }

@@ -1,5 +1,6 @@
 package edu.temple.tuhub;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -129,24 +130,47 @@ public class BuildingDetailFragment extends Fragment {
         Thread t = new Thread() {
             @Override
             public void run() {
-                try {
-                    ImageURL = "https://maps.googleapis.com/maps/api/streetview?size=592x333&location=" + latitude + "," + longitude + "&key=" + getString(R.string.google_android_map_api_key);
-                    bitmap = BitmapFactory.decodeStream((InputStream) new URL(ImageURL).getContent());
-                    if (getActivity() == null) {
-                        return;
+                    try {
+                           ImageURL = "https://maps.googleapis.com/maps/api/streetview?size=592x333&location="+latitude+","+longitude+"&key="+getString(R.string.google_android_map_api_key);
+                            bitmap = BitmapFactory.decodeStream((InputStream) new URL(ImageURL).getContent());
+                            if (getActivity() == null) {
+                                return;
+                            }
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    i.setImageBitmap(bitmap);
+                                    i.setOnClickListener(new DisplayFullImageOnClickListener(bitmap));
+                                    i.invalidate();
+                                }
+                            });
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            i.setImageBitmap(bitmap);
-                            i.invalidate();
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
         };
         t.start();
+    }
+
+    /*
+  OnClickListener for ImagePreview objects. When clicked, the full image is displayed in a dialog.
+   */
+    private class DisplayFullImageOnClickListener implements View.OnClickListener{
+
+        private Bitmap bitmap;
+
+        public DisplayFullImageOnClickListener(Bitmap bitmap){
+            this.bitmap = bitmap;
+        }
+
+        @Override
+        public void onClick(View v) {
+            final Dialog nagDialog = new Dialog(getActivity(),android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+            nagDialog.setContentView(R.layout.preview_image);
+            ImageView ivPreview = (ImageView)nagDialog.findViewById(R.id.iv_preview_image);
+            ivPreview.setImageBitmap(bitmap);
+
+            nagDialog.show();
+        }
     }
 }
