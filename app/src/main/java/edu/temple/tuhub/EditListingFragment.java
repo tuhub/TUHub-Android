@@ -6,13 +6,12 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Handler;
-import android.renderscript.ScriptGroup;
+import android.support.annotation.NonNull;
 import android.support.v13.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
@@ -35,12 +33,9 @@ import com.androidnetworking.error.ANError;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,7 +56,6 @@ public class EditListingFragment extends Fragment implements ImageScroller.Image
     //ArrayList of all user inputs -> Stored in reverse, so to construct a listing, obtain values from end to beginning
     private ArrayList<InputAndKey> inputs;
     private boolean isActive;
-    private String listingId;
     private String datePosted;
     private Listing editedListing;
     public Calendar myCalendar = Calendar.getInstance();
@@ -120,8 +114,7 @@ public class EditListingFragment extends Fragment implements ImageScroller.Image
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        boolean viewableOnly = false;
-                        imageScroller.getImagesFromS3(fieldMap.get(Listing.PIC_FOLDER_NAME_KEY), s3ObjectSummaries, viewableOnly);
+                        imageScroller.getImagesFromS3(fieldMap.get(Listing.PIC_FOLDER_NAME_KEY), s3ObjectSummaries, false);
                     }
                 });
                 return null;
@@ -129,8 +122,8 @@ public class EditListingFragment extends Fragment implements ImageScroller.Image
         }.execute();
 
         //These fields do not need pairs of title TextView and EditText input
-        isActive = (((String)fieldMap.get(Listing.IS_ACTIVE_KEY)).equalsIgnoreCase("true"));
-        datePosted = ((String)fieldMap.get(Listing.DATE_POSTED));
+        isActive = (fieldMap.get(Listing.IS_ACTIVE_KEY).equalsIgnoreCase("true"));
+        datePosted = fieldMap.get(Listing.DATE_POSTED);
         fieldMap.remove(Listing.IS_ACTIVE_KEY);
         fieldMap.remove(Listing.DATE_POSTED);
 
@@ -265,7 +258,7 @@ public class EditListingFragment extends Fragment implements ImageScroller.Image
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
             Log.v(TAG,"Permission: "+permissions[0]+ "was "+grantResults[0]);
@@ -363,7 +356,7 @@ public class EditListingFragment extends Fragment implements ImageScroller.Image
         public EditText editText;
         public String key;
 
-        public InputAndKey(EditText editText, String key){
+        InputAndKey(EditText editText, String key){
             this.editText = editText;
             this.key = key;
         }

@@ -1,38 +1,23 @@
 package edu.temple.tuhub;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.v13.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
-
-import java.sql.Date;
 import java.util.ArrayList;
 
-import edu.temple.tuhub.models.User;
 import edu.temple.tuhub.models.marketplace.Personal;
 
-import static android.content.ContentValues.TAG;
-import static android.support.v4.content.PermissionChecker.checkSelfPermission;
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class MarketPersonalListingFragment extends Fragment implements ImageScroller.ImageScrollerFragment {
 
  private ImageScroller imageScroller;
@@ -41,11 +26,6 @@ public class MarketPersonalListingFragment extends Fragment implements ImageScro
     AutoCompleteTextView titleInput;
     AutoCompleteTextView descriptionInput;
     AutoCompleteTextView locationInput;
-    Button imgBtn;
-    Button cancelBtn;
-    Button okayBtn;
-    LinearLayout imgList;
-    View v;
 
 
     public MarketPersonalListingFragment() {
@@ -140,7 +120,7 @@ public class MarketPersonalListingFragment extends Fragment implements ImageScro
         String location = locationInput.getText().toString();
 
         boolean valid = true;
-        if(title == null || title.length() == 0){
+        if(title.equals("") || title.length() == 0){
             titleInput.setError(getActivity().getString(R.string.error_field_required));
             valid = false;
         }

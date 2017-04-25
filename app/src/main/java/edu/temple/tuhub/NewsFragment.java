@@ -1,6 +1,5 @@
 package edu.temple.tuhub;
 
-
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -11,9 +10,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-/**
- * Created by mangaramu on 3/12/2017.
- */
+// Created by mangaramu on 3/12/2017
 
 public class NewsFragment extends Fragment {
     WebView newsview;
@@ -21,8 +18,6 @@ public class NewsFragment extends Fragment {
      String newsurl;
 
     public void onAttach(Context context) {
-
-
         super.onAttach(context);
     }
 

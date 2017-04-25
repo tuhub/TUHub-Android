@@ -1,6 +1,5 @@
 package edu.temple.tuhub;
 
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -23,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
@@ -39,20 +37,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
 import edu.temple.tuhub.models.Building;
 import edu.temple.tuhub.models.FoodTruck;
 import edu.temple.tuhub.models.User;
 
-import static android.R.attr.fragment;
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class MapsFragment extends Fragment {
 
     private GoogleMap googleMap;
@@ -62,16 +51,14 @@ public class MapsFragment extends Fragment {
     private FoodTruck[] FoodTrucks;
     private Button detailBtn;
     private Marker currentMarker;
-    private LatLng templeUniversity;
     private Boolean ignoreSharedPreferences = false;
 
     public MapsFragment() {
-        // Required empty public constructor
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle = this.getArguments();
     }
 
     @Override
@@ -85,15 +72,14 @@ public class MapsFragment extends Fragment {
                 loadDetails();
             }
         });
-        if(!ignoreSharedPreferences) {
+        if (!ignoreSharedPreferences) {
             SharedPreferences sharedPref = getActivity().getSharedPreferences("MapsPreferences", Context.MODE_PRIVATE);
             if (User.CURRENT != null) {
                 currentCampus = sharedPref.getString(User.CURRENT.getTuID() + "MapPreference", getString(R.string.saved_default_map));
             } else {
                 currentCampus = sharedPref.getString("GuestMapPreference", getString(R.string.saved_default_map));
             }
-        }
-        else{
+        } else {
             ignoreSharedPreferences = false;
         }
         mMapView = (MapView) v.findViewById(R.id.mapView);
@@ -111,37 +97,28 @@ public class MapsFragment extends Fragment {
                 if (ContextCompat.checkSelfPermission(getActivity(),
                         Manifest.permission.ACCESS_FINE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
-
-                    // Should we show an explanation?
                     if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
                             Manifest.permission.ACCESS_FINE_LOCATION)) {
-
                     } else {
-
                         ActivityCompat.requestPermissions(getActivity(),
                                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                 1);
-
                     }
                 } else {
-                    //default map
-                    // For dropping a marker at a point on the Map
-                    templeUniversity = new LatLng(39.9794501, -75.1565292);
                     FoodTruck.retrieveFoodTrucks(new FoodTruck.FoodTruckRequestListener() {
                         @Override
                         public void onResponse(FoodTruck[] foodTrucks) {
                             FoodTrucks = new FoodTruck[foodTrucks.length];
-                            for(int i = 0; i<foodTrucks.length; i++){
+                            for (int i = 0; i < foodTrucks.length; i++) {
                                 FoodTrucks[i] = foodTrucks[i];
-                                if(foodTrucks[i]!=null) {
-                                    googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(foodTrucks[i].getLatitude()),Double.parseDouble(foodTrucks[i].getLongitude()))).title(foodTrucks[i].getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.restaurant)));
+                                if (foodTrucks[i] != null) {
+                                    googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(foodTrucks[i].getLatitude()), Double.parseDouble(foodTrucks[i].getLongitude()))).title(foodTrucks[i].getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.restaurant)));
                                 }
                             }
                         }
 
                         @Override
                         public void onError(ANError error) {
-
                         }
                     });
                     // For zooming automatically to the location of the marker
@@ -151,16 +128,15 @@ public class MapsFragment extends Fragment {
                             CameraPosition cameraPosition = new CameraPosition.Builder().target(Building.getcampusLatLng()).zoom(16).build();
                             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                             Buildings = new Building[buildingResponse.length];
-                            for(int i = 0; i<buildingResponse.length; i++){
+                            for (int i = 0; i < buildingResponse.length; i++) {
                                 Buildings[i] = buildingResponse[i];
-                                if(buildingResponse[i]!=null){
-                                    if(buildingResponse[i].getName().toLowerCase().contains("library")){
-                                        googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(buildingResponse[i].getLatitude()),Double.parseDouble(buildingResponse[i].getLongitude()))).title(buildingResponse[i].getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.book)));
-                                    }
-                                    else if(buildingResponse[i].getName().toLowerCase().contains("tech center")){
-                                        googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(buildingResponse[i].getLatitude()),Double.parseDouble(buildingResponse[i].getLongitude()))).title(buildingResponse[i].getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.computers)));
-                                    }else
-                                    googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(buildingResponse[i].getLatitude()),Double.parseDouble(buildingResponse[i].getLongitude()))).title(buildingResponse[i].getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.university)));
+                                if (buildingResponse[i] != null) {
+                                    if (buildingResponse[i].getName().toLowerCase().contains("library")) {
+                                        googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(buildingResponse[i].getLatitude()), Double.parseDouble(buildingResponse[i].getLongitude()))).title(buildingResponse[i].getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.book)));
+                                    } else if (buildingResponse[i].getName().toLowerCase().contains("tech center")) {
+                                        googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(buildingResponse[i].getLatitude()), Double.parseDouble(buildingResponse[i].getLongitude()))).title(buildingResponse[i].getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.computers)));
+                                    } else
+                                        googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(buildingResponse[i].getLatitude()), Double.parseDouble(buildingResponse[i].getLongitude()))).title(buildingResponse[i].getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.university)));
                                 }
                             }
                         }
@@ -169,13 +145,12 @@ public class MapsFragment extends Fragment {
                         public void onError(ANError error) {
                         }
                     });
-
                     googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
                         public boolean onMarkerClick(Marker marker) {
                             marker.showInfoWindow();
                             currentMarker = marker;
-                            if(detailBtn!=null)
+                            if (detailBtn != null)
                                 detailBtn.setVisibility(View.VISIBLE);
                             return false;
                         }
@@ -184,32 +159,29 @@ public class MapsFragment extends Fragment {
                         @Override
                         public void onInfoWindowClose(Marker marker) {
                             currentMarker = null;
-                            if(detailBtn!=null)
+                            if (detailBtn != null)
                                 detailBtn.setVisibility(View.INVISIBLE);
                         }
                     });
-
-                } }
-
-
+                }
+            }
         });
-
-
         return v;
     }
 
-    public void onRequestPermissionsResult (int requestCode, @NonNull String[]
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[]
             permissions, @NonNull int[] grantResults) {
     }
-    private void loadDetails(){
-        if(currentMarker!=null) {
+
+    private void loadDetails() {
+        if (currentMarker != null) {
             for (edu.temple.tuhub.models.Building Building : Buildings) {
                 if (Building.getName().equals(currentMarker.getTitle())) {
                     activity.loadBuildingDetails(Building.getName(), Building.getImageUrl(), Building.getLatitude(), Building.getLongitude());
                 }
             }
-            for(edu.temple.tuhub.models.FoodTruck FoodTruck : FoodTrucks){
-                if(FoodTruck.getName().equals(currentMarker.getTitle())){
+            for (edu.temple.tuhub.models.FoodTruck FoodTruck : FoodTrucks) {
+                if (FoodTruck.getName().equals(currentMarker.getTitle())) {
                     activity2.loadFoodTruckDetails(FoodTruck.getName(), FoodTruck.getRating(), FoodTruck.getIsClosed(), FoodTruck.getLatitude(), FoodTruck.getLongitude(), FoodTruck.getImageURL(), FoodTruck.getPhone());
                 }
             }
@@ -233,27 +205,26 @@ public class MapsFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 ArrayList<Building> buildingResults = new ArrayList();
-                for(int i = 0; i<Buildings.length; i++){
-                    if(Buildings[i].getName().toLowerCase().contains(query.toLowerCase()))
-                    buildingResults.add(Buildings[i]);
+                for (int i = 0; i < Buildings.length; i++) {
+                    if (Buildings[i].getName().toLowerCase().contains(query.toLowerCase()))
+                        buildingResults.add(Buildings[i]);
                 }
                 ArrayList<FoodTruck> foodTruckResults = new ArrayList();
-                for(int i = 0; i<FoodTrucks.length; i++){
-                    if(FoodTrucks[i].getName().toLowerCase().contains(query.toLowerCase()))
-                    foodTruckResults.add(FoodTrucks[i]);
+                for (int i = 0; i < FoodTrucks.length; i++) {
+                    if (FoodTrucks[i].getName().toLowerCase().contains(query.toLowerCase()))
+                        foodTruckResults.add(FoodTrucks[i]);
                 }
                 Building[] bldRslt = new Building[buildingResults.size()];
                 FoodTruck[] fdTrkRslt = new FoodTruck[foodTruckResults.size()];
-                for(int i = 0; i<buildingResults.size(); i++){
+                for (int i = 0; i < buildingResults.size(); i++) {
                     bldRslt[i] = buildingResults.get(i);
                 }
-                for(int i = 0; i<foodTruckResults.size(); i++){
+                for (int i = 0; i < foodTruckResults.size(); i++) {
                     fdTrkRslt[i] = foodTruckResults.get(i);
                 }
-                if(fdTrkRslt.length==0&&bldRslt.length==0){
-                    Toast.makeText(getActivity().getApplicationContext(),"No results", Toast.LENGTH_SHORT).show();
-                }
-                else{
+                if (fdTrkRslt.length == 0 && bldRslt.length == 0) {
+                    Toast.makeText(getActivity().getApplicationContext(), "No results", Toast.LENGTH_SHORT).show();
+                } else {
                     activity4.mapSearchResults(bldRslt, fdTrkRslt);
                 }
                 return false;
@@ -286,14 +257,14 @@ public class MapsFragment extends Fragment {
                 builder.setPositiveButton(R.string.SetDefault, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        SharedPreferences sharedPref = getActivity().getSharedPreferences("MapsPreferences",Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref = getActivity().getSharedPreferences("MapsPreferences", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        if(User.CURRENT!=null){
-                            editor.putString(User.CURRENT.getTuID()+"MapPreference", currentCampus);
-                        }else{
+                        if (User.CURRENT != null) {
+                            editor.putString(User.CURRENT.getTuID() + "MapPreference", currentCampus);
+                        } else {
                             editor.putString("GuestMapPreference", currentCampus);
                         }
-                        editor.commit();
+                        editor.apply();
                         activity3.reloadMap();
                     }
                 });
@@ -317,47 +288,45 @@ public class MapsFragment extends Fragment {
         }
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
-        if(mMapView!=null)
-        mMapView.onResume();
+        if (mMapView != null)
+            mMapView.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if(mMapView!=null)
-        mMapView.onPause();
+        if (mMapView != null)
+            mMapView.onPause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mMapView!=null)
-        mMapView.onDestroy();
+        if (mMapView != null)
+            mMapView.onDestroy();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        if(mMapView!=null)
-        mMapView.onLowMemory();
+        if (mMapView != null)
+            mMapView.onLowMemory();
     }
 
-
-    loadBuildingDetails activity;
-    loadFoodTruckDetails activity2;
-    reloadMap activity3;
+    loadBuildingDetailsInterface activity;
+    loadFoodTruckDetailsInterface activity2;
+    reloadMapInterface activity3;
     mapSearch activity4;
 
     @Override
     public void onAttach(Activity c) {
         super.onAttach(c);
-        activity = (loadBuildingDetails) c;
-        activity2 = (loadFoodTruckDetails) c;
-        activity3 = (reloadMap) c;
+        activity = (loadBuildingDetailsInterface) c;
+        activity2 = (loadFoodTruckDetailsInterface) c;
+        activity3 = (reloadMapInterface) c;
         activity4 = (mapSearch) c;
     }
 
@@ -370,16 +339,19 @@ public class MapsFragment extends Fragment {
         activity4 = null;
     }
 
-    interface loadBuildingDetails{
+    interface loadBuildingDetailsInterface {
         void loadBuildingDetails(String name, String imageUrl, String latitude, String longitude);
     }
-    interface loadFoodTruckDetails{
+
+    interface loadFoodTruckDetailsInterface {
         void loadFoodTruckDetails(String name, String rating, String isClosed, String latitude, String longitude, String imageURL, String phone);
     }
-    interface reloadMap{
+
+    interface reloadMapInterface {
         void reloadMap();
     }
-    interface mapSearch{
+
+    interface mapSearch {
         void mapSearchResults(Building[] buildings, FoodTruck[] foodTrucks);
     }
 }

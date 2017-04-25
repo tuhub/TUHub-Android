@@ -3,36 +3,27 @@ package edu.temple.tuhub;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.androidnetworking.error.ANError;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import edu.temple.tuhub.models.Course;
 import edu.temple.tuhub.models.CourseMeeting;
-import edu.temple.tuhub.models.Entry;
 import edu.temple.tuhub.models.Grade;
 import edu.temple.tuhub.models.Instructor;
 
 import static android.widget.AdapterView.*;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class CourseDetailsFragment extends Fragment {
 
     String courseName;
@@ -41,8 +32,6 @@ public class CourseDetailsFragment extends Fragment {
     List<CourseMeeting> meetingTimes;
     List<Instructor> faculty;
     ListView gradeList;
-    String grade;
-    String gradeDetails;
     String[] classRoster;
     ListView rosterList;
     ListView meetingsList;
@@ -85,9 +74,6 @@ public class CourseDetailsFragment extends Fragment {
         courseName = data.getString("name");
         courseTitle = data.getString("fullname");
         courseDates = data.getString("date");
-        /*todo grades
-        grade = data.getString("gradeName");
-        gradeDetails = data.getString("gradeType")+" "+data.getString("gradeUpdated"); */
         classRoster = data.getStringArray("roster");
         meetingTimes = (List<CourseMeeting>) data.getSerializable("meetings");
         faculty = (List<Instructor>) data.getSerializable("faculty");
@@ -102,7 +88,7 @@ public class CourseDetailsFragment extends Fragment {
 
 
         //meetings
-        List<Map<String, String>> meetingsData = new ArrayList<Map<String, String>>();
+        List<Map<String, String>> meetingsData = new ArrayList<>();
         for (int i = 0; i < meetingTimes.size(); i++) {
             Map<String, String> datum2 = new HashMap<>(2);
             datum2.put("First Line", meetingTimes.get(i).getStartTimeWTz() + " to " + meetingTimes.get(i).getEndTimeWTz());
@@ -136,8 +122,9 @@ public class CourseDetailsFragment extends Fragment {
             facultyData.add(faculty.get(i).getFirstName() + " " + faculty.get(i).getLastName());
         }
             facultyList.setAdapter(new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, facultyData) {
+                @NonNull
                 @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
+                public View getView(int position, View convertView, @NonNull ViewGroup parent) {
                     TextView textView = (TextView) super.getView(position, convertView, parent);
                     textView.setTextColor(Color.BLACK);
                     return textView;
@@ -151,8 +138,9 @@ public class CourseDetailsFragment extends Fragment {
                     //Roster listview
                     if(isAdded()) {
                         rosterList.setAdapter(new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, roster) {
+                            @NonNull
                             @Override
-                            public View getView(int position, View convertView, ViewGroup parent) {
+                            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
                                 TextView textView = (TextView) super.getView(position, convertView, parent);
                                 textView.setTextColor(Color.BLACK);
                                 return textView;
@@ -174,7 +162,7 @@ public class CourseDetailsFragment extends Fragment {
             //Grade listview
             List<Grade> g = c.getGrades();
             if (g != null && g.size() > 0) {
-                List<Map<String, String>> gradeData = new ArrayList<Map<String, String>>();
+                List<Map<String, String>> gradeData = new ArrayList<>();
                 Map<String, String> datum = new HashMap<>(2);
                 datum.put("First Line", g.get(0).getGrade());
                 datum.put("Second Line", g.get(0).getName() + " Updated on: " + g.get(0).getUpdated());
@@ -205,8 +193,9 @@ public class CourseDetailsFragment extends Fragment {
                 String[] noResults = new String[1];
                 noResults[0] = "No grades found.";
                gradeList.setAdapter(new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, noResults) {
+                   @NonNull
                    @Override
-                   public View getView(int position, View convertView, ViewGroup parent) {
+                   public View getView(int position, View convertView, @NonNull ViewGroup parent) {
                        TextView textView = (TextView) super.getView(position, convertView, parent);
                        textView.setTextColor(Color.DKGRAY);
                        return textView;

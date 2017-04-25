@@ -126,5 +126,6 @@
     <string name="my_courses">My Courses</string>
     <string name="export_courses">Export Courses</string>
     <string name="NoMeetingLocation">No Meeting Location</string>
+    <string name="exportError">Error exporting courses</string>
 
 </resources>

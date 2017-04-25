@@ -2,17 +2,13 @@ package edu.temple.tuhub.models;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-/**
- * Created by Tom on 4/17/2017.
- */
-
+// Created by Tom on 4/17/2017
 public class Address {
 
     private String location;
 
-    public Address(String location){
+    private Address(String location){
         this.location = location;
     }
     public Address(JSONArray addressArray) throws JSONException {

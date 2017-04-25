@@ -9,9 +9,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by Ben on 3/26/2017.
- */
+// Created by Ben on 3/26/2017
 
 public class EventListElement extends LinearLayout {
 

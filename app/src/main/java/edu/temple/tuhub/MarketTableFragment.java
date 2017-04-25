@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -20,10 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -34,10 +30,7 @@ import edu.temple.tuhub.models.marketplace.Listing;
 import edu.temple.tuhub.models.marketplace.Personal;
 import edu.temple.tuhub.models.marketplace.Product;
 
-
-/**
- * Created by mangaramu on 4/2/2017.
- */
+// Created by mangaramu on 4/2/2017
 
 public class MarketTableFragment extends Fragment implements MarketAdapter.EditItemListener {
     public static final String MY_PERSONALS = "my personals";
@@ -80,8 +73,6 @@ public class MarketTableFragment extends Fragment implements MarketAdapter.EditI
     String defaultlink = baselink+marketfeeds[0];
 
     networkClass net = new networkClass();
-
-    //networkClass net = new networkClass();
 
     MarketAdapter arraymarket;
     public MarketTableFragment() {
@@ -143,11 +134,6 @@ public class MarketTableFragment extends Fragment implements MarketAdapter.EditI
         {
             loadmarket();
         }
-        else
-        {
-
-        }
-
         setRetainInstance(true);
         return inflater.inflate(R.layout.marketplacefrag,container,false);
     }
@@ -170,19 +156,10 @@ public class MarketTableFragment extends Fragment implements MarketAdapter.EditI
             }
 
         });
-
-
-
-        if(Marketitems==null)
-        {
-
-        }
-        else
-        {
+        if (Marketitems != null) {
             arraymarket=new MarketAdapter(getActivity().getApplicationContext(),R.layout.marketperitem,Marketitems, "", MarketTableFragment.this);
             marketgrid.setAdapter(arraymarket);
         }
-
         switch (selected) {
             case 0 :
                 whichone.setText(R.string.Products);
@@ -367,20 +344,6 @@ public class MarketTableFragment extends Fragment implements MarketAdapter.EditI
         }
     }
 
-
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        String[] ListingType = {"Product", "Job", "Personal"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Select New Listing Type")
-                .setItems(ListingType, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // The 'which' argument contains the index position
-                        // of the selected item
-                    }
-                });
-        return builder.create();
-    }
-
     @Override
     public void editItem(Marketitem item) {
         if(item.markettype.equalsIgnoreCase("Personal")){
@@ -403,13 +366,13 @@ public class MarketTableFragment extends Fragment implements MarketAdapter.EditI
         activity.showListingDetails(item);
     }
 
-    public interface marketshow
+    interface marketshow
     {
-        public void showmarket(Marketitem t);// for possibly showing the market item
+         void showmarket(Marketitem t);// for possibly showing the market item
 
     }
 
-    public interface newListingInterface{
+    interface newListingInterface{
         void newListing(int i);
         void editListing(Listing listing);
         void showListingDetails(Marketitem item);
