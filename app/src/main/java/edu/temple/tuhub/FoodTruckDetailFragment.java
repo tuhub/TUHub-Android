@@ -42,6 +42,7 @@ public class FoodTruckDetailFragment extends Fragment {
     String reverseGeoCodeURL = "https://maps.googleapis.com/maps/api/geocode/json?latlng="+latitude+","+longitude+"&key="+R.string.google_android_map_api_key;
     Address addressObject;
     TextView addressTV;
+    ImageView phoneButton;
 
     public FoodTruckDetailFragment() {
         // Required empty public constructor
@@ -80,6 +81,12 @@ public class FoodTruckDetailFragment extends Fragment {
         TextView closedView = (TextView) v.findViewById(R.id.closedText);
         closedView.setText(isClosed);
         i = (ImageView) v.findViewById(R.id.foodTruckImageView);
+        phoneButton = (ImageView) v.findViewById(R.id.food_truck_phone_button);
+        if(phone != null && phone.length() != 0) {
+            phoneButton.setOnClickListener(new PhoneCallOnClickListener());
+        } else {
+            phoneButton.setVisibility(View.GONE);
+        }
         fetchImage();
         fetchAddress();
 
@@ -203,6 +210,18 @@ public class FoodTruckDetailFragment extends Fragment {
             ivPreview.setImageBitmap(bitmap);
 
             nagDialog.show();
+        }
+    }
+
+    public class PhoneCallOnClickListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            String uri = "tel:" + phone.trim();
+            intent.setData(Uri.parse(uri));
+            startActivity(intent);
+
         }
     }
 
