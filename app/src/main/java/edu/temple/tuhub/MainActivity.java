@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
     BuildingDetailFragment bdf;
     FoodTruckDetailFragment ftdf;
     MapSearchFragment msf;
+    MoreFragment mof;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
                     loadFragment(R.id.contentFragment, fraghold[1], false, true);
                     return true;
                 case R.id.navigation_more:
+                    loadFragment(R.id.contentFragment, mof, false, true);
                     return true;
             }
             return false;
@@ -151,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
         bdf = new BuildingDetailFragment();
         ftdf = new FoodTruckDetailFragment();
         msf = new MapSearchFragment();
+        mof = new MoreFragment();
         if (savedInstanceState == null) {
             String username = preferences.getString(getString(R.string.username_key), "");
             //If logged in, go to the first item in menu, otherwise go to navigation
