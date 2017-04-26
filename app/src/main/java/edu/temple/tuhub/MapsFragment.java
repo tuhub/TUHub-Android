@@ -52,7 +52,7 @@ public class MapsFragment extends Fragment {
     private FoodTruck[] FoodTrucks;
     private Button detailBtn;
     private Marker currentMarker;
-    private Boolean ignoreSharedPreferences = false;
+    public static Boolean ignoreSharedPreferences = false;
 
     public MapsFragment() {
     }
@@ -80,8 +80,6 @@ public class MapsFragment extends Fragment {
             } else {
                 currentCampus = sharedPref.getString("GuestMapPreference", getString(R.string.saved_default_map));
             }
-        } else {
-            ignoreSharedPreferences = false;
         }
         mMapView = (MapView) v.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -127,7 +125,7 @@ public class MapsFragment extends Fragment {
                         @Override
                         public void onResponse(Building[] buildingResponse) {
                             CameraPosition cameraPosition = new CameraPosition.Builder().target(Building.getcampusLatLng()).zoom(16).build();
-                            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                             Buildings = new Building[buildingResponse.length];
                             for (int i = 0; i < buildingResponse.length; i++) {
                                 Buildings[i] = buildingResponse[i];

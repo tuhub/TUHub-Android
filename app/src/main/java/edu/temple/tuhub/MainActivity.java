@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
                     }
                     return true;
                 case R.id.navigation_maps:
+                    MapsFragment.ignoreSharedPreferences = false;
                     loadFragment(R.id.contentFragment, mf, false, true);
                     return true;
                 case R.id.navigation_news:
