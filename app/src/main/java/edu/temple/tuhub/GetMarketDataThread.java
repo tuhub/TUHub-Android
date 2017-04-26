@@ -16,11 +16,7 @@ import edu.temple.tuhub.models.marketplace.Job;
 import edu.temple.tuhub.models.marketplace.Personal;
 import edu.temple.tuhub.models.marketplace.Product;
 
-
-/**
- * Created by mangaramu on 4/6/2017.
- */
-
+// Created by mangaramu on 4/6/2017
 
 //title is 45 characters!
 /** personalList
@@ -75,7 +71,7 @@ public class GetMarketDataThread extends Thread {
 
     networkClass net = new networkClass();
     Handler handle;
-    JSONObject marketJSON;
+    private JSONObject marketJSON;
     ArrayList<Marketitem> t=new ArrayList<>();
 
     GetMarketDataThread(Handler x, JSONObject y)
@@ -239,8 +235,6 @@ public class GetMarketDataThread extends Thread {
                     String tmpownerid;
                     String tmplocation;
                     String tmppicfolder;
-
-
 
                     tmp=(JSONObject)marketList.get(x);
                     tmptime = (String)tmp.get("datePosted");

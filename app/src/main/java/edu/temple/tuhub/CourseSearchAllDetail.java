@@ -7,9 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class CourseSearchAllDetail extends Fragment {
 
     TextView course;
@@ -34,9 +31,7 @@ public class CourseSearchAllDetail extends Fragment {
         }
     }
     public static CourseSearchAllDetail newInstance() {
-        CourseSearchAllDetail fragment = new CourseSearchAllDetail();
-//        fragment.setArguments(args);
-        return fragment;
+        return new CourseSearchAllDetail();
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

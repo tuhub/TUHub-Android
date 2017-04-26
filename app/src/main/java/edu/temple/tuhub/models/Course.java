@@ -56,7 +56,7 @@ public class Course implements Serializable {
     private List<Instructor> instructors;
 
     @Nullable
-    protected List<Grade> grades;
+    List<Grade> grades;
 
     @Nullable
     private String[] roster;
@@ -71,8 +71,8 @@ public class Course implements Serializable {
                   String endDate,
                   String endDateStr,
                   String termID,
-                  List<CourseMeeting> meetings,
-                  List<Instructor> instructors) {
+                  @Nullable List<CourseMeeting> meetings,
+                  @Nullable List<Instructor> instructors) {
 
         this.name = name;
         this.title = title;

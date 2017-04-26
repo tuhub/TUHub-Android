@@ -48,9 +48,7 @@ public class CoursesSearchAllFragment extends Fragment {
         // Required empty public constructor
     }
     public static CoursesSearchAllFragment newInstance() {
-        CoursesSearchAllFragment fragment = new CoursesSearchAllFragment();
-//        fragment.setArguments(args);
-        return fragment;
+        return new CoursesSearchAllFragment();
     }
 
     @Override
@@ -93,8 +91,8 @@ public class CoursesSearchAllFragment extends Fragment {
     }
 
 
-    public interface searchAllResultsInterface{
-        void searchAllResultsInterface(Entry courseDetails);
+     interface searchAllResultsInterface{
+        void searchAllResults(Entry courseDetails);
     }
 
     private void fetchResults(final String query) {
@@ -147,13 +145,13 @@ public class CoursesSearchAllFragment extends Fragment {
     });
 
     public void loadResults(List courses){
-        List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+        List<Map<String, String>> data = new ArrayList<>();
         if(courses.size()==0){
             Toast.makeText(getActivity(),getString(R.string.noResults),Toast.LENGTH_SHORT).show();
             getActivity().getFragmentManager().popBackStack();
         }else {
             for (int i = 0; i < courses.size(); i++) {
-                Map<String, String> datum = new HashMap<String, String>(2);
+                Map<String, String> datum = new HashMap<>(2);
                 datum.put("First Line", ((Entry) courses.get(i)).getCourse());
                 datum.put("Second Line", ((Entry) courses.get(i)).getCrseId());
                 data.add(datum);
@@ -177,7 +175,7 @@ public class CoursesSearchAllFragment extends Fragment {
                     public void onItemClick(AdapterView<?> parent, View view,
                                             int position, long id) {
 
-                        activity.searchAllResultsInterface(((Entry)tempCourses.get(position)));
+                        activity.searchAllResults(((Entry)tempCourses.get(position)));
                     }
                 });
                 adapter.notifyDataSetChanged();
@@ -235,24 +233,34 @@ public class CoursesSearchAllFragment extends Fragment {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals("title")) {
-                course = readTitle(parser);
-            } else if (name.equals("crseId")) {
-                crseId = readCrseId(parser);
-            } else if (name.equals("description")) {
-                description = readDescription(parser);
-            } else if (name.equals("creditHr")) {
-                creditHr = readCreditHr(parser);
-            } else if (name.equals("college")) {
-                college = readCollege(parser);
-            } else if (name.equals("division")) {
-                division = readDivision(parser);
-            } else if (name.equals("department")) {
-                department = readDepartment(parser);
-            } else if (name.equals("schedule")) {
-                schedule = readSchedule(parser);
-            } else {
-                skip(parser);
+            switch (name) {
+                case "title":
+                    course = readTitle(parser);
+                    break;
+                case "crseId":
+                    crseId = readCrseId(parser);
+                    break;
+                case "description":
+                    description = readDescription(parser);
+                    break;
+                case "creditHr":
+                    creditHr = readCreditHr(parser);
+                    break;
+                case "college":
+                    college = readCollege(parser);
+                    break;
+                case "division":
+                    division = readDivision(parser);
+                    break;
+                case "department":
+                    department = readDepartment(parser);
+                    break;
+                case "schedule":
+                    schedule = readSchedule(parser);
+                    break;
+                default:
+                    skip(parser);
+                    break;
             }
         }
         return new Entry(course, crseId, description, creditHr, college, division, department, schedule);
@@ -264,13 +272,6 @@ public class CoursesSearchAllFragment extends Fragment {
         String title = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "title");
         return title.substring(title.indexOf('>') + 1, title.lastIndexOf('<'));
-    }
-
-    private String readCourse(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "course");
-        String course = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, "course");
-        return course;
     }
 
     private String readCrseId(XmlPullParser parser) throws IOException, XmlPullParserException {
@@ -345,30 +346,6 @@ public class CoursesSearchAllFragment extends Fragment {
     }
     private String readLecture(XmlPullParser parser) throws IOException, XmlPullParserException {
         return readText(parser);
-    }
-
-    // Processes link tags in the feed.
-    private String readLink(XmlPullParser parser) throws IOException, XmlPullParserException {
-        String link = "";
-        parser.require(XmlPullParser.START_TAG, ns, "link");
-        String tag = parser.getName();
-        String relType = parser.getAttributeValue(null, "rel");
-        if (tag.equals("link")) {
-            if (relType.equals("alternate")){
-                link = parser.getAttributeValue(null, "href");
-                parser.nextTag();
-            }
-        }
-        parser.require(XmlPullParser.END_TAG, ns, "link");
-        return link;
-    }
-
-    // Processes summary tags in the feed.
-    private String readSummary(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "summary");
-        String summary = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, "summary");
-        return summary;
     }
 
     // For the tags title and summary, extracts their text values.

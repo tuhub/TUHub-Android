@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,10 +25,7 @@ import java.util.HashSet;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by Ben on 3/23/2017.
- */
-
+// Created by Ben on 3/23/2017
 public class CalendarView extends LinearLayout {
 
     //internal elements
@@ -154,7 +152,6 @@ public class CalendarView extends LinearLayout {
                     return;
 
                 eventHandler.onDayClick((Date)view.getItemAtPosition(position));
-                return;
             }
         });
     }
@@ -213,15 +210,16 @@ public class CalendarView extends LinearLayout {
             this.monthInView = monthInView;
         }
 
-        public CalendarAdapter(Context context, ArrayList<Date> days, HashSet<Date> eventDays)
+        CalendarAdapter(Context context, ArrayList<Date> days, HashSet<Date> eventDays)
         {
             super(context, R.layout.calendar_day, days);
             this.eventDays = eventDays;
             inflater = LayoutInflater.from(context);
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View view, ViewGroup parent)
+        public View getView(int position, View view, @NonNull ViewGroup parent)
         {
             // day in question
             Date date = getItem(position);
@@ -295,7 +293,7 @@ public class CalendarView extends LinearLayout {
     /**
      * Report user interactions
      */
-    public interface EventHandler
+    interface EventHandler
     {
         void onDayClick(Date date);
     }

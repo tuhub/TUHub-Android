@@ -1,6 +1,5 @@
 package edu.temple.tuhub;
 
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
@@ -12,18 +11,15 @@ import java.net.URL;
 
 import edu.temple.tuhub.models.MarketImageItem;
 
-/**
- * Created by mangaramu on 4/2/2017.
- */
+// Created by mangaramu on 4/2/2017
+
 //https://tumobilemarketplace.s3.amazonaws.com/?list-type=2&x-amz-date=20170413T030140Z&prefix= to get the image information
 //http://tumobilemarketplace.s3.amazonaws.com/  to get the actual image
-public class MarketImageloadThread extends Thread {
+class MarketImageloadThread extends Thread {
 
-    MarketImageItem Imagei;
-    Handler placetosend;
+    private MarketImageItem Imagei;
+    private Handler placetosend;
 
-    private final String Marketstage1 = "https://tumobilemarketplace.s3.amazonaws.com/?list-type=2&x-amz-date=20170413T030140Z&prefix=";
-    private final String Marketstage2 = "http://tumobilemarketplace.s3.amazonaws.com/";
     MarketImageloadThread(MarketImageItem x, Handler y )
     {
         Imagei = x;
@@ -34,11 +30,12 @@ public class MarketImageloadThread extends Thread {
     @Override
     public void run() {
         String html2="";// html2 will have the html code filled within it
-        String htmlt="";
+        String htmlt;
 
 
         try {
-           String somelink= Marketstage1+Imagei.getItemref().getPicfolder();
+            String marketstage1 = "https://tumobilemarketplace.s3.amazonaws.com/?list-type=2&x-amz-date=20170413T030140Z&prefix=";
+            String somelink= marketstage1 +Imagei.getItemref().getPicfolder();
 
             InputStreamReader haha = new InputStreamReader((new URL(somelink)).openStream());//input stream reader takes in an input stream!
             BufferedReader read = new BufferedReader(haha);// put the IO stream into the buffer for conversion from bytes to chars
@@ -72,21 +69,14 @@ public class MarketImageloadThread extends Thread {
 
             if(tmpstring.matches("[a-zA-Z0-9]+/[a-zA-Z0-9.]+"))//regex to see if the tmpstring between <Key> and </Key> matches an image filename or a path to an imagefilename
             {
-                Imagei.getItemref().marketimagelinks.add(Marketstage2+tmpstring);
-            }
-            else
-            {
-
+                String marketstage2 = "http://tumobilemarketplace.s3.amazonaws.com/";
+                Imagei.getItemref().marketimagelinks.add(marketstage2 +tmpstring);
             }
             tmpstart=html2.indexOf("<Key>",tmpend);
             tmpend=html2.indexOf("</Key>",tmpstart);
         }
-
-        if(Imagei.getItemref().marketimagelinks.size()==0)// if there were no image links we add a default image in the adapter!
-        {
-
-        }
-        else { // if there are image links we the first image
+        if (Imagei.getItemref().marketimagelinks.size() != 0)// if there were no image links we add a default image in the adapter!
+        { // if there are image links we the first image
 
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
@@ -94,7 +84,7 @@ public class MarketImageloadThread extends Thread {
             try {
                 int reqHeight=400;
                 int reqWidth=400;
-            BitmapFactory.decodeStream(((URL) new URL(Imagei.getItemref().marketimagelinks.get(0))).openStream(),null,options);
+            BitmapFactory.decodeStream(new URL(Imagei.getItemref().marketimagelinks.get(0)).openStream(),null,options);
 
 
                 final int height = options.outHeight;
@@ -140,7 +130,7 @@ public class MarketImageloadThread extends Thread {
 
                 options.inJustDecodeBounds = false;
                 options.inSampleSize=inSampleSize;
-                Imagei.getItemref().Firstmarketimagescaled =BitmapFactory.decodeStream(((URL) new URL(Imagei.getItemref().marketimagelinks.get(0))).openStream(),null,options);
+                Imagei.getItemref().Firstmarketimagescaled =BitmapFactory.decodeStream(new URL(Imagei.getItemref().marketimagelinks.get(0)).openStream(),null,options);
 
 
             } catch (IOException e) {
@@ -149,7 +139,6 @@ public class MarketImageloadThread extends Thread {
 
 
         }
-
         Message m = Message.obtain();
         m.obj = Imagei;
         m.setTarget(placetosend);

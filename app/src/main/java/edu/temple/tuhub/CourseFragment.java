@@ -9,19 +9,17 @@ import android.app.FragmentManager;
 
 import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
-import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
 
@@ -31,18 +29,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import edu.temple.tuhub.models.Course;
 import edu.temple.tuhub.models.CourseMeeting;
 import edu.temple.tuhub.models.Term;
 import edu.temple.tuhub.models.User;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CourseFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class CourseFragment extends Fragment implements CourseCalendarFragment.CalendarClickListener {
 
     private ViewPager mViewPager;
@@ -52,28 +44,18 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment CourseFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static CourseFragment newInstance() {
-        CourseFragment fragment = new CourseFragment();
-        return fragment;
+        return new CourseFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (User.CURRENT != null) {
-            if (User.CURRENT.getTerms() == null) {
-                User.CURRENT.retrieveCourses(new User.CoursesRequestListener() {
-                    @Override
-                    public void onResponse(Term[] terms) {
-                        if(getActivity()!=null){
+        if (User.CURRENT != null && User.CURRENT.getTerms() == null) {
+            User.CURRENT.retrieveCourses(new User.CoursesRequestListener() {
+                @Override
+                public void onResponse(Term[] terms) {
+                    if (getActivity() != null) {
                         CourseFragment.this.getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -81,17 +63,15 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
                                     mViewPager.getAdapter().notifyDataSetChanged();
                             }
                         });
-                    }}
-
-                    @Override
-                    public void onError(ANError error) {
-                        // TODO: Handle error
-                        System.out.println(error.getErrorBody());
                     }
-                });
-            }
-        }
+                }
 
+                @Override
+                public void onError(ANError error) {
+                    System.out.println(error.getErrorBody());
+                }
+            });
+        }
     }
 
     @Override
@@ -101,21 +81,18 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
         final View view = inflater.inflate(R.layout.fragment_course, container, false);
         mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
         mViewPager.setAdapter(new ViewPagerAdapter(getChildFragmentManager()));
-
         return view;
     }
 
     @Override
     public void showCourseDetails(Course course) {
-        //TODO implement loading the details fragment with the given course
-        Log.d("Course selected:", course.getTitle());
         activity2.showCourseDetails(course);
     }
 
-    public class ViewPagerAdapter extends FragmentStatePagerAdapter {
+    private class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private Fragment[] fragments = new Fragment[NUM_ITEMS];
 
-        public ViewPagerAdapter(FragmentManager fragmentManager) {
+        ViewPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
 
@@ -158,8 +135,8 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
         }
     }
 
-    courseSearchHandler activity;
-    showCourseDetails activity2;
+    courseSearchHandlerInterface activity;
+    showCourseDetailsInterface activity2;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -170,8 +147,8 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
     @Override
     public void onAttach(Activity c) {
         super.onAttach(c);
-        activity = (courseSearchHandler) c;
-        activity2 = (showCourseDetails) c;
+        activity = (courseSearchHandlerInterface) c;
+        activity2 = (showCourseDetailsInterface) c;
     }
 
     @Override
@@ -191,7 +168,7 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
         sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                activity.courseSearchHandler(query,false);
+                activity.courseSearchHandler(query, false);
                 return false;
             }
 
@@ -212,32 +189,28 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
                 activity.courseSearchHandler("", true);
                 return true;
             case R.id.menu_export_courses:
-                if(User.CURRENT.getTerms()!=null){
+                if (User.CURRENT.getTerms() != null) {
                     Term[] terms = User.CURRENT.getTerms();
                     List<Course> courses = terms[0].getCourses();
                     List<CourseMeeting> meetings;
-                    for(int i = 0; i<courses.size(); i++)
-                    {
-                        System.out.println(courses.size()+", "+i);
+                    for (int i = 0; i < courses.size(); i++) {
+                        System.out.println(courses.size() + ", " + i);
                         meetings = courses.get(i).getMeetings();
-                        if(meetings.size()==0){
+                        if (meetings.size() == 0) {
                             Intent intent = new Intent(Intent.ACTION_INSERT)
                                     .setData(CalendarContract.Events.CONTENT_URI)
                                     .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, courses.get(i).getRawStartDate())
                                     .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, courses.get(i).getRawStartDate())
                                     .putExtra(CalendarContract.ExtendedProperties.EVENT_LOCATION, getString(R.string.NoMeetingLocation))
-                                    .putExtra(CalendarContract.ExtendedProperties.RRULE,"FREQ=WEEKLY;COUNT=15;BYDAY=MO;")
+                                    .putExtra(CalendarContract.ExtendedProperties.RRULE, "FREQ=WEEKLY;COUNT=15;BYDAY=MO;")
                                     .putExtra(CalendarContract.Events.TITLE, courses.get(i).getTitle());
-                            //.putExtra(CalendarContract.Events.EVENT_LOCATION, courses.get(i).getMeetings().get(0).getBuildingName());
                             startActivityForResult(intent, 0);
-
-                        }else{
-
-                            for(int k = 0; k<meetings.size(); k++) {
+                        } else {
+                            for (int k = 0; k < meetings.size(); k++) {
                                 Calendar beginCal = Calendar.getInstance();
                                 Date beginDate = null;
                                 try {
-                                    beginDate = new SimpleDateFormat("MMMMM dd, yyyy HH:mm", Locale.US).parse(courses.get(i).getStartDate()+" "+meetings.get(k).getStartTimeWTz());
+                                    beginDate = new SimpleDateFormat("MMMMM dd, yyyy HH:mm", Locale.US).parse(courses.get(i).getStartDate() + " " + meetings.get(k).getStartTimeWTz());
                                     meetings.get(k).getDaysString();
                                 } catch (ParseException e) {
                                     e.printStackTrace();
@@ -245,26 +218,26 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
                                 beginCal.setTime(beginDate);
                                 Calendar endCal = Calendar.getInstance();
                                 Date endDate = null;
-                                try{
-                                    endDate = new SimpleDateFormat("MMMMM dd, yyyy HH:mm", Locale.US).parse(courses.get(i).getStartDate()+" "+meetings.get(k).getEndTimeWTz());
-                                }catch(ParseException e){
+                                try {
+                                    endDate = new SimpleDateFormat("MMMMM dd, yyyy HH:mm", Locale.US).parse(courses.get(i).getStartDate() + " " + meetings.get(k).getEndTimeWTz());
+                                } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
                                 endCal.setTime(endDate);
-                                int [] dw = meetings.get(k).getDaysOfWeek();
-                            Intent intent = new Intent(Intent.ACTION_INSERT)
-                                    .setData(CalendarContract.Events.CONTENT_URI)
-                                    .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginCal.getTimeInMillis())
-                                    .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endCal.getTimeInMillis())
-                                    .putExtra(CalendarContract.ExtendedProperties.EVENT_LOCATION, meetings.get(k).getBuildingName()+", "+meetings.get(k).getRoom())
-                                    .putExtra(CalendarContract.ExtendedProperties.RRULE,"FREQ=WEEKLY;COUNT="+(dw.length*15)+";BYDAY="+meetings.get(k).getDaysString())
-                                    .putExtra(CalendarContract.Events.TITLE, courses.get(i).getTitle());
-                            startActivityForResult(intent, 0);
-                        }}
+                                int[] dw = meetings.get(k).getDaysOfWeek();
+                                Intent intent = new Intent(Intent.ACTION_INSERT)
+                                        .setData(CalendarContract.Events.CONTENT_URI)
+                                        .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginCal.getTimeInMillis())
+                                        .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endCal.getTimeInMillis())
+                                        .putExtra(CalendarContract.ExtendedProperties.EVENT_LOCATION, meetings.get(k).getBuildingName() + ", " + meetings.get(k).getRoom())
+                                        .putExtra(CalendarContract.ExtendedProperties.RRULE, "FREQ=WEEKLY;COUNT=" + (dw.length * 15) + ";BYDAY=" + meetings.get(k).getDaysString())
+                                        .putExtra(CalendarContract.Events.TITLE, courses.get(i).getTitle());
+                                startActivityForResult(intent, 0);
+                            }
+                        }
                     }
-                }
-                else{
-                    //toast
+                } else {
+                    Toast.makeText(this.getActivity().getApplicationContext(), R.string.exportError, Toast.LENGTH_SHORT).show();
                 }
                 return true;
             default:
@@ -272,10 +245,11 @@ public class CourseFragment extends Fragment implements CourseCalendarFragment.C
         }
     }
 
-    public interface courseSearchHandler {
+    interface courseSearchHandlerInterface {
         void courseSearchHandler(String query, boolean myCourses);
     }
-    public interface showCourseDetails{
+
+    interface showCourseDetailsInterface {
         void showCourseDetails(Course course);
     }
 }

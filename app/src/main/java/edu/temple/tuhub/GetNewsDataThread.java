@@ -13,14 +13,12 @@ import java.util.Date;
 
 import edu.temple.tuhub.models.Newsitem;
 
-/**
- * Created by mangaramu on 3/19/2017.
- */
+// Created by mangaramu on 3/19/2017
 
-public class GetNewsDataThread extends Thread {
+class GetNewsDataThread extends Thread {
     networkClass net = new networkClass();
     Handler handle;
-    JSONObject newsJSON;
+    private JSONObject newsJSON;
     ArrayList<Newsitem> t=new ArrayList<>();
 
     GetNewsDataThread(Handler x, JSONObject y)
@@ -79,7 +77,7 @@ public class GetNewsDataThread extends Thread {
                 pow.setNewsurl(tmpnewsurl);
                 tmpimageurl = (String) tmp.get("logo");
                 pow.setNewsImageLink(tmpimageurl);
-                tmpcontent = html1 + ((String) tmp.get("content")) + html2;
+                tmpcontent = html1 + tmp.get("content") + html2;
                 tmpcontent=tmpcontent.replaceAll("u002f","");//replaces the weird u002f in some tags with nothing
                 pow.setNewscontent(tmpcontent);
                 tmpsubtitle = tmpcontent.substring(tmpcontent.indexOf(">",tmpcontent.indexOf("<p"))+1,tmpcontent.indexOf("</p>",tmpcontent.indexOf(">",tmpcontent.indexOf("<p"))));//tries to obtain substring composed of the subtitle within the html content code. Uses knowledge of how the html is structured.

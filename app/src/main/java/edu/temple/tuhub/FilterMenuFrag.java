@@ -12,10 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-/**
- * Created by mangaramu on 3/22/2017.
- */
-
+// Created by mangaramu on 3/22/2017
 public class FilterMenuFrag extends Fragment {
 
     ListView selectionitems;
@@ -32,13 +29,13 @@ public class FilterMenuFrag extends Fragment {
             "feed1383143312318", // = “Temple News: Sustainability”
             "feed1383143507786" // = “Temple News: Temple 20/20”
     };
-    String baselink = "https://prd-mobile.temple.edu/banner-mobileserver/rest/1.2/feed?namekeys=";
+    //String baselink = "https://prd-mobile.temple.edu/banner-mobileserver/rest/1.2/feed?namekeys=";
 
     String finallink = "https://prd-mobile.temple.edu/banner-mobileserver/rest/1.2/feed?namekeys=";
 
-    String defaultlink = baselink+newsfeeds[4];
+    //String defaultlink = baselink+newsfeeds[4];
 
-    String[] newswords = {
+    /*String[] newswords = {
             //"Arts & Culture",
             "Athletics",
             "Campus News",
@@ -49,8 +46,7 @@ public class FilterMenuFrag extends Fragment {
             "Student Success",
             "Sustainability",
             "Temple 20/20"
-    };
-
+    };*/
    static Boolean[] selected = {
             //false,
             false,
@@ -81,7 +77,7 @@ public class FilterMenuFrag extends Fragment {
 
 
     CheckBox[] boxes = new CheckBox[9];
-    RelativeLayout ok,greyarea;
+    RelativeLayout ok;
 
 
 
@@ -108,7 +104,6 @@ public class FilterMenuFrag extends Fragment {
 
 
         ok = (RelativeLayout) getActivity().findViewById(R.id.utton);
-        //greyarea = (RelativeLayout) getActivity().findViewById(R.id.greyarea);
         boxes[0]=(CheckBox) getActivity().findViewById(R.id.Athleticsbox);
         boxes[1]= (CheckBox) getActivity().findViewById(R.id.CampusNewsbox);
         boxes[2]= (CheckBox) getActivity().findViewById(R.id.CommunityEngagementbox);
@@ -121,7 +116,6 @@ public class FilterMenuFrag extends Fragment {
 
 
         for (int x = 0; x < newsfeeds.length; x++) {
-            final int finalX = x;
             boxes[x].setOnCheckedChangeListener(null);
         }
 
@@ -138,14 +132,7 @@ public class FilterMenuFrag extends Fragment {
             boxes[x].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {//need to set this to null when changing the checked values.
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked)
-                    {
-                        tempoary[finalX] = true;
-                    }
-                    else
-                    {
-                        tempoary[finalX] = false;
-                    }
+                    tempoary[finalX] = isChecked;
                 }
             });
 
@@ -159,11 +146,11 @@ public class FilterMenuFrag extends Fragment {
                for (int x = 0; x < selected.length; x++) {
                    selected[x]=tempoary[x];
                    if (first) {
-                       if (selected[x] == true) {
+                       if (selected[x]) {
                            finallink = finallink + newsfeeds[x];
                            first = false;
                        }
-                   } else if (selected[x] == true) {
+                   } else if (selected[x]) {
                        finallink = finallink + ',' + newsfeeds[x];
                    }
                }
@@ -230,7 +217,6 @@ public class FilterMenuFrag extends Fragment {
         }
 
         for (int x = 0; x < newsfeeds.length; x++) {
-            final int finalX = x;
             boxes[x].setOnCheckedChangeListener(null);
         }
 
@@ -244,7 +230,7 @@ public class FilterMenuFrag extends Fragment {
         super.onDetach();
     }
 
-    public interface selectorinterface {
-        public void newslink(String x);
+    interface selectorinterface {
+        void newslink(String x);
     }
 }

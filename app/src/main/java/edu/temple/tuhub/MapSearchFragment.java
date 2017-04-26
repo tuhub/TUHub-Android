@@ -11,24 +11,16 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import edu.temple.tuhub.models.Building;
-import edu.temple.tuhub.models.Entry;
 import edu.temple.tuhub.models.FoodTruck;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class MapSearchFragment extends Fragment {
 
     public MapSearchFragment() {
-        // Required empty public constructor
     }
 
     ListView lv;
@@ -48,13 +40,12 @@ public class MapSearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_map_search, container, false);
         lv = (ListView) v.findViewById(R.id.mapSearchListView);
-        List<Map<String, String>> data = new ArrayList<Map<String, String>>();
-        for (int i = 0; i < buildings.length; i++) {
-            Map<String, String> datum = new HashMap<String, String>(2);
-            datum.put("First Line", buildings[i].getName());
+        List<Map<String, String>> data = new ArrayList<>();
+        for (Building building : buildings) {
+            Map<String, String> datum = new HashMap<>(2);
+            datum.put("First Line", building.getName());
             datum.put("Second Line", "Building");
             data.add(datum);
             SimpleAdapter adapter = new SimpleAdapter(getActivity().getApplicationContext(), data, android.R.layout.simple_list_item_2,
@@ -93,9 +84,9 @@ public class MapSearchFragment extends Fragment {
             });
             adapter.notifyDataSetChanged();
         }
-        for (int i = 0; i < foodTrucks.length; i++) {
-            Map<String, String> datum = new HashMap<String, String>(2);
-            datum.put("First Line", foodTrucks[i].getName());
+        for (FoodTruck foodTruck : foodTrucks) {
+            Map<String, String> datum = new HashMap<>(2);
+            datum.put("First Line", foodTruck.getName());
             datum.put("Second Line", "FoodTruck");
             data.add(datum);
             SimpleAdapter adapter = new SimpleAdapter(getActivity().getApplicationContext(), data, android.R.layout.simple_list_item_2,
@@ -137,14 +128,14 @@ public class MapSearchFragment extends Fragment {
         return v;
     }
 
-    MapsFragment.loadBuildingDetails activity;
-    MapsFragment.loadFoodTruckDetails activity2;
+    MapsFragment.loadBuildingDetailsInterface activity;
+    MapsFragment.loadFoodTruckDetailsInterface activity2;
 
     @Override
     public void onAttach(Activity c) {
         super.onAttach(c);
-        activity = (MapsFragment.loadBuildingDetails) c;
-        activity2 = (MapsFragment.loadFoodTruckDetails) c;
+        activity = (MapsFragment.loadBuildingDetailsInterface) c;
+        activity2 = (MapsFragment.loadFoodTruckDetailsInterface) c;
     }
 
     @Override

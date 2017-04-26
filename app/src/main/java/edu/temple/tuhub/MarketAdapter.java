@@ -21,19 +21,17 @@ import java.util.List;
 import edu.temple.tuhub.models.MarketImageItem;
 import edu.temple.tuhub.models.Marketitem;
 
-/**
- * Created by mangaramu on 4/2/2017.
- */
+// Created by mangaramu on 4/2/2017
 
-public class MarketAdapter extends ArrayAdapter<Marketitem> {
+class MarketAdapter extends ArrayAdapter<Marketitem> {
 
-    GridView par;
-    String currentList;
-    EditItemListener listener;
+    private GridView par;
+    private String currentList;
+    private EditItemListener listener;
 
-Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.drawable.no_photo);
+private Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.drawable.no_photo);
 
-    Handler setimage = new Handler()
+    private Handler setimage = new Handler()
     {
         @Override
         public void handleMessage(Message msg) {
@@ -52,23 +50,13 @@ Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.draw
                     x.getViewref().setImageBitmap(x.getItemref().Firstmarketimagescaled); // TODo need to fix
                 }
             }
-            else
-            {
-
-            }
-
-
         }
     };
 
-    public MarketAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Marketitem> objects, String currentList, EditItemListener listener) {
+     MarketAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<Marketitem> objects, String currentList, EditItemListener listener) {
         super(context, resource, objects);
         this.currentList = currentList;
         this.listener = listener;
-    }
-
-    public MarketAdapter(@NonNull Context context, @LayoutRes int resource) {
-        super(context, resource);
     }
 
     @NonNull
@@ -86,34 +74,27 @@ Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.draw
         TextView title = (TextView) convertView.findViewById(R.id.markettitle);// to be able to set the text of these fields later on!
         ImageView imgre = (ImageView) convertView.findViewById(R.id.marketimage);
         TextView price = (TextView) convertView.findViewById(R.id.marketprice) ;
-
-         if (item.getMarkettype().equals("Product"))
-        {
-            title.setText(item.getMarkettitle());
-            price.setVisibility(View.VISIBLE);
-            price.setText(getContext().getText(R.string.price) + ": " +item.getPrice());
-        }
-
-         else if(item.getMarkettype().equals("Job"))
-         {
-             title.setText(item.getMarkettitle());
-
-             if(item.getPay()!=null) {
-                 price.setVisibility(View.VISIBLE);
-                 price.setText(getContext().getText(R.string.hourlyrate) + ": " + item.getPay());
-             }
-             else // if there is no pay information hide the area to put the pay information
-             {
-                 price.setVisibility(View.GONE);
-             }
-
-         }
-
-        else if(item.getMarkettype().equals("Personal"))
-        {
-
-            title.setText(item.getMarkettitle());
-            price.setVisibility(View.GONE);
+        assert item != null;
+        switch (item.getMarkettype()) {
+            case "Product":
+                title.setText(item.getMarkettitle());
+                price.setVisibility(View.VISIBLE);
+                price.setText(getContext().getText(R.string.price) + ": " + item.getPrice());
+                break;
+            case "Job":
+                title.setText(item.getMarkettitle());
+                if (item.getPay() != null) {
+                    price.setVisibility(View.VISIBLE);
+                    price.setText(getContext().getText(R.string.hourlyrate) + ": " + item.getPay());
+                } else // if there is no pay information hide the area to put the pay information
+                {
+                    price.setVisibility(View.GONE);
+                }
+                break;
+            case "Personal":
+                title.setText(item.getMarkettitle());
+                price.setVisibility(View.GONE);
+                break;
         }
 
 
@@ -154,7 +135,7 @@ Bitmap noimage = BitmapFactory.decodeResource(getContext().getResources(),R.draw
         return convertView;
     }
 
-    public interface EditItemListener{
+    interface EditItemListener{
         void editItem(Marketitem item);
         void showListingDetails(Marketitem item);
     }

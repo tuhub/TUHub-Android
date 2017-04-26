@@ -179,7 +179,7 @@ public class CourseCalendarFragment extends Fragment implements CalendarView.Eve
     private class EventClickListener implements View.OnClickListener{
         private Course section;
 
-        public EventClickListener(Course section){
+        EventClickListener(Course section){
             this.section = section;
         }
 
@@ -191,7 +191,7 @@ public class CourseCalendarFragment extends Fragment implements CalendarView.Eve
     }
 
     //Interface for fragment -> parent communication
-    public interface CalendarClickListener {
+    interface CalendarClickListener {
         void showCourseDetails(Course course);
     }
 

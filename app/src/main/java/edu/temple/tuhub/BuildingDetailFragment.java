@@ -20,17 +20,12 @@ import android.widget.TextView;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import edu.temple.tuhub.models.Address;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class BuildingDetailFragment extends Fragment {
 
     View v;
@@ -40,7 +35,6 @@ public class BuildingDetailFragment extends Fragment {
     String name = "";
     String latitude = "";
     String longitude = "";
-    String reverseGeoCodeURL = "https://maps.googleapis.com/maps/api/geocode/json?latlng="+latitude+","+longitude+"&key="+R.string.google_android_map_api_key;
     Address addressObject;
     TextView addressTV;
 
@@ -51,8 +45,8 @@ public class BuildingDetailFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       Bundle bundle = this.getArguments();
-        if(bundle!=null){
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
             name = bundle.getString("name");
             ImageURL = bundle.getString("imageUrl");
             latitude = bundle.getString("latitude");
@@ -70,52 +64,42 @@ public class BuildingDetailFragment extends Fragment {
         i = (ImageView) v.findViewById(R.id.buildingImageView);
         fetchImage();
         fetchAddress();
-
         Button directions = (Button) v.findViewById(R.id.buildingDirectionButton);
         directions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Uri gmmIntentUri = Uri.parse("google.navigation:q="+latitude+","+longitude);
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitude + "," + longitude);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                     startActivity(mapIntent);
                 }
-
             }
         });
-
         return v;
     }
 
-    private void fetchAddress(){
-        Thread t = new Thread(){
+    private void fetchAddress() {
+        Thread t = new Thread() {
             @Override
-            public void run(){
-
+            public void run() {
                 URL addressURL;
-
                 try {
-
-                    addressURL = new URL("https://maps.googleapis.com/maps/api/geocode/json?latlng="+latitude+","+longitude+"&key="+getString(R.string.google_android_map_api_key));
-
+                    addressURL = new URL("https://maps.googleapis.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&key=" + getString(R.string.google_android_map_api_key));
                     BufferedReader reader = new BufferedReader(
                             new InputStreamReader(
                                     addressURL.openStream()));
-
                     String response = "", tmpResponse;
-
                     tmpResponse = reader.readLine();
                     while (tmpResponse != null) {
                         response = response + tmpResponse;
                         tmpResponse = reader.readLine();
                     }
-
                     JSONObject addressObject = new JSONObject(response);
                     Message msg = Message.obtain();
                     msg.obj = addressObject;
                     addressHandler.sendMessage(msg);
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -127,25 +111,20 @@ public class BuildingDetailFragment extends Fragment {
 
         @Override
         public boolean handleMessage(Message msg) {
-
             JSONObject responseObject = (JSONObject) msg.obj;
-
             try {
                 addressObject = new Address(responseObject.getJSONArray("results"));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             updateViews();
-
             return false;
         }
     });
 
     private void updateViews() {
-            addressTV.setText(addressObject.getLocation());
+        addressTV.setText(addressObject.getLocation());
     }
-
 
     private void fetchImage() {
         Thread t = new Thread() {

@@ -35,7 +35,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import edu.temple.tuhub.models.Marketitem;
-import edu.temple.tuhub.models.marketplace.Listing;
 
 import static android.content.ContentValues.TAG;
 import static android.support.v4.content.PermissionChecker.checkSelfPermission;
@@ -137,38 +136,35 @@ public class ListingDetailsFragment extends Fragment implements ImageScroller.Im
 
         getListingData(data);
         //setListingData(v);
-
-        if(listingType.equals("Product"))
-        {
-            titleView.setText(title);
-            datePostedInput.setText(dateposted);
-            descriptionView.setText(description);
-            priceView.setVisibility(View.VISIBLE);
-            priceView.setText(price);
-            sellerView.setVisibility(View.VISIBLE);
-            sellerView.setText(seller);
-            locationView.setVisibility(View.GONE);
-            hoursView.setVisibility(View.GONE);
-            payView.setVisibility(View.GONE);
-            startDateView.setVisibility(View.GONE);
-            locationHeader.setVisibility(View.GONE);
-            hoursHeader.setVisibility(View.GONE);
-            payHeader.setVisibility(View.GONE);
-            startDateHeader.setVisibility(View.GONE);
-        }
-            else if(listingType.equals("Job"))
-            {
+        switch (listingType) {
+            case "Product":
+                titleView.setText(title);
+                datePostedInput.setText(dateposted);
+                descriptionView.setText(description);
+                priceView.setVisibility(View.VISIBLE);
+                priceView.setText(price);
+                sellerView.setVisibility(View.VISIBLE);
+                sellerView.setText(seller);
+                locationView.setVisibility(View.GONE);
+                hoursView.setVisibility(View.GONE);
+                payView.setVisibility(View.GONE);
+                startDateView.setVisibility(View.GONE);
+                locationHeader.setVisibility(View.GONE);
+                hoursHeader.setVisibility(View.GONE);
+                payHeader.setVisibility(View.GONE);
+                startDateHeader.setVisibility(View.GONE);
+                break;
+            case "Job":
                 titleView.setText(title);
                 datePostedInput.setText(dateposted);
                 sellerView.setVisibility(View.VISIBLE);
                 sellerView.setText(seller);
                 startDateView.setVisibility(View.VISIBLE);
                 startDateView.setText(startdate);
-                if(pay !=null && pay.length() != 0) {
+                if (pay != null && pay.length() != 0) {
                     payView.setVisibility(View.VISIBLE);
                     payView.setText(pay);
-                }
-                else // if there is no pay information hide the area to put the pay information
+                } else // if there is no pay information hide the area to put the pay information
                 {
                     payView.setVisibility(View.GONE);
                     payHeader.setVisibility(View.GONE);
@@ -178,9 +174,8 @@ public class ListingDetailsFragment extends Fragment implements ImageScroller.Im
                 descriptionView.setText(description);
                 priceView.setVisibility(View.GONE);
                 priceHeader.setVisibility(View.GONE);
-            }
-            else if(listingType.equals("Personal"))
-            {
+                break;
+            case "Personal":
                 titleView.setText(title);
                 datePostedInput.setText(dateposted);
                 startDateView.setVisibility(View.GONE);
@@ -195,8 +190,8 @@ public class ListingDetailsFragment extends Fragment implements ImageScroller.Im
                 hoursHeader.setVisibility(View.GONE);
                 sellerHeader.setVisibility(View.GONE);
                 payHeader.setVisibility(View.GONE);
-
-            }
+                break;
+        }
 
         //Set up the ImageScroller
         imageScroller.verifyStoragePermissions(getActivity());
@@ -219,8 +214,7 @@ public class ListingDetailsFragment extends Fragment implements ImageScroller.Im
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        boolean viewableOnly = true;
-                        imageScroller.getImagesFromS3(picfolder, s3ObjectSummaries, viewableOnly);
+                        imageScroller.getImagesFromS3(picfolder, s3ObjectSummaries, true);
                     }
                 });
                 return null;

@@ -1,14 +1,10 @@
 package edu.temple.tuhub;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -16,29 +12,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import com.androidnetworking.error.ANError;
-
-
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
-
-import edu.temple.tuhub.models.User;
 import edu.temple.tuhub.models.marketplace.Job;
 
-import static android.support.v4.content.ContextCompat.checkSelfPermission;
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class MarketJobListingFragment extends Fragment implements ImageScroller.ImageScrollerFragment{
     private ImageScroller imageScroller;
     private String username;
@@ -50,11 +32,6 @@ public class MarketJobListingFragment extends Fragment implements ImageScroller.
     AutoCompleteTextView hoursInput;
     AutoCompleteTextView startDateInput;
     AutoCompleteTextView locationInput;
-
-    Button imgBtn;
-    Button cancelBtn;
-    Button okayBtn;
-    LinearLayout imgList;
     View v;
 
     public MarketJobListingFragment() {
@@ -174,7 +151,7 @@ public class MarketJobListingFragment extends Fragment implements ImageScroller.
         String hours = hoursInput.getText().toString();
 
         boolean valid = true;
-        if(title == null || title.length() == 0){
+        if(title.equals("") || title.length() == 0){
             titleInput.setError(getActivity().getString(R.string.error_field_required));
             valid = false;
         }

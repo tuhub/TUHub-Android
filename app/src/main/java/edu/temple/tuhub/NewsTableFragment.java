@@ -22,9 +22,7 @@ import java.util.ArrayList;
 
 ;import edu.temple.tuhub.models.Newsitem;
 
-/**
- * Created by mangaramu on 3/8/2017.
- */
+// Created by mangaramu on 3/8/2017
 
 public class NewsTableFragment extends Fragment {
     ListView newslist;
@@ -101,11 +99,6 @@ public class NewsTableFragment extends Fragment {
         {
             loadnews();
         }
-        else
-        {
-
-        }
-
         setRetainInstance(true);
         return inflater.inflate(R.layout.newstable,container,false);
     }
@@ -127,15 +120,7 @@ public class NewsTableFragment extends Fragment {
             }
 
     });
-
-
-
-        if(newsitems==null)
-        {
-
-        }
-        else
-        {
+        if (newsitems != null) {
             arraynews=new ArrayNewsAdapter(getActivity().getApplicationContext(),R.layout.newsitem,newsitems);
             newslist.setAdapter(arraynews);
         }
@@ -209,14 +194,14 @@ public class NewsTableFragment extends Fragment {
         }
     }
 
-    public interface newsshow
+    interface newsshow
     {
-        public void shownews(Newsitem t);
+        void shownews(Newsitem t);
 
     }
-    public interface filterbutton
+    interface filterbutton
     {
-        public void filterbuttonpresseed();
+        void filterbuttonpresseed();
     }
 
     public void changefilterbuttonstate()

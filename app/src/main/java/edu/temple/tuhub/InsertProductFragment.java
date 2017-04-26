@@ -6,10 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.NonNull;
 import android.support.v13.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,14 +29,7 @@ import edu.temple.tuhub.models.marketplace.Product;
 import static android.content.ContentValues.TAG;
 import static android.support.v4.content.PermissionChecker.checkSelfPermission;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link InsertProductFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link InsertProductFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class InsertProductFragment extends Fragment implements ImageScroller.ImageScrollerFragment {
 
     @BindView(R.id.insert_product_description_input)
@@ -51,7 +44,6 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
     @BindView(R.id.insert_product_image_scroller)
     ImageScroller imageScroller;
 
-    private OnFragmentInteractionListener mListener;
     private int requestCode;
     private String username;
 
@@ -59,35 +51,13 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment InsertProductFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static InsertProductFragment newInstance(String param1, String param2) {
-        InsertProductFragment fragment = new InsertProductFragment();
-        Bundle args = new Bundle();
-
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     public static InsertProductFragment newInstance() {
-        InsertProductFragment fragment = new InsertProductFragment();
-
-        return fragment;
+        return new InsertProductFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-
-        }
     }
 
     @Override
@@ -112,18 +82,11 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /*if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     @Override
@@ -193,7 +156,7 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
         String price = priceInput.getText().toString();
 
         boolean valid = true;
-        if(title == null || title.length() == 0){
+        if(title.equals("") || title.length() == 0){
             titleInput.setError(getActivity().getString(R.string.error_field_required));
             valid = false;
         }
@@ -249,18 +212,11 @@ public class InsertProductFragment extends Fragment implements ImageScroller.Ima
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
             Log.v(TAG,"Permission: "+permissions[0]+ "was "+grantResults[0]);
             //resume tasks needing this permission
         }
     }
-
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
 }
