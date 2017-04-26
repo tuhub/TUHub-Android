@@ -203,19 +203,22 @@ public class ImageScroller extends LinearLayout implements UserImagePreview.S3De
     the image on S3.
      */
     public void addImagePreviewFromS3(File file, String fileKey, boolean viewableOnly){
-        Log.d("s3Objects", "Adding Image Preview");
-        Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
-        UserImagePreview imagePreview = new UserImagePreview(fragment.obtainActivity());
-        imagePreview.setImageBitmap(bitmap);
-        imagePreview.setIsFromS3(true);
-        imagePreview.getUserImage().setOnClickListener(new DisplayFullImageOnClickListener(bitmap, false));
-        imagePreview.setS3FileKey(fileKey);
-        if(viewableOnly){
-            imagePreview.removeDeleteButton();
-        } else {
-            imagePreview.setS3DeleteListener(ImageScroller.this);
+        try {
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+            UserImagePreview imagePreview = new UserImagePreview(fragment.obtainActivity());
+            imagePreview.setImageBitmap(bitmap);
+            imagePreview.setIsFromS3(true);
+            imagePreview.getUserImage().setOnClickListener(new DisplayFullImageOnClickListener(bitmap, false));
+            imagePreview.setS3FileKey(fileKey);
+            if (viewableOnly) {
+                imagePreview.removeDeleteButton();
+            } else {
+                imagePreview.setS3DeleteListener(ImageScroller.this);
+            }
+            imageContainer.addView(imagePreview);
+        } catch (NullPointerException e){
+            Log.d("S3 Image not loaded", e.toString());
         }
-        imageContainer.addView(imagePreview);
     }
 
     /*
@@ -312,16 +315,20 @@ public class ImageScroller extends LinearLayout implements UserImagePreview.S3De
 
 
     public void finalizeListing(){
-        addImageButton.setVisibility(View.INVISIBLE);
-        submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.submitted));
-        submitButton.setClickable(false);
-        Toast.makeText(fragment.obtainActivity(),
-                fragment.obtainActivity().getResources().getString(R.string.listing_published),
-                Toast.LENGTH_SHORT)
-                .show();
+        try {
+            addImageButton.setVisibility(View.INVISIBLE);
+            submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.submitted));
+            submitButton.setClickable(false);
+            Toast.makeText(fragment.obtainActivity(),
+                    fragment.obtainActivity().getResources().getString(R.string.listing_published),
+                    Toast.LENGTH_SHORT)
+                    .show();
 
-        for(int i = 0; i<imageContainer.getChildCount(); i++){
-            ((UserImagePreview)imageContainer.getChildAt(i)).removeDeleteButton();
+            for (int i = 0; i < imageContainer.getChildCount(); i++) {
+                ((UserImagePreview) imageContainer.getChildAt(i)).removeDeleteButton();
+            }
+        } catch(NullPointerException e){
+            Log.d("Finalize Listing Error", e.toString());
         }
     }
 
@@ -368,82 +375,86 @@ public class ImageScroller extends LinearLayout implements UserImagePreview.S3De
     and uploads the files to the proper folder in the S3 bucket
      */
     public void loadImagesToS3(String picFileName){
-        AmazonS3 s3 = new AmazonS3Client(credentialsProvider);
-        if(filesToDelete != null && !filesToDelete.isEmpty()){
-            fragment.deleteFilesFromS3(filesToDelete);
-        }
-        int offset = highestFileName + 1; //Used to make sure we don't overwrite files already in the folder on S3
-        boolean addingNewImages = false;
-        for(int i = offset; i < imageContainer.getChildCount() + offset; i++){
-            Log.d("Looking at image ", String.valueOf(i));
-
-            UserImagePreview img = (UserImagePreview)imageContainer.getChildAt(i-offset);
-            if(img.isFromS3()){
-                continue;
+        try {
+            AmazonS3 s3 = new AmazonS3Client(credentialsProvider);
+            if (filesToDelete != null && !filesToDelete.isEmpty()) {
+                fragment.deleteFilesFromS3(filesToDelete);
             }
-            addingNewImages = true;
+            int offset = highestFileName + 1; //Used to make sure we don't overwrite files already in the folder on S3
+            boolean addingNewImages = false;
+            for (int i = offset; i < imageContainer.getChildCount() + offset; i++) {
+                Log.d("Looking at image ", String.valueOf(i));
 
-            File imageFile = null;
+                UserImagePreview img = (UserImagePreview) imageContainer.getChildAt(i - offset);
+                if (img.isFromS3()) {
+                    continue;
+                }
+                addingNewImages = true;
 
-            if(img.getTag() instanceof Uri) {
-                Uri uri = ((Uri) img.getTag());
-                imageFile = new File(uriToFilePath(uri));
-            } else if(img.getTag() instanceof Bitmap){
-                try {
-                    Bitmap bitmap = (Bitmap)img.getTag();
-                    String fileName = "imageScrollerTempFile" + String.valueOf(i);
-                    imageFile = File.createTempFile(fileName, ".png", fragment.obtainActivity().getCacheDir());
-                    FileOutputStream outputStream = new FileOutputStream(imageFile);
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-                    outputStream.close();
+                File imageFile = null;
 
-                } catch (IOException e) {
-                    // Error while creating file
-                    Log.d("ERROR CREATING FILE", e.toString());
+                if (img.getTag() instanceof Uri) {
+                    Uri uri = ((Uri) img.getTag());
+                    imageFile = new File(uriToFilePath(uri));
+                } else if (img.getTag() instanceof Bitmap) {
+                    try {
+                        Bitmap bitmap = (Bitmap) img.getTag();
+                        String fileName = "imageScrollerTempFile" + String.valueOf(i);
+                        imageFile = File.createTempFile(fileName, ".png", fragment.obtainActivity().getCacheDir());
+                        FileOutputStream outputStream = new FileOutputStream(imageFile);
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                        outputStream.close();
+
+                    } catch (IOException e) {
+                        // Error while creating file
+                        Log.d("ERROR CREATING FILE", e.toString());
+                    }
+
+
                 }
 
+                if (imageFile != null) {
+                    TransferUtility transferUtility = new TransferUtility(s3, fragment.obtainActivity().getApplicationContext());
+                    TransferObserver observer = transferUtility.upload(BUCKET_NAME, picFileName + "/" + String.valueOf(i), imageFile);
 
-            }
-
-            if(imageFile != null) {
-                TransferUtility transferUtility = new TransferUtility(s3, fragment.obtainActivity().getApplicationContext());
-                TransferObserver observer = transferUtility.upload(BUCKET_NAME, picFileName + "/" + String.valueOf(i), imageFile);
-
-                observer.setTransferListener(new TransferListener() {
-                    @Override
-                    public void onStateChanged(int id, TransferState state) {
-                        //do something
-                    }
-
-                    @Override
-                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                        int percentage = (int) (bytesCurrent / bytesTotal * 100);
-
-                        if (percentage == 100) {
-                            finalizeListing();
-                        } else {
-                            submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.submitting)
-                                    + " " + String.valueOf(percentage) + "%");
+                    observer.setTransferListener(new TransferListener() {
+                        @Override
+                        public void onStateChanged(int id, TransferState state) {
+                            //do something
                         }
-                    }
 
-                    @Override
-                    public void onError(int id, Exception ex) {
+                        @Override
+                        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                            int percentage = (int) (bytesCurrent / bytesTotal * 100);
 
-                        submitButton.setEnabled(true);
-                        addImageButton.setVisibility(VISIBLE);
-                        Toast.makeText(fragment.obtainActivity(), "Image Upload Error: " + ex.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            } else {
-                Toast.makeText(fragment.obtainActivity(),
-                        fragment.obtainActivity().getResources().getString(R.string.image_upload_error),
-                        Toast.LENGTH_SHORT).show();
+                            if (percentage == 100) {
+                                finalizeListing();
+                            } else {
+                                submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.submitting)
+                                        + " " + String.valueOf(percentage) + "%");
+                            }
+                        }
+
+                        @Override
+                        public void onError(int id, Exception ex) {
+
+                            submitButton.setEnabled(true);
+                            addImageButton.setVisibility(VISIBLE);
+                            Toast.makeText(fragment.obtainActivity(), "Image Upload Error: " + ex.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(fragment.obtainActivity(),
+                            fragment.obtainActivity().getResources().getString(R.string.image_upload_error),
+                            Toast.LENGTH_SHORT).show();
+                }
+
             }
-
-        }
-        if(imageContainer.getChildCount() == 0 || !addingNewImages){
-            finalizeListing();
+            if (imageContainer.getChildCount() == 0 || !addingNewImages) {
+                finalizeListing();
+            }
+        } catch (NullPointerException e){
+            Log.d("S3 Store Images Error", e.toString());
         }
     }
 
@@ -452,65 +463,78 @@ public class ImageScroller extends LinearLayout implements UserImagePreview.S3De
     a file on the user's device. It then calls addImagePreviewFromS3 to add an ImagePreview for the file
      */
     public void getImagesFromS3(String folderName, List<S3ObjectSummary> s3ObjectSummaries, final boolean viewableOnly){
-        AmazonS3 s3 = new AmazonS3Client(credentialsProvider);
-        for(int i = 0; i<s3ObjectSummaries.size(); i++){
-            final int imageIndex = i;
-            TransferUtility transferUtility = new TransferUtility(s3, fragment.obtainActivity().getApplicationContext());
-            final String key = s3ObjectSummaries.get(i).getKey();
-            try{
-                int index = key.indexOf('/');
-                if(Integer.parseInt(key.substring(index+1)) > highestFileName){
-                    highestFileName = Integer.parseInt(key.substring(index+1));
+        try {
+            AmazonS3 s3 = new AmazonS3Client(credentialsProvider);
+            for (int i = 0; i < s3ObjectSummaries.size(); i++) {
+                final int imageIndex = i;
+                TransferUtility transferUtility = new TransferUtility(s3, fragment.obtainActivity().getApplicationContext());
+                final String key = s3ObjectSummaries.get(i).getKey();
+                try {
+                    int index = key.indexOf('/');
+                    if (Integer.parseInt(key.substring(index + 1)) > highestFileName) {
+                        highestFileName = Integer.parseInt(key.substring(index + 1));
+                    }
+                } catch (NumberFormatException e) {
+                    Log.d("Looking", "key not an int: " + key);
                 }
-            } catch (NumberFormatException e){
-                Log.d("Looking", "key not an int: " + key);
-            }
-            Log.d("s3Objects", key);
-            String fileName = "imageScrollerTempFile" + String.valueOf(i);
-            try {
-                final File imageFile = File.createTempFile(fileName, ".png", fragment.obtainActivity().getCacheDir());
-                TransferObserver observer = transferUtility.download(BUCKET_NAME, key, imageFile);
+                Log.d("s3Objects", key);
+                String fileName = "imageScrollerTempFile" + String.valueOf(i);
+                try {
+                    final File imageFile = File.createTempFile(fileName, ".png", fragment.obtainActivity().getCacheDir());
+                    TransferObserver observer = transferUtility.download(BUCKET_NAME, key, imageFile);
 
-                observer.setTransferListener(new TransferListener() {
-                    boolean alreadyCreatedAnImage = false;
-                    @Override
-                    public void onStateChanged(int id, TransferState state) {
-                        //do something
-                    }
+                    observer.setTransferListener(new TransferListener() {
+                        boolean alreadyCreatedAnImage = false;
 
-                    @Override
-                    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                        double percentage;
-                        if(bytesTotal == 0){
-                            percentage = 0;
-                        }
-                        else {
-                            percentage = ((double)bytesCurrent / (double)bytesTotal * 100.00);
+                        @Override
+                        public void onStateChanged(int id, TransferState state) {
+                            //do something
                         }
 
-                        if (percentage == 100) {
-                            boolean fromS3 = true;
-                            if(!alreadyCreatedAnImage) {
-                                addImagePreviewFromS3(imageFile, key, viewableOnly);
-                                alreadyCreatedAnImage = true;
+                        @Override
+                        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                            try {
+                                double percentage;
+                                if (bytesTotal == 0) {
+                                    percentage = 0;
+                                } else {
+                                    percentage = ((double) bytesCurrent / (double) bytesTotal * 100.00);
+                                }
+
+                                if (percentage == 100) {
+                                    boolean fromS3 = true;
+                                    if (!alreadyCreatedAnImage) {
+                                        addImagePreviewFromS3(imageFile, key, viewableOnly);
+                                        alreadyCreatedAnImage = true;
+                                    }
+                                    submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.update));
+                                } else {
+                                    submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.loading_image)
+                                            + (imageIndex + 1) + ":" + " " + String.valueOf(percentage) + "%");
+                                }
+                            } catch (NullPointerException e){
+                                Log.d("S3 download error", e.toString());
+                                e.printStackTrace();
                             }
-                            submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.update));
-                        } else {
-                            submitButton.setText(fragment.obtainActivity().getResources().getString(R.string.loading_image)
-                                    + (imageIndex+1) + ":" + " " + String.valueOf(percentage) + "%");
                         }
-                    }
 
-                    @Override
-                    public void onError(int id, Exception ex) {
+                        @Override
+                        public void onError(int id, Exception ex) {
+                            try {
 
-                        Toast.makeText(fragment.obtainActivity(), "Image Download Error: " + ex.toString(), Toast.LENGTH_LONG).show();
-                        Log.d("S3 error", ex.toString());
-                    }
-                });
-            } catch (IOException e){
-                Toast.makeText(fragment.obtainActivity(), "Error loading file: " + key + " Error: " + e.toString(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(fragment.obtainActivity(), "Image Download Error: " + ex.toString(), Toast.LENGTH_LONG).show();
+                                Log.d("S3 error", ex.toString());
+                            } catch (NullPointerException e){
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                } catch (IOException e) {
+                    Toast.makeText(fragment.obtainActivity(), "Error loading file: " + key + " Error: " + e.toString(), Toast.LENGTH_LONG).show();
+                }
             }
+        } catch (NullPointerException e){
+            Log.d("S3 Image Download Error", e.toString());
         }
 
     }
