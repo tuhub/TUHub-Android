@@ -187,10 +187,15 @@ public class GetMarketDataThread extends Thread {
                        try {
                            date = startDateFormat.parse(tmpstartdate);
                        } catch (java.text.ParseException e) {
+                           date = null;
                            e.printStackTrace();
                        }
-                       formattedDate = startDateEndFormat.format(date);
-                       pow.setStartdate(formattedDate);//Setting the formated date
+                       if(date != null) {
+                           formattedDate = startDateEndFormat.format(date);
+                           pow.setStartdate(formattedDate);//Setting the formated date
+                       } else {
+                           pow.setStartdate("");
+                       }
                    }
 
                     tmptitle = (String) tmp.get("title");
