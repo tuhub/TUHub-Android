@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 
 public class NewsTableFragment extends Fragment {
     ListView newslist;
+    ProgressBar progress;
     GetNewsDataThread news;
     ArrayList<Newsitem> newsitems;
     boolean buttonstate=true;
@@ -58,6 +60,8 @@ public class NewsTableFragment extends Fragment {
     Handler NewsDataHandle = new Handler(){ // gets an arraylist to give to the Arrayadapter that gets set to the listview.
         @Override
         public void handleMessage(Message msg) {
+            newslist.setVisibility(View.VISIBLE);
+            progress.setVisibility(View.GONE);
             newsitems=(ArrayList<Newsitem>) msg.obj;
             arraynews=new ArrayNewsAdapter(getActivity().getApplicationContext(),R.layout.newsitem,newsitems);
             newslist.setAdapter(arraynews);
@@ -112,6 +116,7 @@ public class NewsTableFragment extends Fragment {
         setHasOptionsMenu(true);
 
         newslist= (ListView) getActivity().findViewById(R.id.newslist);
+        progress = (ProgressBar)getActivity().findViewById(R.id.news_progress);
         newslist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -168,6 +173,12 @@ public class NewsTableFragment extends Fragment {
 
     public void loadnews()//does not take in any information. Checks if finallink is null. If it is then we default to default link, else we load the finallink.
     {
+        if(progress != null){
+            progress.setVisibility(View.VISIBLE);
+        }
+        if(newslist!=null){
+            newslist.setVisibility(View.GONE);
+        }
         if (finallink==null)
         {
             net.clickload(defaultlink,RawNews);
