@@ -35,6 +35,8 @@ import java.util.Map;
 
 import edu.temple.tuhub.models.Entry;
 
+import static java.nio.charset.StandardCharsets.*;
+
 public class CoursesSearchAllFragment extends Fragment {
 
     searchAllResultsInterface activity;
@@ -124,12 +126,17 @@ public class CoursesSearchAllFragment extends Fragment {
 
     Handler addressHandler = new Handler(new Handler.Callback() {
 
-        @TargetApi(Build.VERSION_CODES.KITKAT)
         @Override
         public boolean handleMessage(Message msg) {
             String responseObject = msg.obj.toString();
             try {
-                courses = parse(new ByteArrayInputStream(responseObject.getBytes(StandardCharsets.UTF_8)));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    courses = parse(new ByteArrayInputStream(responseObject.getBytes(UTF_8)));
+                }
+                else{
+                    courses = parse(new ByteArrayInputStream(responseObject.getBytes()));
+                }
+
                 loadResults(courses);
                } catch (Exception e) {
                 e.printStackTrace();
