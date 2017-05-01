@@ -1,10 +1,18 @@
 package edu.temple.tuhub;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.provider.CalendarContract;
+import android.support.annotation.Nullable;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -13,15 +21,22 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidnetworking.error.ANError;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import edu.temple.tuhub.models.Course;
+import edu.temple.tuhub.models.CourseMeeting;
 import edu.temple.tuhub.models.Term;
 import edu.temple.tuhub.models.User;
 
@@ -42,13 +57,6 @@ public class MyCourseSearchFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_my_course_search, container, false);
         lv = (ListView) v.findViewById(R.id.myCourseSearchList);
         populateCourses(lv, "");
-        final EditText et = (EditText) v.findViewById(R.id.myCoursesSearchEditText);
-        Button searchBtn = (Button) v.findViewById(R.id.btnMyCourseSearch);
-        searchBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                populateCourses(lv, et.getText().toString());
-            }
-        });
         return v;
     }
 
@@ -116,5 +124,46 @@ public class MyCourseSearchFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         activity = null;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.options_menu, menu);
+        MenuItem item = menu.findItem(R.id.search);
+        SearchView sv = new SearchView(((MainActivity) getActivity()).getSupportActionBar().getThemedContext());
+        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        MenuItemCompat.setActionView(item, sv);
+        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                populateCourses(lv, query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if(newText.equals("")){
+                    populateCourses(lv, "");
+                }
+                return false;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle item selection
+        switch (item.getItemId()) {
+            case R.id.search:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
