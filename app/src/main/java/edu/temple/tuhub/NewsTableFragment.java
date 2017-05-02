@@ -63,8 +63,10 @@ public class NewsTableFragment extends Fragment {
             newslist.setVisibility(View.VISIBLE);
             progress.setVisibility(View.GONE);
             newsitems=(ArrayList<Newsitem>) msg.obj;
-            arraynews=new ArrayNewsAdapter(getActivity().getApplicationContext(),R.layout.newsitem,newsitems);
-            newslist.setAdapter(arraynews);
+            if(getActivity()!=null) {
+                arraynews = new ArrayNewsAdapter(getActivity().getApplicationContext(), R.layout.newsitem, newsitems);
+                newslist.setAdapter(arraynews);
+            }
         }
     };
 
