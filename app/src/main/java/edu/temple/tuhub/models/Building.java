@@ -121,4 +121,20 @@ public class Building implements Serializable {
     public static LatLng getcampusLatLng(){
         return new LatLng((northWestLatitude+southEastLatitude)/2,(northWestLongitude+southEastLongitude)/2);
     }
+
+    public static double getNorthWestLatitude() {
+        return northWestLatitude;
+    }
+
+    public static double getSouthEastLatitude() {
+        return southEastLatitude;
+    }
+
+    public static double getNorthWestLongitude() {
+        return northWestLongitude;
+    }
+
+    public static double getSouthEastLongitude() {
+        return southEastLongitude;
+    }
 }

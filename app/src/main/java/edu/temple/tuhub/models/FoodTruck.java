@@ -3,10 +3,12 @@ package edu.temple.tuhub.models;
 import android.support.annotation.Nullable;
 
 import com.androidnetworking.error.ANError;
+import com.google.android.gms.maps.model.LatLng;
 import com.yelp.clientlib.connection.YelpAPI;
 import com.yelp.clientlib.connection.YelpAPIFactory;
 import com.yelp.clientlib.entities.Business;
 import com.yelp.clientlib.entities.SearchResponse;
+import com.yelp.clientlib.entities.options.BoundingBoxOptions;
 import com.yelp.clientlib.entities.options.CoordinateOptions;
 
 import java.io.Serializable;
@@ -30,9 +32,9 @@ public class FoodTruck implements Serializable {
         void onError(ANError error);
     }
 
-    private static final String DEFAULT_TERM = "Food Trucks";
+    private static final String DEFAULT_TERM = "Food";
     private static final String DEFAULT_LOCATION = "Temple University, Philadelphia, PA";
-    private static final String SEARCH_LIMIT = "20";
+    private static final String SEARCH_LIMIT = "25";
 
     private static final String CONSUMER_KEY = "p9eiiQKJqloSQvFa8A3a0A";
     private static final String CONSUMER_SECRET = "FUFyMzXh_FE9ZdxsLaWbyxyaQto";
@@ -89,7 +91,7 @@ public class FoodTruck implements Serializable {
     public String getPhone(){return phone;}
 
 
-    public static void retrieveFoodTrucks(final FoodTruckRequestListener foodTruckRequestListener) {
+    public static void retrieveFoodTrucks(final Double nwLat, final Double seLat, final Double nwLong, final Double seLong, final FoodTruckRequestListener foodTruckRequestListener) {
 
         YelpAPIFactory apiFactory = new YelpAPIFactory(CONSUMER_KEY, CONSUMER_SECRET, TOKEN, TOKEN_SECRET);
         YelpAPI yelpAPI = apiFactory.createAPI();
@@ -101,8 +103,30 @@ public class FoodTruck implements Serializable {
 
         // locale params
         params.put("lang", "en");
+        BoundingBoxOptions bo = new BoundingBoxOptions() {
+            @Override
+            public Double swLatitude() {
+                return seLat;
+            }
 
-        Call<SearchResponse> call = yelpAPI.search(DEFAULT_LOCATION, params);
+            @Override
+            public Double swLongitude() {
+                return nwLong;
+            }
+
+            @Override
+            public Double neLatitude() {
+                return nwLat;
+            }
+
+            @Override
+            public Double neLongitude() {
+                return seLong;
+            }
+        };
+
+        Call<SearchResponse> call = yelpAPI.search(bo, params);
+
         Callback<SearchResponse> callback = new Callback<SearchResponse>() {
             @Override
             public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {

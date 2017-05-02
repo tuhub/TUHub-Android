@@ -104,22 +104,6 @@ public class MapsFragment extends Fragment {
                                 1);
                     }
                 } else {
-                    FoodTruck.retrieveFoodTrucks(new FoodTruck.FoodTruckRequestListener() {
-                        @Override
-                        public void onResponse(FoodTruck[] foodTrucks) {
-                            FoodTrucks = new FoodTruck[foodTrucks.length];
-                            for (int i = 0; i < foodTrucks.length; i++) {
-                                FoodTrucks[i] = foodTrucks[i];
-                                if (foodTrucks[i] != null) {
-                                    googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(foodTrucks[i].getLatitude()), Double.parseDouble(foodTrucks[i].getLongitude()))).title(foodTrucks[i].getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.restaurant)));
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onError(ANError error) {
-                        }
-                    });
                     // For zooming automatically to the location of the marker
                     Building.retrieveBuildings(currentCampus, new Building.BuildingRequestListener() {
                         @Override
@@ -138,6 +122,22 @@ public class MapsFragment extends Fragment {
                                         googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(buildingResponse[i].getLatitude()), Double.parseDouble(buildingResponse[i].getLongitude()))).title(buildingResponse[i].getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.university)));
                                 }
                             }
+                            FoodTruck.retrieveFoodTrucks(Building.getNorthWestLatitude(), Building.getSouthEastLatitude(), Building.getNorthWestLongitude(), Building.getSouthEastLongitude(), new FoodTruck.FoodTruckRequestListener() {
+                                @Override
+                                public void onResponse(FoodTruck[] foodTrucks) {
+                                    FoodTrucks = new FoodTruck[foodTrucks.length];
+                                    for (int i = 0; i < foodTrucks.length; i++) {
+                                        FoodTrucks[i] = foodTrucks[i];
+                                        if (foodTrucks[i] != null) {
+                                            googleMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(foodTrucks[i].getLatitude()), Double.parseDouble(foodTrucks[i].getLongitude()))).title(foodTrucks[i].getName()).icon(BitmapDescriptorFactory.fromResource(R.drawable.restaurant)));
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onError(ANError error) {
+                                }
+                            });
                         }
 
                         @Override
