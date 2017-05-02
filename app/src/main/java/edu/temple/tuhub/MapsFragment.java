@@ -53,6 +53,7 @@ public class MapsFragment extends Fragment {
     private Button detailBtn;
     private Marker currentMarker;
     public static Boolean ignoreSharedPreferences = false;
+    boolean AmblerNoOption = true;
 
     public MapsFragment() {
     }
@@ -250,6 +251,7 @@ public class MapsFragment extends Fragment {
                         .setSingleChoiceItems(Campuses, 0, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                AmblerNoOption = false;
                                 currentCampus = Campuses[i];
                             }
                         });
@@ -258,6 +260,8 @@ public class MapsFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         SharedPreferences sharedPref = getActivity().getSharedPreferences("MapsPreferences", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
+                        if(AmblerNoOption)
+                            currentCampus = "Ambler";
                         if (User.CURRENT != null) {
                             editor.putString(User.CURRENT.getTuID() + "MapPreference", currentCampus);
                         } else {
@@ -270,6 +274,8 @@ public class MapsFragment extends Fragment {
                 builder.setNeutralButton(R.string.OK, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        if(AmblerNoOption)
+                            currentCampus = "Ambler";
                         ignoreSharedPreferences = true;
                         activity3.reloadMap();
                     }
@@ -284,6 +290,7 @@ public class MapsFragment extends Fragment {
                 dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.BLACK);
                 dialog.getButton(DialogInterface.BUTTON_NEUTRAL).setTextColor(Color.BLACK);
                 dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+                AmblerNoOption = true;
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
