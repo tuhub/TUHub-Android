@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements newsshow, filterb
         if (clearBackStack) {
             fm.popBackStack();
         }
-        if (backStack) {
+        if (backStack && fm.getBackStackEntryCount()>1) {
             ft.addToBackStack(null);
         }
         ft.commit();
