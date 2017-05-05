@@ -102,6 +102,7 @@ public class CourseDetailsFragment extends Fragment {
                     View view = super.getView(position, convertView, parent);
                     TextView text1 = (TextView) view.findViewById(android.R.id.text1);
                     text1.setTextColor(Color.BLACK);
+                    text1.setTextSize(18);
                     TextView text2 = (TextView) view.findViewById(android.R.id.text2);
                     text2.setTextColor(Color.DKGRAY);
                     return view;

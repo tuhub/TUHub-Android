@@ -1,33 +1,30 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context="edu.temple.tuhub.CourseDetailsFragment">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="edu.temple.tuhub.CourseDetailsFragment">
+
 
     <TextView
         android:id="@+id/courseName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+
         android:text="Course Name"
         android:textColor="@android:color/black"
-        android:textSize="18dp"/>
+        android:textSize="18sp"/>
 
     <TextView
         android:id="@+id/courseMeetingTerm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/courseName"
         android:text="TextView"/>
 
     <View
         android:id="@+id/view3"
         android:layout_width="400dp"
         android:layout_height="1dp"
-        android:layout_below="@+id/courseMeetingTerm"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="6dp"
         android:background="#990033"/>
 
@@ -35,8 +32,6 @@
         android:id="@+id/courseMeetingTimes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/view3"
         android:text="Meeting Times"
         android:textColor="@android:color/black"
         android:textSize="16sp"/>
@@ -44,16 +39,12 @@
     <ListView
         android:id="@+id/courseMeetingsList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/courseMeetingTimes"/>
+        android:layout_height="wrap_content"/>
 
     <View
         android:id="@+id/view4"
         android:layout_width="400dp"
         android:layout_height="1dp"
-        android:layout_below="@+id/courseMeetingsList"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="6dp"
         android:background="#990033"/>
 
@@ -61,25 +52,24 @@
         android:id="@+id/faculty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/view4"
         android:text="Faculty"
         android:textColor="@android:color/black"
-        android:textSize="16dp"/>
+        android:textSize="16sp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:orientation="vertical">
 
     <ListView
         android:id="@+id/facultyList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/faculty"/>
+        android:layout_height="wrap_content"/>
+    </LinearLayout>
 
     <View
         android:id="@+id/view5"
         android:layout_width="400dp"
         android:layout_height="1dp"
-        android:layout_below="@+id/facultyList"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="6dp"
         android:background="#990033"/>
 
@@ -87,25 +77,19 @@
         android:id="@+id/grades"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/view5"
         android:text="Grades"
         android:textColor="@android:color/black"
-        android:textSize="16dp"/>
+        android:textSize="16sp"/>
 
     <ListView
         android:id="@+id/gradesList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/grades"/>
+        android:layout_height="wrap_content"/>
 
     <View
         android:id="@+id/view6"
         android:layout_width="400dp"
         android:layout_height="1dp"
-        android:layout_below="@+id/gradesList"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="6dp"
         android:background="#990033"/>
 
@@ -113,19 +97,15 @@
         android:id="@+id/Roster"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/view6"
         android:text="Roster"
         android:textColor="@android:color/black"
-        android:textSize="16dp"/>
+        android:textSize="16sp"/>
 
 
     <ListView
         android:id="@+id/rosterList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/Roster"/>
+        android:layout_height="wrap_content"/>
 
 
-</RelativeLayout>
+</LinearLayout>
